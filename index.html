@@ -181,116 +181,6 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2020/11/08/MapperScan%E5%92%8C-Mapper%E7%9A%84%E5%9D%91/">MapperScan和Mapper的坑</a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2020/11/08/MapperScan%E5%92%8C-Mapper%E7%9A%84%E5%9D%91/">
-          
-          
-            
-          
-          
-今天和大佬一起解决个问题. @Autowired 注入的对象和预期不一致. 结果是因为 Mybatis 扫描的问题
-
-@Mapper
-此注解是 Mybatis 自动配置时, 默认扫描的注解类
-
-
-MybatisAutoConfiguration.AutoConfiguredMapperScannerRegistrar#registerBeanDefinitionspublic void regi
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-11-08 22:14" pubdate>
-              2020-11-08
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E6%BA%90%E7%A0%81/">源码</a>
-            
-              <a href="/categories/%E6%BA%90%E7%A0%81/Mybatis/">Mybatis</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Mybatis/">Mybatis</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2020/11/08/Redis-%E7%9F%A5%E8%AF%86%E6%B1%87%E6%80%BB/">Redis 知识汇总</a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2020/11/08/Redis-%E7%9F%A5%E8%AF%86%E6%B1%87%E6%80%BB/">
-          
-          
-            
-          
-          简介
- Redis 是一款基于内存的数据库, 即 NoSQL. 采用单线程模型, 但是能10w 的并发. 底层使用 IO 多路复用模型(Java 中的 NIO, 即在进行 IO 是, 线程不阻塞可以处理其他事). 
- 常用的数据结构: String, List(可用作队列), Set, ZSet(sorted set有序集合), Hash
- 持久化两种方式: RDB(快照) 和 AOF(日志追加)
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-11-08 22:05" pubdate>
-              2020-11-08
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/">中间件</a>
-            
-              <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/Redis/">Redis</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Redis/">Redis</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
         <a href="/2020/02/16/Kafka-%E7%9F%A5%E8%AF%86%E6%B1%87%E6%80%BB/">Kafka 知识汇总</a>
       </h1>
 
@@ -330,6 +220,59 @@ Kafka
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/Kafka/">Kafka</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2020/02/15/Redis-%E7%9F%A5%E8%AF%86%E6%B1%87%E6%80%BB/">Redis 知识汇总</a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2020/02/15/Redis-%E7%9F%A5%E8%AF%86%E6%B1%87%E6%80%BB/">
+          
+          
+            
+          
+          简介
+ Redis 是一款基于内存的数据库, 即 NoSQL. 采用单线程模型, 但是能10w 的并发. 底层使用 IO 多路复用模型(Java 中的 NIO, 即在进行 IO 是, 线程不阻塞可以处理其他事). 
+ 常用的数据结构: String, List(可用作队列), Set, ZSet(sorted set有序集合), Hash
+ 持久化两种方式: RDB(快照) 和 AOF(日志追加)
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-02-15 22:05" pubdate>
+              2020-02-15
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/">中间件</a>
+            
+              <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/Redis/">Redis</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Redis/">Redis</a>
             
           </div>
         
@@ -498,6 +441,63 @@ File Header，表示页的一些通用信息，占固定的38字节。Page Heade
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/Mysql/">Mysql</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2020/01/02/MapperScan%E5%92%8C-Mapper%E7%9A%84%E5%9D%91/">MapperScan和Mapper的坑</a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2020/01/02/MapperScan%E5%92%8C-Mapper%E7%9A%84%E5%9D%91/">
+          
+          
+            
+          
+          
+今天和大佬一起解决个问题. @Autowired 注入的对象和预期不一致. 结果是因为 Mybatis 扫描的问题
+
+@Mapper
+此注解是 Mybatis 自动配置时, 默认扫描的注解类
+
+
+MybatisAutoConfiguration.AutoConfiguredMapperScannerRegistrar#registerBeanDefinitionspublic void regi
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-01-02 22:14" pubdate>
+              2020-01-02
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E6%BA%90%E7%A0%81/">源码</a>
+            
+              <a href="/categories/%E6%BA%90%E7%A0%81/Mybatis/">Mybatis</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Mybatis/">Mybatis</a>
             
           </div>
         

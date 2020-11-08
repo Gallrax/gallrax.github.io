@@ -1,0 +1,593 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="郑州大学 2017 级软件开发(Java)方向本科毕业. 目前就职于阿里巴巴, 担任高级开发工程师">
+  <meta name="author" content="Gallrax">
+  <meta name="keywords" content="">
+  <title>从根儿上理解 MySQL - 页总结 - Gallrax&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":"footer","baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Gallrax's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="从根儿上理解 MySQL - 页总结">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-01-28 21:59" pubdate>
+        January 28, 2020 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.1k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      23
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">从根儿上理解 MySQL - 页总结</h1>
+            
+            <div class="markdown-body">
+              <h2 id="页结构"><a href="#页结构" class="headerlink" title="页结构"></a>页结构</h2><blockquote>
+<p>由于 MySQL 的真实数据是存储在磁盘, 因此在读写数据是会涉及磁盘 IO, 为了更高效率的读取, MySQL 设计页结构, 每次交互以页为单位读取到内存. 页的大小一般为 16KB</p>
+<p>一个数据页可以被大致划分为7个部分</p>
+<p>File Header，表示页的一些通用信息，占固定的38字节。<br>Page Header，表示数据页专有的一些信息，占固定的56个字节。<br>Infimum + Supremum，两个虚拟的伪记录，分别表示页中的最小和最大记录，占固定的26个字节。<br>User Records：真实存储我们插入的记录的部分，大小不固定。<br>Free Space：页中尚未使用的部分，大小不确定。<br>Page Directory：页中的某些记录相对位置，也就是各个槽在页面中的地址偏移量，大小不固定，插入的记录越多，这个部分占用的空间越多。<br>File Trailer：用于检验页是否完整的部分，占用固定的8个字节。</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki3zgsm1ej30u00yfq5z.jpg" srcset="/img/loading.gif" alt="image-20200129175558772"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki3zjjr01j30vc0jsjth.jpg" srcset="/img/loading.gif" alt="image-20200129175624645"></p>
+<blockquote>
+<p>上述的行格式即为 User Records的一部分</p>
+<p>新生成的页并没有 User Records, 当插入数据时, 会从 Free Space 申请, 如果 Free Space 的空间全部被替换掉, 则说明该页满了, 需要申请新的页</p>
+</blockquote>
+<h4 id="File-Header-文件头部"><a href="#File-Header-文件头部" class="headerlink" title="File Header (文件头部)"></a>File Header (文件头部)</h4><blockquote>
+<p>文件头部表主要关注点在于页号, 上一页的页号和下一页的页号. 构成了双向链表</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki3znpswbj31au0q8acw.jpg" srcset="/img/loading.gif" alt="image-20200130141415406"></p>
+<h4 id="Page-Directory-页目录"><a href="#Page-Directory-页目录" class="headerlink" title="Page Directory (页目录)"></a>Page Directory (页目录)</h4><p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki3zrh8u9j31l00u00x4.jpg" srcset="/img/loading.gif" alt="image-20200129180219930"></p>
+<blockquote>
+<p>从 select * from table wher id = 1 讲起<br>比较笨的方式会从最小记录开始遍历往下找, 知道找到 next_record = 0</p>
+<p>MySQL 的优化点在于新增了一个目录, 利用二分查找优化</p>
+<ol>
+<li>通过二分法确定该记录所在的槽(实际是找到确定的槽, 遍历该槽的上一个槽或者当前槽)</li>
+<li>通过记录的next_record属性遍历该槽所在的组中的各个记录</li>
+</ol>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki40mdkthj31co0u0gqz.jpg" srcset="/img/loading.gif" alt="image-20200129180437808"></p>
+<pre><code class="hljs angelscript">因为把<span class="hljs-number">16</span>条记录的全部信息都画在一张图里太占地方，让人眼花缭乱的，所以只保留了用户记录头信息中的n_owned和next_record属性，也省略了各个记录之间的箭头，我没画不等于没有啊！现在看怎么从这个页目录中查找记录。因为各个槽代表的记录的主键值都是从小到大排序的，所以我们可以使用所谓的二分法来进行快速查找。<span class="hljs-number">5</span>个槽的编号分别是：<span class="hljs-number">0</span>、<span class="hljs-number">1</span>、<span class="hljs-number">2</span>、<span class="hljs-number">3</span>、<span class="hljs-number">4</span>，所以初始情况下最低的槽就是low=<span class="hljs-number">0</span>，最高的槽就是high=<span class="hljs-number">4</span>。比方说我们想找主键值为<span class="hljs-number">6</span>的记录，过程是这样的：
+
+计算中间槽的位置：(<span class="hljs-number">0</span>+<span class="hljs-number">4</span>)/<span class="hljs-number">2</span>=<span class="hljs-number">2</span>，所以查看槽<span class="hljs-number">2</span>对应记录的主键值为<span class="hljs-number">8</span>，又因为<span class="hljs-number">8</span> &gt; <span class="hljs-number">6</span>，所以设置high=<span class="hljs-number">2</span>，low保持不变。
+
+重新计算中间槽的位置：(<span class="hljs-number">0</span>+<span class="hljs-number">2</span>)/<span class="hljs-number">2</span>=<span class="hljs-number">1</span>，所以查看槽<span class="hljs-number">1</span>对应的主键值为<span class="hljs-number">4</span>，又因为<span class="hljs-number">4</span> &lt; <span class="hljs-number">6</span>，所以设置low=<span class="hljs-number">1</span>，high保持不变。
+
+因为high - low的值为<span class="hljs-number">1</span>，所以确定主键值为<span class="hljs-number">6</span>的记录在槽<span class="hljs-number">2</span>对应的组中。此刻我们需要找到槽<span class="hljs-number">2</span>中主键值最小的那条记录，然后沿着单向链表遍历槽<span class="hljs-number">2</span>中的记录。但是我们前边又说过，每个槽对应的记录都是该组中主键值最大的记录，这里槽<span class="hljs-number">2</span>对应的记录是主键值为<span class="hljs-number">8</span>的记录，怎么定位一个组中最小的记录呢？别忘了各个槽都是挨着的，我们可以很轻易的拿到槽<span class="hljs-number">1</span>对应的记录（主键值为<span class="hljs-number">4</span>），该条记录的下一条记录就是槽<span class="hljs-number">2</span>中主键值最小的记录，该记录的主键值为<span class="hljs-number">5</span>。所以我们可以从这条主键值为<span class="hljs-number">5</span>的记录出发，遍历槽<span class="hljs-number">2</span>中的各条记录，直到找到主键值为<span class="hljs-number">6</span>的那条记录即可。由于一个组中包含的记录条数只能是<span class="hljs-number">1</span>~<span class="hljs-number">8</span>条，所以遍历一个组中的记录的代价是很小的。
+
+所以在一个数据页中查找指定主键值的记录的过程分为两步：
+
+通过二分法确定该记录所在的槽，并找到该槽所在分组中主键值最小的那条记录。
+
+通过记录的next_record属性遍历该槽所在的组中的各个记录。</code></pre>
+
+
+
+<h2 id="行格式"><a href="#行格式" class="headerlink" title="行格式"></a>行格式</h2><blockquote>
+<p>行格式主要分为四种类型Compact<code>、</code>Redundant<code>、</code>Dynamic<code>和</code>Compressed. 主要理解 Compact</p>
+</blockquote>
+<h3 id="Compact-行格式"><a href="#Compact-行格式" class="headerlink" title="Compact 行格式"></a>Compact 行格式</h3><p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki3zv88vcj317g0du75j.jpg" srcset="/img/loading.gif" alt="image-20200129145838600"></p>
+<blockquote>
+<p>行格式主要分为记录的额外信息, 记录的真实数据</p>
+</blockquote>
+<h4 id="变长字段长度列表"><a href="#变长字段长度列表" class="headerlink" title="变长字段长度列表"></a>变长字段长度列表</h4><blockquote>
+<p>变长字段长度列表存储的是变长类型的真实数据的占用字节数(逆序).</p>
+<p>如果该表没有变长类型, 则无变长字段长度列表</p>
+<p>变长字段长度列表只保存 NOT NULL列, 如果该列允许为 NULL, 则不会保存</p>
+</blockquote>
+<pre><code class="hljs routeros">举例: 字段 0 int 0, 字段1 vachar(10) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> <span class="hljs-string">&#x27;A&#x27;</span>, 字段2 vachar(10)<span class="hljs-built_in"> default </span><span class="hljs-literal">NULL</span> <span class="hljs-string">&#x27;B&#x27;</span>, 字段3 vachar(10) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> <span class="hljs-string">&#x27;AA&#x27;</span>
+变长字段长度列表: 02 01
+可通过 变长字段反推字段的长度</code></pre>
+
+<h4 id="NULL-值列表"><a href="#NULL-值列表" class="headerlink" title="NULL 值列表"></a>NULL 值列表</h4><blockquote>
+<p>NULL 值列表只统计哪些字段允许为 NULL的值状态(逆序)</p>
+<p>如果该表没有允许 NULL 列, 则无 NULL 值列表</p>
+<p>MySQL规定NULL值列表必须用整数个字节的位表示，如果使用的二进制位个数不是整数个字节，则在字节的高位补0</p>
+<p>二进制位的值为1时，代表该列的值为NULL<br>二进制位的值为0时，代表该列的值不为NULL</p>
+</blockquote>
+<pre><code class="hljs routeros">举例: 字段 0 vachar(10) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> <span class="hljs-string">&#x27;A&#x27;</span>, 字段1 vachar(10)<span class="hljs-built_in"> default </span><span class="hljs-literal">NULL</span> <span class="hljs-string">&#x27;B&#x27;</span>, 字段2 vachar(10)<span class="hljs-built_in"> default </span><span class="hljs-literal">NULL</span> <span class="hljs-literal">NULL</span>, 字段3 vachar(10)<span class="hljs-built_in"> default </span><span class="hljs-literal">NULL</span> <span class="hljs-literal">NULL</span>
+逆序后: 字段3 - 1, 字段2 - 1, 字段1 - 0
+<span class="hljs-literal">NULL</span> 值列表: 00000110 
+可通过 <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> 字段反推哪些字段值为 <span class="hljs-literal">NULL</span>, 哪些字段值不为 <span class="hljs-literal">NULL</span></code></pre>
+
+<h4 id="记录头"><a href="#记录头" class="headerlink" title="记录头"></a>记录头</h4><blockquote>
+<p>这一部分牵扯的内容较多</p>
+<p>大致可以看一下删除标识(删除是并非真正删除, 只是修改表示), 下一条记录位置(B+树特性)</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki400egxvj31t60diwfl.jpg" srcset="/img/loading.gif" alt="image-20200129152146891"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki403ljuhj31440twtbe.jpg" srcset="/img/loading.gif" alt="image-20200129152534179"></p>
+<blockquote>
+<p>除了这些详细信息, 还会有 MySQL 自动添加的隐藏列</p>
+<p>实际上这几个列的真正名称其实是：DB_ROW_ID, DB_TRX_ID, DB_ROLL_PTR, 为了美观才写成了row_id、transaction_id和roll_pointer</p>
+<p>row_id: 有主键使用主键, 没有主键有唯一键使用唯一键, 没有则自动生成</p>
+<p>transaction_id: 事务 ID</p>
+<p>roll_pointer: 回滚指针</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki406d6koj30wg0cewf4.jpg" srcset="/img/loading.gif" alt="image-20200129152851500"></p>
+<h4 id="行溢出"><a href="#行溢出" class="headerlink" title="行溢出"></a>行溢出</h4><blockquote>
+<p>因为一个页占用 16KB, 16 * 1024 = 16384 字节, 而 varchar 最多可以占用65535, 不包括隐藏列和记录头信息</p>
+<p>但是在我们使用 varchar 时, 会设置变长字段长度列表和 NULL 值列表</p>
+<p>对于 NOT NULL, 只能使用65533字节 (两个字节用来表示长度)<br>对于非 NOT NULL, 只用使用 65532 字节 (两个字节用来表示长度, 一个字节用来表示 NULL 标识)</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki40a7o14j31jk0u0td1.jpg" srcset="/img/loading.gif" alt="image-20200129154058216"></p>
+<pre><code class="hljs angelscript">对于行溢出的情况, 真实的数据只用存储前 <span class="hljs-number">768</span> 字节, 后面放的是溢出页地址</code></pre>
+
+<h4 id="行溢出的节点"><a href="#行溢出的节点" class="headerlink" title="行溢出的节点"></a>行溢出的节点</h4><blockquote>
+<p>综上所述, 我们知道在数据的占用字节数超过某个阈值就会发生行溢出, 那么行溢出的计算方式分析如下</p>
+<p>ps: 截图来源于MySQL 是怎样运行的：从根儿上理解 MySQL(小孩子 4919)</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki40e1nh2j30u00xuag6.jpg" srcset="/img/loading.gif" alt="image-20200129154804902"></p>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><h4 id="delete-mask"><a href="#delete-mask" class="headerlink" title="delete_mask"></a>delete_mask</h4><blockquote>
+<p>这个属性标识该条记录是否已删除</p>
+<p>如果 MySQL 设计删除一条则执行磁盘删除, 会导致磁盘IO增加, MySQL 为了优化, 使用一个标识表示该记录已被删除, 如果有新的记录来, 会覆盖该条记录<br>原理: 删除数据时, 标识该记录已删除, 并且放入垃圾链表, 新的记录插入时, 先从垃圾链表中替换</p>
+<p>如果想要优化空间, 则执行 optimize table ‘name’ 即可</p>
+</blockquote>
+<h4 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h4><blockquote>
+<p>页与页之间通过 File Header 双向链表连接上一条记录和下一条记录</p>
+<p>页内数据记录 通过 next_record 单向链表连接下一条记录</p>
+</blockquote>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p><a target="_blank" rel="noopener" href="https://juejin.im/book/6844733769996304392/section/6844733770046636040">MySQL 是怎样运行的：从根儿上理解 MySQL(记录结构)</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.im/book/6844733769996304392/section/6844733770046636046">MySQL 是怎样运行的：从根儿上理解 MySQL(数据页结构)</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/">中间件</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/MySQL/">MySQL</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Mysql/">Mysql</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/01/29/%E4%BB%8E%E6%A0%B9%E5%84%BF%E4%B8%8A%E7%90%86%E8%A7%A3-MySQL-%E7%BC%93%E5%86%B2%E6%B1%A0-log/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">从根儿上理解 MySQL - 缓冲池 & log</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/09/18/Spring%E4%BA%8B%E5%8A%A1%E9%83%A8%E5%88%86%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E5%9B%9B-TransactionSynchronization%E6%B3%A8%E5%86%8C/">
+                        <span class="hidden-mobile">Spring事务部分源码解析(四) - TransactionSynchronization注册</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":200})
+    NProgress.start()
+    document.addEventListener('DOMContentLoaded', function() {
+      window.NProgress && window.NProgress.inc();
+    })
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.12.0/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

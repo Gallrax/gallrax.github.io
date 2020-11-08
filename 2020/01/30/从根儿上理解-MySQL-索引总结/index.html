@@ -1,0 +1,584 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="郑州大学 2017 级软件开发(Java)方向本科毕业. 目前就职于阿里巴巴, 担任高级开发工程师">
+  <meta name="author" content="Gallrax">
+  <meta name="keywords" content="">
+  <title>从根儿上理解 MySQL - 索引总结 - Gallrax&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":"footer","baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Gallrax's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="从根儿上理解 MySQL - 索引总结">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-01-30 22:00" pubdate>
+        January 30, 2020 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.4k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      15
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">从根儿上理解 MySQL - 索引总结</h1>
+            
+            <div class="markdown-body">
+              <h2 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h2><blockquote>
+<p>上一篇我们已经知道了 Innodb 的页的数据结构和组成. 可以简介为下图所示</p>
+<p>根据主键查询是在 Page Directory中进行二分搜索确定该数据所在的槽, 然后通过该槽偏移量确定页, 往后遍历查找数据</p>
+<p>但是这是主键查询, 索引的原理也相同</p>
+<p>ps: 基础直接跳过</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki42ifh2zj31om0iu41w.jpg" srcset="/img/loading.gif" alt="image-20200130141938214"></p>
+<h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><blockquote>
+<p>在之前我们了解的主键查询是通过主键进行排序. 那么我们索引是利用我们的索引字段充当主键</p>
+<p>下面其实就是主键索引, 又称聚簇索引, 橙色为主键, 绿色为对应的页<br>在非叶子节点的 record_type 都为 1 (表示为目录), 叶子节点的record_type 为 0 (表示为数据节点)</p>
+<p>我们回顾一下一个页为 16KB, 假设一个页可以存放100 条记录(实际大部分场景远大于 100 条, 如果按照 100 条来算, 可以理解为每条数据 163 字节)</p>
+<p>一层节点 100 ^ 1 条数据<br>两层节点 100 ^ 2 = 10000 条数据<br>三层节点 100 ^ 3 = 1000000 条数据<br>四层节点 100 ^ 4 = 100000000 条数据</p>
+</blockquote>
+<h3 id="聚簇索引"><a href="#聚簇索引" class="headerlink" title="聚簇索引"></a>聚簇索引</h3><p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki42l5bqlj31k00u00x3.jpg" srcset="/img/loading.gif" alt="image-20200130142726854"></p>
+<h3 id="非聚簇索引"><a href="#非聚簇索引" class="headerlink" title="非聚簇索引"></a>非聚簇索引</h3><h4 id="普通索引"><a href="#普通索引" class="headerlink" title="普通索引"></a>普通索引</h4><p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki42oci7bj31kz0u0n1i.jpg" srcset="/img/loading.gif" alt="image-20200130143518159"></p>
+<h4 id="联合索引"><a href="#联合索引" class="headerlink" title="联合索引"></a>联合索引</h4><p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki42r550hj31k00u0td5.jpg" srcset="/img/loading.gif" alt="image-20200130143720555"></p>
+<blockquote>
+<p>聚簇索引和非聚簇索引的区别就是, 聚簇索引的叶子节点保存所有数据, 非聚簇索引保存的是索引字段和主键(回表查询全量数据)</p>
+<p>普通索引和联合索引的区别就是, 普通索引的用户数据只保存索引字段和页节点, 联合索引的用户数据为多个索引字段和页节点</p>
+<p>联合索引中的字段值依次排序</p>
+</blockquote>
+<h4 id="页分裂情况"><a href="#页分裂情况" class="headerlink" title="页分裂情况"></a>页分裂情况</h4><p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki42vetmhj30tk0v6mz5.jpg" srcset="/img/loading.gif" alt="image-20200130144035751"></p>
+<blockquote>
+<p>考虑在上述情况下, 如果在插入相同 1 的数据是应该放在页 4 还是页 5 ?虽然是可以推到出放在页 5, 但是为了更加优化, 我们在非叶子节点中还是放入当前数据指向页的最小主键, 这样我们能更加清晰的知道是放在页 5, 如下图</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki42ymlatj30to0uognk.jpg" srcset="/img/loading.gif" alt="image-20200130144529959"></p>
+<blockquote>
+<p>另外, 我们之前已经说过, 一个页最少要放入两条数据<br>原因: 如果每个页只能可以存放两条数据, 在查询效率上, 每次能筛选掉一半的数据. 如果允许存放一条数据, 那么相当于要全部遍历</p>
+</blockquote>
+<h2 id="覆盖索引"><a href="#覆盖索引" class="headerlink" title="覆盖索引"></a>覆盖索引</h2><blockquote>
+<p>覆盖索引并不是一种索引. 只是一种优化手段</p>
+<p>如果一次查询所需要返回的字段在该索引中能够满足, 那么就不需要回表, 直接返回. 该方式即为覆盖索引(因为正常查询所有数据, 是需要通过非聚簇索引查到主键, 再回表查询聚簇索引获取全量数据)</p>
+</blockquote>
+<h2 id="如果确定索引列"><a href="#如果确定索引列" class="headerlink" title="如果确定索引列"></a>如果确定索引列</h2><blockquote>
+<p>选择基数大的列 (可以理解为去重后的数量)</p>
+<p>举例:</p>
+<p>如果是性别列, 只有三个值: 男, 女, 第三性别. 那么基数即为 3</p>
+<p>如果是时间秒值, 那么一天会有 86400. 那么基数即为 86400</p>
+<p>选择性别列, 可能根据索引确定后, 依然有大量数据, 但是根据时间秒值, 能筛选掉大量的数据</p>
+<p>同样. 如果 MySQL 优化器发现该索引筛选后的数据依然很大, 那么会选择走全表扫描</p>
+<p>索引类型尽可能小<br>一个页的大小为 16KB, 如果类型尽可能小, 那么一个页存放的数据就会更多, 相同的索引数据层数就会更少, 占用空间也小</p>
+</blockquote>
+<h2 id="索引使用"><a href="#索引使用" class="headerlink" title="索引使用"></a>索引使用</h2><blockquote>
+<p>因为比较基础, 就直接总结</p>
+<ol>
+<li><code>B+</code>树索引在空间和时间上都有代价，所以没事儿别瞎建索引。</li>
+<li><code>B+</code>树索引适用于下边这些情况：<ul>
+<li>全值匹配</li>
+<li>匹配左边的列</li>
+<li>匹配范围值</li>
+<li>精确匹配某一列并范围匹配另外一列</li>
+<li>用于排序</li>
+<li>用于分组</li>
+</ul>
+</li>
+<li>在使用索引时需要注意下边这些事项：<ul>
+<li>只为用于搜索、排序或分组的列创建索引</li>
+<li>为列的基数大的列创建索引</li>
+<li>索引列的类型尽量小</li>
+<li>可以只对字符串值的前缀建立索引</li>
+<li>只有索引列在比较表达式中单独出现才可以适用索引</li>
+<li>为了尽可能少的让<code>聚簇索引</code>发生页面分裂和记录移位的情况，建议让主键拥有<code>AUTO_INCREMENT</code>属性。</li>
+<li>定位并删除表中的重复和冗余索引</li>
+<li>尽量使用<code>覆盖索引</code>进行查询，避免<code>回表</code>带来的性能损耗。</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+<h2 id="访问方法"><a href="#访问方法" class="headerlink" title="访问方法"></a>访问方法</h2><h3 id="const"><a href="#const" class="headerlink" title="const"></a>const</h3><blockquote>
+<p>利用主键或唯一索引的等值匹配, 结果只会是一个值</p>
+<p>IS NULL 并不是 const</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki432wfzcj31510u0wh1.jpg" srcset="/img/loading.gif" alt="image-20200204145937352"></p>
+<h3 id="ref"><a href="#ref" class="headerlink" title="ref"></a>ref</h3><blockquote>
+<p>利用索引的等值匹配, 结果可能为多个值 (因为一个 key 可能对应多个 value)</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki43643icj311q0u0go6.jpg" srcset="/img/loading.gif" alt="image-20200204150348819"></p>
+<h3 id="ref-or-null"><a href="#ref-or-null" class="headerlink" title="ref_or_null"></a>ref_or_null</h3><blockquote>
+<p> 上述再加上 null 的判断</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki439d0lej31220u0tbm.jpg" srcset="/img/loading.gif" alt="image-20200204150602466"></p>
+<h3 id="range"><a href="#range" class="headerlink" title="range"></a>range</h3><blockquote>
+<p>范围查询</p>
+<p>SELECT * FROM single_table WHERE key2 IN (1438, 6328) OR (key2 &gt;= 38 AND key2 &lt;= 79);</p>
+</blockquote>
+<h3 id="index"><a href="#index" class="headerlink" title="index"></a>index</h3><blockquote>
+<p>SELECT key_part1, key_part2, key_part3 FROM single_table WHERE key_part2 = ‘abc’;</p>
+<p>key_part2 没有索引, 但是可以通过遍历 key_part1_key_part2_key_part_3 来匹配结果, 这样的方式要比全表扫表成本小很多, 因此采用二级索引遍历的方式叫做 index</p>
+</blockquote>
+<h3 id="all"><a href="#all" class="headerlink" title="all"></a>all</h3><blockquote>
+<p>全表扫描</p>
+</blockquote>
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><blockquote>
+<p>select * from table where a = ‘’ or b = ‘’<br>OR 只有 a 和 b 都有索引, 并且是等值查询时, 才会使用 UNION</p>
+</blockquote>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p><a target="_blank" rel="noopener" href="https://juejin.im/book/6844733769996304392/section/6844733770046668814">MySQL 是怎样运行的：从根儿上理解 MySQL(B+树索引)</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.im/book/6844733769996304392/section/6844733770046636045">MySQL 是怎样运行的：从根儿上理解 MySQL(B+树索引的使用)</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/">中间件</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/MySQL/">MySQL</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Mysql/">Mysql</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/02/16/Kafka-%E7%9F%A5%E8%AF%86%E6%B1%87%E6%80%BB/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Kafka 知识汇总</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/01/29/%E4%BB%8E%E6%A0%B9%E5%84%BF%E4%B8%8A%E7%90%86%E8%A7%A3-MySQL-%E7%BC%93%E5%86%B2%E6%B1%A0-log/">
+                        <span class="hidden-mobile">从根儿上理解 MySQL - 缓冲池 & log</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":200})
+    NProgress.start()
+    document.addEventListener('DOMContentLoaded', function() {
+      window.NProgress && window.NProgress.inc();
+    })
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.12.0/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

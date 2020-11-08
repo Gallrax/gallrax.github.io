@@ -1,0 +1,561 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="郑州大学 2017 级软件开发(Java)方向本科毕业. 目前就职于阿里巴巴, 担任高级开发工程师">
+  <meta name="author" content="Gallrax">
+  <meta name="keywords" content="">
+  <title>从根儿上理解 MySQL - 缓冲池 &amp; log - Gallrax&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":"footer","baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Gallrax's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="从根儿上理解 MySQL - 缓冲池 & log">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-01-29 22:02" pubdate>
+        January 29, 2020 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      14
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">从根儿上理解 MySQL - 缓冲池 &amp; log</h1>
+            
+            <div class="markdown-body">
+              <h2 id="Buffer-Pool"><a href="#Buffer-Pool" class="headerlink" title="Buffer Pool"></a>Buffer Pool</h2><blockquote>
+<p>MySQL 在获取数据时, 是以页为单位. 每次读取一个页的数据放在内存中, 内存的哪里, 其实就是 Buffer Pool.<br>我们对页的所有处理都是在内存中处理, 至于刷盘时机, 在后续讲解中</p>
+<p>Buffer Pool 是 MySQL 启动是申请的一块连续内存, 默认 128M, 最小为 5M</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki44uhzdxj31jq0isdhi.jpg" srcset="/img/loading.gif" alt="image-20200204182512548"></p>
+<h3 id="free链表"><a href="#free链表" class="headerlink" title="free链表"></a>free链表</h3><blockquote>
+<p>free 链表是把所有空闲的缓存页对应的控制块作为一个节点放到一个链表中, 记录哪些页是可用的</p>
+<p>缓存页的 key 为: 表空间号 + 页号</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki44xaguyj31e10u0n0f.jpg" srcset="/img/loading.gif" alt="image-20200204182629486"></p>
+<h3 id="flush链表"><a href="#flush链表" class="headerlink" title="flush链表"></a>flush链表</h3><blockquote>
+<p>如果修改了页, 此时内存中的页和磁盘的页就会不一致.</p>
+<p>如果也发生修改就刷新到磁盘, 就会导致效率特别低下, 那么最好的方式就是一个链表管理发生修改的页, 在触发某种条件时刷新到磁盘. 这个链表就是 flush 链表</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki450nnyuj31f90u0tc6.jpg" srcset="/img/loading.gif" alt="image-20200204183017095"></p>
+<h3 id="淘汰机制"><a href="#淘汰机制" class="headerlink" title="淘汰机制"></a>淘汰机制</h3><blockquote>
+<p>我们 Buffer Pool 是有大小限制的. 但是每当我们读取页的时候, 就会把页加载进来. 一是很容易就撑满, 二是我们之所以设计 Buffer Pool 的原因就是更了更高效率的读取页, 充当缓存, 如果命中率很低, 那就没有太大的必要去维护 Buffer Pool. 那么 MySQL 是怎么提高命中率的和淘汰数据</p>
+<p>淘汰数据是采用 LRU 列表</p>
+<p>提高命中率是使用冷热数据, 冷数据为 young 区域, 热数据为 old 区域<br>那么对于全表扫描这种需要加载全部页的如果知道这些数据不应该放到缓存中呢?</p>
+<p>在对某个处在<code>old</code>区域的缓存页进行第一次访问时就在它对应的控制块中记录下来这个访问时间，如果后续的访问时间与第一次访问的时间在某个时间间隔内(默认为 1s)，那么该页面就不会被从old区域移动到young区域的头部，否则将它移动到young区域的头部.</p>
+<p>那么也就是说全表扫描拉取的也都是放在 young 区, 不会影响热数据, 因此并不会影响命中率</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki454ry9yj31ou0pitbv.jpg" srcset="/img/loading.gif" alt="image-20200204185448144"></p>
+<h3 id="刷盘时机"><a href="#刷盘时机" class="headerlink" title="刷盘时机"></a>刷盘时机</h3><blockquote>
+<ol>
+<li>后台线程定时刷新</li>
+<li>参考 redo log</li>
+</ol>
+</blockquote>
+<h2 id="redo-log"><a href="#redo-log" class="headerlink" title="redo log"></a>redo log</h2><blockquote>
+<p>redo log 保证了 ACID 的 Durability (持久性)</p>
+<p>MySQL 操作的基本单位是页, 如果只是一个很小的操作, 但是将一整个页的数据刷新到磁盘, 没必要. 如果通过记录修改内容日志, 刷新到磁盘, 效率会更高, 这个日志就是 redo log</p>
+<p>页与页之间并不连续, 也就是随机写, 但是 redo log 是连续追加的, 性能很快</p>
+<p>对于简单的操作, 可能只需要修改一个页中的一条数据<br>对于复杂的操作, 可能发生页分裂, 页拷贝和对索引的处理</p>
+<p>mini transaction mtr: 对于复杂的操作, 以组的方式写入 redo log(一种特殊的类型, 尾部有校验)</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki4581srkj31ii0e0ab2.jpg" srcset="/img/loading.gif" alt="image-20200204191546073"></p>
+<h3 id="redo-log-页"><a href="#redo-log-页" class="headerlink" title="redo log 页"></a>redo log 页</h3><blockquote>
+<p>redo log 页又称为 redo log block</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki45axw7qj31je0suq6e.jpg" srcset="/img/loading.gif" alt="image-20200204192255899"></p>
+<h3 id="redo-log-缓冲区"><a href="#redo-log-缓冲区" class="headerlink" title="redo log 缓冲区"></a>redo log 缓冲区</h3><blockquote>
+<p>InnoDB 为了解决磁盘慢引入了 Buffer Pool, 同样 redo log 也有缓冲区</p>
+<p>先写入 redo log 缓冲区, 然后根据刷盘时机写入 redo log</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki45dtbukj31j80pgacy.jpg" srcset="/img/loading.gif" alt="image-20200204192440144"></p>
+<h3 id="刷盘时机-1"><a href="#刷盘时机-1" class="headerlink" title="刷盘时机"></a>刷盘时机</h3><blockquote>
+<ol>
+<li><code>log buffer</code>空间不足时</li>
+<li>事务提交时</li>
+<li>后台线程不停的刷 (平均一秒)</li>
+<li>正常关闭服务器时</li>
+<li>checkpoint</li>
+</ol>
+</blockquote>
+<h3 id="日志文件组"><a href="#日志文件组" class="headerlink" title="日志文件组"></a>日志文件组</h3><p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki45hi9l7j31hi0sm0v2.jpg" srcset="/img/loading.gif" alt="image-20200204192810689"></p>
+<h3 id="flushed-to-disk-lsn"><a href="#flushed-to-disk-lsn" class="headerlink" title="flushed_to_disk_lsn"></a>flushed_to_disk_lsn</h3><blockquote>
+<p>lsn: Log Sequeue Number, 记录已经写入的<code>redo</code>日志量. lsn 增加是以实际写入的日质量来增加</p>
+<p>buf_free的位置为写入到 redo log buffer的偏移量(即为 lsn)</p>
+<p>buf_next_to_write 的位置为实际已经刷新到磁盘的偏移量</p>
+<p>如果两个值相同, 则说明所有的 redo log 都已经刷新到磁盘</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki45jtmlzj319g0mojt2.jpg" srcset="/img/loading.gif" alt="image-20200204193527217"></p>
+<h3 id="flush链表中的LSN"><a href="#flush链表中的LSN" class="headerlink" title="flush链表中的LSN"></a>flush链表中的LSN</h3><blockquote>
+<p>我们知道一个<code>mtr</code>代表一次对底层页面的原子访问，在访问过程中可能会产生一组不可分割的<code>redo</code>日志，在<code>mtr</code>结束时，会把这一组<code>redo</code>日志写入到<code>log buffer</code>中。除此之外，在<code>mtr</code>结束时还有一件非常重要的事情要做，就是把在mtr执行过程中可能修改过的页面加入到Buffer Pool的flush链表</p>
+</blockquote>
+<h3 id="checkpoint"><a href="#checkpoint" class="headerlink" title="checkpoint"></a>checkpoint</h3><blockquote>
+<p>上面我们已经记录了, redo log buffer写到的位置, redo log 写到磁盘的位置. 同理 redo log 写到磁盘之前的位置已经没有用了, 但是我们不能删除, 为什么? 因为我们只是把 redo log 刷新到磁盘, 但是页还没有刷新, 需要等到 flush 链表该页刷新到磁盘之后, 才能删除, 换句话说就是被覆盖. 那么这个可以被覆盖的位置就是 checkpoint</p>
+</blockquote>
+<h3 id="崩溃恢复"><a href="#崩溃恢复" class="headerlink" title="崩溃恢复"></a>崩溃恢复</h3><blockquote>
+<p>综上所述, 我们系统崩溃时, checkpoint 之前的页都已经刷新到磁盘的, 对于 checkpoint 之后的虽然 redo log 刷新到磁盘, 但是页不一定刷新到磁盘. 如何判断是否刷新到磁盘</p>
+<p>恢复的起点: 最新的 checkpoint </p>
+<p>恢复的终点: log block header未被填满的 block</p>
+</blockquote>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/">中间件</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/MySQL/">MySQL</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Mysql/">Mysql</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/01/30/%E4%BB%8E%E6%A0%B9%E5%84%BF%E4%B8%8A%E7%90%86%E8%A7%A3-MySQL-%E7%B4%A2%E5%BC%95%E6%80%BB%E7%BB%93/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">从根儿上理解 MySQL - 索引总结</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/01/28/%E4%BB%8E%E6%A0%B9%E5%84%BF%E4%B8%8A%E7%90%86%E8%A7%A3-MySQL-%E9%A1%B5%E6%80%BB%E7%BB%93/">
+                        <span class="hidden-mobile">从根儿上理解 MySQL - 页总结</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":200})
+    NProgress.start()
+    document.addEventListener('DOMContentLoaded', function() {
+      window.NProgress && window.NProgress.inc();
+    })
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.12.0/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,665 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="郑州大学 2017 级软件开发(Java)方向本科毕业. 目前就职于阿里巴巴, 担任高级开发工程师">
+  <meta name="author" content="Gallrax">
+  <meta name="keywords" content="">
+  <title>Spring事务部分源码解析(二) - 事务管理器 - Gallrax&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":"footer","baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Gallrax's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Spring事务部分源码解析(二) - 事务管理器">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2019-09-16 21:44" pubdate>
+        September 16, 2019 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      15
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Spring事务部分源码解析(二) - 事务管理器</h1>
+            
+            <div class="markdown-body">
+              <blockquote>
+<p>按照上篇流程详解</p>
+</blockquote>
+<h3 id="获取方法的Transaction配置"><a href="#获取方法的Transaction配置" class="headerlink" title="获取方法的Transaction配置"></a>获取方法的Transaction配置</h3><blockquote>
+<p> 按照上篇对于几个实体类的描述,可以发现注解@Transactional的属性的字段和TransactionDefinition大致比较相似,但又不完全一致.</p>
+</blockquote>
+<p>从@Transactional开始讲起</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki3m4fm1bj30f00ekdgq.jpg" srcset="/img/loading.gif"></p>
+<p>这个显然很常见,就是我们平时需要事务时用到的注解.可是spring如何去解析?我们看一下使用到这个注解的地方,排除掉在test和comment下的使用.</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki3m2gwpij30iv07jdgi.jpg" srcset="/img/loading.gif"></p>
+<p>进入方法</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki3m0liy5j30v70nxwje.jpg" srcset="/img/loading.gif"></p>
+<p>TransactionAttribute正是上篇文章中TransactionDefinition的子类</p>
+<p>返回的RuleBasedTransactionAttribute我们看一下他的继承图</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki3lypwk2j30k009cjry.jpg" srcset="/img/loading.gif"></p>
+<p>我们打开源码看一下RuleBasedTransactionAttribute和父类DefaultTransactionAttribute晚上寻找发现,事务常规的设置是继承DefaultTransactionDefinition来注入,rollback相关则实现TransactionAttribute.这就是我们上篇提到TransactionAttribute和TransactionDefinition责任的划分</p>
+<p>我们网上追溯,调用方</p>
+<blockquote>
+<p>AnnotationTransactionAttributeSource.findTransactionAttribute()</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki3lx84rnj30lf0gsmzx.jpg" srcset="/img/loading.gif"></p>
+<blockquote>
+<p> AbstractFallbackTransactionAttributeSource.computeTransactionAttribute</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki3lwqa9rj30ml0m7n0n.jpg" srcset="/img/loading.gif"></p>
+<blockquote>
+<p>AnnotationTransactionAttributeSource.getTransactionAttribute()</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki3lt4fiyj30qk0kyjum.jpg" srcset="/img/loading.gif"></p>
+<blockquote>
+<p>TransactionAspectSupport.invokeWithinTransaction</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki3lrq55zj30qj0fptb8.jpg" srcset="/img/loading.gif"></p>
+<blockquote>
+<p>获取Transaction配置流程:根据方法和类确定唯一key,从缓存中获取.如果获取不到则通过TransactionAnnotationParser解析方法来获取事务属性.并放置缓存中</p>
+</blockquote>
+<h3 id="获取事务管理器-PlatformTransactionManager"><a href="#获取事务管理器-PlatformTransactionManager" class="headerlink" title="获取事务管理器(PlatformTransactionManager)"></a>获取事务管理器(PlatformTransactionManager)</h3><blockquote>
+<p>接口定义方法(可以发现极其精简干净)</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki3lpdfbpj30f00ekdg9.jpg" srcset="/img/loading.gif"></p>
+<blockquote>
+<p>抽象子类AbstractPlatformTransactionManager, 可以发现多了很多方法.但并没有实现,用于子类继承处理</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki3lnhva1j30mq0sun3d.jpg" srcset="/img/loading.gif"></p>
+<blockquote>
+<p>子类</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki3llm0hfj312j04ign8.jpg" srcset="/img/loading.gif"></p>
+<blockquote>
+<p>我们可以关注一下DataSourceTransactionManager和RabbitTransactionManager,是抽象类的一个实现.DataSourceTransactionManager的具体实现是通过Java提供的接口实现.而RabbitTransactionManager则是自己实现(毕竟已经属于定制了)</p>
+</blockquote>
+<pre><code class="hljs less">此处可以回顾<span class="hljs-selector-tag">TransactionAspectSupport</span><span class="hljs-selector-class">.invokeWithinTransaction</span>(), 开启事务后上下文通过<span class="hljs-selector-tag">TransactionInfo</span>传递信息. 每当设计事务提交或回滚等相关,都是<span class="hljs-selector-tag">txInfo</span><span class="hljs-selector-class">.getTransactionManager</span>()<span class="hljs-selector-class">.commit</span>()/<span class="hljs-selector-tag">rollback</span>()</code></pre>
+
+<h4 id="AbstractPlatformTransactionManager-rollback"><a href="#AbstractPlatformTransactionManager-rollback" class="headerlink" title="AbstractPlatformTransactionManager.rollback()"></a>AbstractPlatformTransactionManager.rollback()</h4><p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki3ljlt87j30qd04w3z5.jpg" srcset="/img/loading.gif"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki3lhhoc5j30s90p4tcj.jpg" srcset="/img/loading.gif"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki3lfigu6j30i00480ta.jpg" srcset="/img/loading.gif"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki3le0s5cj30pc05fwf6.jpg" srcset="/img/loading.gif"></p>
+<blockquote>
+<p>大致说一下回滚流程.</p>
+<ol>
+<li>触发TransactionSynchronization完成前事件</li>
+<li>事务具体实现的真正回滚</li>
+<li>触发TransactionSynchronization完成后事件</li>
+<li>标记完成,执行后续清理操作</li>
+</ol>
+</blockquote>
+<pre><code class="hljs groovy"><span class="hljs-attr">ps:</span> 如果一个方法需要执行多个事务如何处理?(剧透一下:TransactionSynchronization)</code></pre>
+
+<h4 id="AbstractPlatformTransactionManager-commit"><a href="#AbstractPlatformTransactionManager-commit" class="headerlink" title="AbstractPlatformTransactionManager.commit()"></a>AbstractPlatformTransactionManager.commit()</h4><p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki3lc5x3zj30qh0fzaco.jpg" srcset="/img/loading.gif"></p>
+<blockquote>
+<p>从图中看出在某种情况会执行回滚操作.最开始看到这里的时候也迷过.后来在一次事务测试时,同一个事务,方法嵌套时,内部方法抛异常,但是外部方法捕获正常处理.一部分觉得内部回滚外部不回滚.实际结果是内外都会回滚和是否捕获并没有关系. 可以回顾一下processRollback()中的status.isLocalRollbackOnly() || isGlobalRollbackOnParticipationFailure()判断</p>
+<pre><code class="hljs angelscript"><span class="hljs-keyword">private</span> <span class="hljs-built_in">bool</span>ean globalRollbackOnParticipationFailure = <span class="hljs-literal">true</span>;</code></pre>
+
+<p>默认为true,也就是说在非特意设置的情况下会执行doSetRollbackOnly(status);将rollbackOnly设置为true.在也就是说当内部内部方法发生异常之后会上下文TransactionStatus.rollbackOnly为true,执行的便是processRollback().这也就解释为什么内部方法捕获之后依旧会回滚的原因/</p>
+<pre><code class="hljs erlang-repl">ps: 本身在同一个事务,内部方法发生异常执行回滚,理应是整个事务回滚而不是部分回滚.以为捕获异常处理之后再提交这种思想本身就不对噢!!!</code></pre>
+</blockquote>
+<p>如果没有发生异常.则执行正常提交流程</p>
+<pre><code class="hljs aspectj"><span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">processCommit</span><span class="hljs-params">(DefaultTransactionStatus status)</span> <span class="hljs-keyword">throws</span> TransactionException </span>&#123;
+		<span class="hljs-keyword">try</span> &#123;
+			<span class="hljs-keyword">boolean</span> beforeCompletionInvoked = <span class="hljs-keyword">false</span>;
+			<span class="hljs-keyword">try</span> &#123;
+				prepareForCommit(status);
+				triggerBeforeCommit(status);
+				triggerBeforeCompletion(status);
+				beforeCompletionInvoked = <span class="hljs-keyword">true</span>;
+				<span class="hljs-keyword">boolean</span> globalRollbackOnly = <span class="hljs-keyword">false</span>;
+				<span class="hljs-keyword">if</span> (status.isNewTransaction() || isFailEarlyOnGlobalRollbackOnly()) &#123;
+					globalRollbackOnly = status.isGlobalRollbackOnly();
+				&#125;
+				<span class="hljs-keyword">if</span> (status.hasSavepoint()) &#123;
+					<span class="hljs-keyword">if</span> (status.isDebug()) &#123;
+						logger.debug(<span class="hljs-string">&quot;Releasing transaction savepoint&quot;</span>);
+					&#125;
+					status.releaseHeldSavepoint();
+				&#125;
+				<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (status.isNewTransaction()) &#123;
+					<span class="hljs-keyword">if</span> (status.isDebug()) &#123;
+						logger.debug(<span class="hljs-string">&quot;Initiating transaction commit&quot;</span>);
+					&#125;
+					doCommit(status);
+				&#125;
+				<span class="hljs-comment">// Throw UnexpectedRollbackException if we have a global rollback-only</span>
+				<span class="hljs-comment">// marker but still didn&#x27;t get a corresponding exception from commit.</span>
+				<span class="hljs-keyword">if</span> (globalRollbackOnly) &#123;
+					<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> UnexpectedRollbackException(
+							<span class="hljs-string">&quot;Transaction silently rolled back because it has been marked as rollback-only&quot;</span>);
+				&#125;
+			&#125;
+			<span class="hljs-keyword">catch</span> (UnexpectedRollbackException ex) &#123;
+				<span class="hljs-comment">// can only be caused by doCommit</span>
+				triggerAfterCompletion(status, TransactionSynchronization.STATUS_ROLLED_BACK);
+				<span class="hljs-keyword">throw</span> ex;
+			&#125;
+			<span class="hljs-keyword">catch</span> (TransactionException ex) &#123;
+				<span class="hljs-comment">// can only be caused by doCommit</span>
+				<span class="hljs-keyword">if</span> (isRollbackOnCommitFailure()) &#123;
+					doRollbackOnCommitException(status, ex);
+				&#125;
+				<span class="hljs-keyword">else</span> &#123;
+					triggerAfterCompletion(status, TransactionSynchronization.STATUS_UNKNOWN);
+				&#125;
+				<span class="hljs-keyword">throw</span> ex;
+			&#125;
+			<span class="hljs-keyword">catch</span> (RuntimeException ex) &#123;
+				<span class="hljs-keyword">if</span> (!beforeCompletionInvoked) &#123;
+					triggerBeforeCompletion(status);
+				&#125;
+				doRollbackOnCommitException(status, ex);
+				<span class="hljs-keyword">throw</span> ex;
+			&#125;
+			<span class="hljs-keyword">catch</span> (Error err) &#123;
+				<span class="hljs-keyword">if</span> (!beforeCompletionInvoked) &#123;
+					triggerBeforeCompletion(status);
+				&#125;
+				doRollbackOnCommitException(status, err);
+				<span class="hljs-keyword">throw</span> err;
+			&#125;
+
+			<span class="hljs-comment">// Trigger afterCommit callbacks, with an exception thrown there</span>
+			<span class="hljs-comment">// propagated to callers but the transaction still considered as committed.</span>
+			<span class="hljs-keyword">try</span> &#123;
+				triggerAfterCommit(status);
+			&#125;
+			<span class="hljs-keyword">finally</span> &#123;
+				triggerAfterCompletion(status, TransactionSynchronization.STATUS_COMMITTED);
+			&#125;
+
+		&#125;
+		<span class="hljs-keyword">finally</span> &#123;
+			cleanupAfterCompletion(status);
+		&#125;
+	&#125;</code></pre>
+
+<blockquote>
+<p>执行流程</p>
+<ol>
+<li>执行预提交处理</li>
+<li>触发提交前事件</li>
+<li>触发完成事件</li>
+<li>提交</li>
+<li>触发提交事件</li>
+<li>触发提交完成事件</li>
+<li>清除状态</li>
+</ol>
+</blockquote>
+<pre><code class="hljs gcode">个人理解的第一步是预留分布式事务接口. 而后续的触发时间则是扩展处理<span class="hljs-comment">(后续讲TransactionSynchronization会聊到)</span>,不过这个扩展处理划分的也太细了</code></pre>
+
+<h4 id="AbstractPlatformTransactionManager-cleanupAfterCompletion"><a href="#AbstractPlatformTransactionManager-cleanupAfterCompletion" class="headerlink" title="AbstractPlatformTransactionManager.cleanupAfterCompletion()"></a>AbstractPlatformTransactionManager.cleanupAfterCompletion()</h4><p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gki3l8ef3xj30mh089gmu.jpg" srcset="/img/loading.gif"></p>
+<blockquote>
+<p>其实这里也没什聊的,打开方法的源码基本能发现都是清除上下文状态.也代表事务的结束</p>
+</blockquote>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><blockquote>
+<ol>
+<li> AbstractPlatformTransactionManager实现了核心的逻辑,每一个核心的逻辑的具体实现又留给各个厂商实现.这一部分挺像AbstractQueuedSynchronizer的.设计挺好的.扩展性好,具体的逻辑又帮你实现好.只需要继承定制实现自己非常简单的逻辑就好</li>
+<li>事务嵌套情况通过线程上线文来处理</li>
+<li>多事务通过触发事件处理(后续讲TransactionSynchronization会聊到),扩展性真的挺好</li>
+</ol>
+</blockquote>
+<pre><code class="hljs plain">下一篇讲触发事件处理.相关类TransactionSynchronizationManager, TransactionSynchronizationUtils, TransactionSynchronization</code></pre>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%BA%90%E7%A0%81/">源码</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%BA%90%E7%A0%81/Spring/">Spring</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Spring/">Spring</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/09/17/Spring%E4%BA%8B%E5%8A%A1%E9%83%A8%E5%88%86%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E4%B8%89-TransactionSynchronization/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Spring事务部分源码解析(三) - TransactionSynchronization</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/09/15/Spring%E4%BA%8B%E5%8A%A1%E9%83%A8%E5%88%86%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-%E4%B8%80/">
+                        <span class="hidden-mobile">Spring事务部分源码解析(一)</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":200})
+    NProgress.start()
+    document.addEventListener('DOMContentLoaded', function() {
+      window.NProgress && window.NProgress.inc();
+    })
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.12.0/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

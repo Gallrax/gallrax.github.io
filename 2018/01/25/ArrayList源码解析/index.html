@@ -1,0 +1,840 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="郑州大学 2017 级软件开发(Java)方向本科毕业. 目前就职于阿里巴巴, 担任高级开发工程师">
+  <meta name="author" content="Gallrax">
+  <meta name="keywords" content="">
+  <title>ArrayList源码解析 - Gallrax&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":"footer","baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Gallrax's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="ArrayList源码解析">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-01-25 20:58" pubdate>
+        January 25, 2018 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.8k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      38
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">ArrayList源码解析</h1>
+            
+            <div class="markdown-body">
+              <p>此源码分析JDK版本为1.7，只是简单分析，算是个人看源码的一点小总结，随意性比较强，专业的还需百度。<br>先简单介绍一下ArrayList，ArrayList为线性数据结构，时间复杂度为O(1)，内部存储为数组。以下所有表达ArrayList的内容统称为数组。<br>ps:ArrayList和Vector的区别就是ArrayList是线程不安全的，Vector是线程安全的。Vector底层核心方法都为synchronized。<br>#简介</p>
+<pre><code class="hljs scala">public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ArrayList&lt;E&gt;</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">AbstractList&lt;E&gt;</span></span>
+<span class="hljs-class">        <span class="hljs-title">implements</span> <span class="hljs-title">List&lt;E&gt;</span>, <span class="hljs-title">RandomAccess</span>, <span class="hljs-title">Cloneable</span>, <span class="hljs-title">java</span>.<span class="hljs-title">io</span>.<span class="hljs-title">Serializable</span></span></code></pre>
+<p>#属性</p>
+<pre><code class="hljs processing"><span class="hljs-comment">//默认数组大小</span>
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-built_in">int</span> DEFAULT_CAPACITY = <span class="hljs-number">10</span>;
+<span class="hljs-comment">//默认空数组</span>
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">Object</span>[] EMPTY_ELEMENTDATA = &#123;&#125;;
+<span class="hljs-comment">//数组(ArrayList中的数据就放在此数组中)</span>
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">transient</span> <span class="hljs-keyword">Object</span>[] elementData;
+<span class="hljs-comment">//数组真实数据的长度(与数组的长度不一样)</span>
+<span class="hljs-keyword">private</span> <span class="hljs-built_in">int</span> <span class="hljs-built_in">size</span>;
+<span class="hljs-comment">//数组最大大小常量(Integer.MAX_VALUE - 8原因是尝试分配较大的数组可能会导致OutOfMemoryError)</span>
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-built_in">int</span> MAX_ARRAY_SIZE = Integer.MAX_VALUE - <span class="hljs-number">8</span>;
+<span class="hljs-comment">//修改次数(对于线程安全至关重要，在Iterator中会解释)</span>
+<span class="hljs-keyword">protected</span> <span class="hljs-keyword">transient</span> <span class="hljs-built_in">int</span> modCount = <span class="hljs-number">0</span>;</code></pre>
+<p>#构造方法</p>
+<pre><code class="hljs typescript"><span class="hljs-comment">//无初始化长度的构造方法</span>
+<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-title">ArrayList</span>(<span class="hljs-params"></span>)</span> &#123;
+    <span class="hljs-built_in">super</span>();
+    <span class="hljs-comment">//将属性中的空数组赋给elementData</span>
+    <span class="hljs-built_in">this</span>.elementData = EMPTY_ELEMENTDATA;
+&#125;
+<span class="hljs-comment">//初始化长度的构造方法</span>
+<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-title">ArrayList</span>(<span class="hljs-params">int initialCapacity</span>)</span> &#123;
+    <span class="hljs-built_in">super</span>();
+    <span class="hljs-comment">//当初始化长度小于0则抛出异常</span>
+    <span class="hljs-keyword">if</span> (initialCapacity &lt; <span class="hljs-number">0</span>)
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalArgumentException(<span class="hljs-string">&quot;Illegal Capacity: &quot;</span>+
+                                               initialCapacity);
+    <span class="hljs-comment">//new该长度的Object数组给与elementData</span>
+    <span class="hljs-built_in">this</span>.elementData = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Object</span>[initialCapacity];
+&#125;
+<span class="hljs-comment">//根据父类Collection类型的对象进行构造的构造方法</span>
+<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-title">ArrayList</span>(<span class="hljs-params">Collection&lt;? <span class="hljs-keyword">extends</span> E&gt; c</span>)</span> &#123;
+    <span class="hljs-comment">//不同的Collection的实现类会有不同的实现，但最终结果都是转为Object数组</span>
+    elementData = c.toArray();
+    size = elementData.length;
+    <span class="hljs-comment">// c.toArray might (incorrectly) not return Object[] (see 6260652)</span>
+    <span class="hljs-keyword">if</span> (elementData.getClass() != <span class="hljs-built_in">Object</span>[].class)
+    <span class="hljs-comment">//目前未知(属性定义为Object，判断不等于因此觉得不太理解，而且debug各种类型都是直接跳过此方法，暂时觉得此判断不会进入)</span>
+    elementData = Arrays.copyOf(elementData, size, <span class="hljs-built_in">Object</span>[].class);
+&#125;</code></pre>
+<p>#方法</p>
+<pre><code class="hljs arduino"><span class="hljs-comment">//返回数组大小</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">size</span><span class="hljs-params">()</span> </span>&#123;
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">size</span>;
+&#125;
+<span class="hljs-comment">//是否为空</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">isEmpty</span><span class="hljs-params">()</span> </span>&#123;
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">size</span> == <span class="hljs-number">0</span>;
+&#125;
+<span class="hljs-comment">//获取该值的下标(无返回-1)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">indexOf</span><span class="hljs-params">(Object o)</span> </span>&#123;
+    <span class="hljs-keyword">if</span> (o == null) &#123;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-built_in">size</span>; i++)
+            <span class="hljs-keyword">if</span> (elementData[i]==null)
+                <span class="hljs-keyword">return</span> i;
+    &#125; <span class="hljs-keyword">else</span> &#123;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-built_in">size</span>; i++)
+            <span class="hljs-comment">//可能会有人说Object默认的equals()实现是==，觉得此方法块没意义，但实际调用的为真实类型的equals()方法</span>
+            <span class="hljs-keyword">if</span> (o.equals(elementData[i]))
+                <span class="hljs-keyword">return</span> i;
+    &#125;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+&#125;
+<span class="hljs-comment">//获取最后该值的下标(无返回-1)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">lastIndexOf</span><span class="hljs-params">(Object o)</span> </span>&#123;
+    <span class="hljs-keyword">if</span> (o == null) &#123;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-built_in">size</span><span class="hljs-number">-1</span>; i &gt;= <span class="hljs-number">0</span>; i--)
+            <span class="hljs-keyword">if</span> (elementData[i]==null)
+                <span class="hljs-keyword">return</span> i;
+    &#125; <span class="hljs-keyword">else</span> &#123;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-built_in">size</span><span class="hljs-number">-1</span>; i &gt;= <span class="hljs-number">0</span>; i--)
+        	<span class="hljs-comment">//同上</span>
+            <span class="hljs-keyword">if</span> (o.equals(elementData[i]))
+                <span class="hljs-keyword">return</span> i;
+    &#125;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+&#125;
+<span class="hljs-comment">//是否包含</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">contains</span><span class="hljs-params">(Object o)</span> </span>&#123;
+    <span class="hljs-keyword">return</span> indexOf(o) &gt;= <span class="hljs-number">0</span>;
+&#125;
+<span class="hljs-comment">//返回数组(并不是返回Object数组，而是真实类型的数组)</span>
+<span class="hljs-keyword">public</span> Object[] toArray() &#123;
+    <span class="hljs-comment">//查看copyOf源码会发现返回的是真实类型数组</span>
+    <span class="hljs-keyword">return</span> Arrays.copyOf(elementData, <span class="hljs-built_in">size</span>);
+&#125;
+<span class="hljs-comment">//当调用get()时会通过此方法返回值 (default，外部无法调用)</span>
+<span class="hljs-function">E <span class="hljs-title">elementData</span><span class="hljs-params">(<span class="hljs-keyword">int</span> index)</span> </span>&#123;
+    <span class="hljs-keyword">return</span> (E) elementData[index];
+&#125;
+<span class="hljs-comment">//检查传入的下标参数是否越界</span>
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">rangeCheck</span><span class="hljs-params">(<span class="hljs-keyword">int</span> index)</span> </span>&#123;
+    <span class="hljs-keyword">if</span> (index &gt;= <span class="hljs-built_in">size</span>)
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IndexOutOfBoundsException(outOfBoundsMsg(index));
+&#125;
+<span class="hljs-comment">//返回该下标所对应的值</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> E <span class="hljs-title">get</span><span class="hljs-params">(<span class="hljs-keyword">int</span> index)</span> </span>&#123;
+    <span class="hljs-comment">//检查下标参数是否越界</span>
+    rangeCheck(index);
+
+    <span class="hljs-comment">//根据下标返回值</span>
+    <span class="hljs-keyword">return</span> elementData(index);
+&#125;
+<span class="hljs-comment">//设置下标和值</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> E <span class="hljs-title">set</span><span class="hljs-params">(<span class="hljs-keyword">int</span> index, E element)</span> </span>&#123;
+    <span class="hljs-comment">//检查下标参数是否越界</span>
+    rangeCheck(index);
+
+    <span class="hljs-comment">//获取该下标的值</span>
+    E oldValue = elementData(index);
+    <span class="hljs-comment">//为该下标赋新值</span>
+    elementData[index] = element;
+    <span class="hljs-comment">//返回旧值</span>
+    <span class="hljs-keyword">return</span> oldValue;
+&#125;
+<span class="hljs-comment">//扩容：第一步将传入的值与默认最小值进行对比</span>
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">ensureCapacityInternal</span><span class="hljs-params">(<span class="hljs-keyword">int</span> minCapacity)</span> </span>&#123;
+    <span class="hljs-keyword">if</span> (elementData == EMPTY_ELEMENTDATA) &#123;
+        <span class="hljs-comment">//最小为默认最小值</span>
+        minCapacity = Math.<span class="hljs-built_in">max</span>(DEFAULT_CAPACITY, minCapacity);
+    &#125;
+
+    <span class="hljs-comment">//扩容实现</span>
+    ensureExplicitCapacity(minCapacity);
+&#125;
+<span class="hljs-comment">//扩容：第二步将第一步的值与数组大小进行对比判断是否需要扩容</span>
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">ensureExplicitCapacity</span><span class="hljs-params">(<span class="hljs-keyword">int</span> minCapacity)</span> </span>&#123;
+    modCount++;
+
+    <span class="hljs-comment">// overflow-conscious code</span>
+    <span class="hljs-comment">//当传入的值大于数组长度时，进行扩容</span>
+    <span class="hljs-keyword">if</span> (minCapacity - elementData.length &gt; <span class="hljs-number">0</span>)
+        grow(minCapacity);
+&#125;
+<span class="hljs-comment">//扩容：扩容真正实现(默认情况下扩容之后的大小为当前数组长度+数组对2取余)</span>
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">grow</span><span class="hljs-params">(<span class="hljs-keyword">int</span> minCapacity)</span> </span>&#123;
+    <span class="hljs-comment">// overflow-conscious code</span>
+    <span class="hljs-keyword">int</span> oldCapacity = elementData.length;
+    <span class="hljs-comment">//定义变量为当前大小加一半取余</span>
+    <span class="hljs-keyword">int</span> newCapacity = oldCapacity + (oldCapacity &gt;&gt; <span class="hljs-number">1</span>);
+    <span class="hljs-comment">//如果变量小于传的参数，则新的数组大小为传入的参数</span>
+    <span class="hljs-keyword">if</span> (newCapacity - minCapacity &lt; <span class="hljs-number">0</span>)
+        newCapacity = minCapacity;
+    <span class="hljs-comment">//如果变量大于数组默认最大值则调用hugeCapacity()方法返回值</span>
+    <span class="hljs-keyword">if</span> (newCapacity - MAX_ARRAY_SIZE &gt; <span class="hljs-number">0</span>)
+        <span class="hljs-comment">//将新的数组大小与默认最大值进行对比</span>
+        newCapacity = hugeCapacity(minCapacity);
+    <span class="hljs-comment">// minCapacity is usually close to size, so this is a win:</span>
+    <span class="hljs-comment">//调用Arrays.copyOf()扩容</span>
+    elementData = Arrays.copyOf(elementData, newCapacity);
+&#125;
+tag:第一个判断:如果传入的值小于[数组大小加对二取余]则新的数组大小为传入的值，定义的新值为传入的值；如果不是则无操作。第二个判断:第一步运算厚的结果如果大于默认数组最大长度，则返回hugeCapacity()计算后的值；如果不是则无操作
+<span class="hljs-comment">//判断传的值是否大于默认数组最大长度，如果是则为Integer最大值；如果不是则为默认数组最大长度，返回可用大小</span>
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">hugeCapacity</span><span class="hljs-params">(<span class="hljs-keyword">int</span> minCapacity)</span> </span>&#123;
+    <span class="hljs-keyword">if</span> (minCapacity &lt; <span class="hljs-number">0</span>) <span class="hljs-comment">// overflow</span>
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> OutOfMemoryError();
+    <span class="hljs-keyword">return</span> (minCapacity &gt; MAX_ARRAY_SIZE) ?
+        Integer.MAX_VALUE :
+        MAX_ARRAY_SIZE;
+&#125;
+<span class="hljs-comment">//在数组中增加值</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">add</span><span class="hljs-params">(E e)</span> </span>&#123;
+    <span class="hljs-comment">//添加则会增加modCount</span>
+    ensureCapacityInternal(<span class="hljs-built_in">size</span> + <span class="hljs-number">1</span>);  <span class="hljs-comment">// Increments modCount!!</span>
+    elementData[<span class="hljs-built_in">size</span>++] = e;
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+&#125;
+<span class="hljs-comment">//为某个下标新增值</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">add</span><span class="hljs-params">(<span class="hljs-keyword">int</span> index, E element)</span> </span>&#123;
+    <span class="hljs-comment">//判断下标是否越界</span>
+    rangeCheckForAdd(index);
+
+    <span class="hljs-comment">//先扩容(防止index刚好为当前数组长度)</span>
+    ensureCapacityInternal(<span class="hljs-built_in">size</span> + <span class="hljs-number">1</span>);  <span class="hljs-comment">// Increments modCount!!</span>
+    <span class="hljs-comment">//将源数组index位置开始的数组复制到目标数组index+1后，复制的数量为size-index个</span>
+    System.arraycopy(elementData, index, elementData, index + <span class="hljs-number">1</span>,
+                     <span class="hljs-built_in">size</span> - index);
+    elementData[index] = element;
+    <span class="hljs-built_in">size</span>++;
+&#125;
+<span class="hljs-comment">//删除某下标对应的值</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> E <span class="hljs-title">remove</span><span class="hljs-params">(<span class="hljs-keyword">int</span> index)</span> </span>&#123;
+    <span class="hljs-comment">//判断下标是否越界</span>
+    rangeCheck(index);
+
+    <span class="hljs-comment">//增加修改次数</span>
+    modCount++;
+    <span class="hljs-comment">//获取旧值</span>
+    E oldValue = elementData(index);
+
+    <span class="hljs-comment">//判断删除该下标元素需要向前移动多少个位置</span>
+    <span class="hljs-keyword">int</span> numMoved = <span class="hljs-built_in">size</span> - index - <span class="hljs-number">1</span>;
+    <span class="hljs-comment">//如果当前下标不是最后一个元素，则将源数组index+1位置开始的数组复制到目标数组index后，复制的数量为numMoved个</span>
+    <span class="hljs-keyword">if</span> (numMoved &gt; <span class="hljs-number">0</span>)
+        System.arraycopy(elementData, index+<span class="hljs-number">1</span>, elementData, index,
+                         numMoved);
+    elementData[--<span class="hljs-built_in">size</span>] = null; <span class="hljs-comment">// clear to let GC do its work  //置空原尾部数据 不再强引用， 可以GC掉</span>
+
+    <span class="hljs-keyword">return</span> oldValue;
+&#125;
+<span class="hljs-comment">//根据下标删除值(不检查下标是否越界)</span>
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">fastRemove</span><span class="hljs-params">(<span class="hljs-keyword">int</span> index)</span> </span>&#123;
+    <span class="hljs-comment">//增加修改次数</span>
+    modCount++;
+    <span class="hljs-keyword">int</span> numMoved = <span class="hljs-built_in">size</span> - index - <span class="hljs-number">1</span>;
+    <span class="hljs-keyword">if</span> (numMoved &gt; <span class="hljs-number">0</span>)
+        System.arraycopy(elementData, index+<span class="hljs-number">1</span>, elementData, index,
+                         numMoved);
+    elementData[--<span class="hljs-built_in">size</span>] = null; <span class="hljs-comment">// clear to let GC do its work  //置空原尾部数据 不再强引用， 可以GC掉</span>
+&#125;
+<span class="hljs-comment">//删除值(只删除第一个)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">remove</span><span class="hljs-params">(Object o)</span> </span>&#123;
+    <span class="hljs-keyword">if</span> (o == null) &#123;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> index = <span class="hljs-number">0</span>; index &lt; <span class="hljs-built_in">size</span>; index++)
+            <span class="hljs-keyword">if</span> (elementData[index] == null) &#123;
+                <span class="hljs-comment">//调用不检查下标删除值</span>
+                fastRemove(index);
+                <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+            &#125;
+    &#125; <span class="hljs-keyword">else</span> &#123;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> index = <span class="hljs-number">0</span>; index &lt; <span class="hljs-built_in">size</span>; index++)
+            <span class="hljs-keyword">if</span> (o.equals(elementData[index])) &#123;
+                <span class="hljs-comment">//调用不检查下标删除值</span>
+                fastRemove(index);
+                <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+        	&#125;
+    &#125;
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+&#125;
+<span class="hljs-comment">//清空数组</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">clear</span><span class="hljs-params">()</span> </span>&#123;
+    <span class="hljs-comment">//增加修改次数</span>
+    modCount++;
+
+    <span class="hljs-comment">// clear to let GC do its work  //置空原尾部数据 不再强引用， 可以GC掉</span>
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-built_in">size</span>; i++)
+        elementData[i] = null;
+
+    <span class="hljs-comment">//数组真实长度归零</span>
+    <span class="hljs-built_in">size</span> = <span class="hljs-number">0</span>;
+&#125;
+<span class="hljs-comment">//将Collection增加到当前数组之后</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">addAll</span><span class="hljs-params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;
+    Object[] a = c.toArray();
+    <span class="hljs-keyword">int</span> numNew = a.length;
+    <span class="hljs-comment">//扩容大小为当前数组长度加参数数组长度</span>
+    ensureCapacityInternal(<span class="hljs-built_in">size</span> + numNew);  <span class="hljs-comment">// Increments modCount</span>
+    System.arraycopy(a, <span class="hljs-number">0</span>, elementData, <span class="hljs-built_in">size</span>, numNew);
+    <span class="hljs-comment">//设置真实数组大小长度</span>
+    <span class="hljs-built_in">size</span> += numNew;
+    <span class="hljs-keyword">return</span> numNew != <span class="hljs-number">0</span>;
+&#125;
+<span class="hljs-comment">//判断增加下标是否越界(与判断是否越界区别在于少了=size和增加了不小于0)</span>
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">rangeCheckForAdd</span><span class="hljs-params">(<span class="hljs-keyword">int</span> index)</span> </span>&#123;
+    <span class="hljs-keyword">if</span> (index &gt; <span class="hljs-built_in">size</span> || index &lt; <span class="hljs-number">0</span>)
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IndexOutOfBoundsException(outOfBoundsMsg(index));
+&#125;
+<span class="hljs-comment">//在下标后增加Collection</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">addAll</span><span class="hljs-params">(<span class="hljs-keyword">int</span> index, Collection&lt;? extends E&gt; c)</span> </span>&#123;
+    <span class="hljs-comment">//判断增加下标是否越界</span>
+    rangeCheckForAdd(index);
+
+    Object[] a = c.toArray();
+    <span class="hljs-keyword">int</span> numNew = a.length;
+    <span class="hljs-comment">//扩容大小为当前数组长度加参数数组长度</span>
+    ensureCapacityInternal(<span class="hljs-built_in">size</span> + numNew);  <span class="hljs-comment">// Increments modCount</span>
+
+    <span class="hljs-comment">//位移量</span>
+    <span class="hljs-keyword">int</span> numMoved = <span class="hljs-built_in">size</span> - index;
+    <span class="hljs-keyword">if</span> (numMoved &gt; <span class="hljs-number">0</span>)
+        <span class="hljs-comment">//将index之后的位移量numNoved空置出来</span>
+        System.arraycopy(elementData, index, elementData, index + numNew,
+                         numMoved);
+    <span class="hljs-comment">//将Collection的数组放置index之后index + numNew之前</span>
+    System.arraycopy(a, <span class="hljs-number">0</span>, elementData, index, numNew);
+    <span class="hljs-comment">//设置真实数组大小长度</span>
+    <span class="hljs-built_in">size</span> += numNew;
+    <span class="hljs-keyword">return</span> numNew != <span class="hljs-number">0</span>;
+&#125;
+<span class="hljs-comment">//删除指定区间内的数组内容(protected修饰，subList方法会调用，外部不可访问)</span>
+<span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">removeRange</span><span class="hljs-params">(<span class="hljs-keyword">int</span> fromIndex, <span class="hljs-keyword">int</span> toIndex)</span> </span>&#123;
+    <span class="hljs-comment">//增加修改次数</span>
+    modCount++;
+    <span class="hljs-comment">//计算位移量</span>
+    <span class="hljs-keyword">int</span> numMoved = <span class="hljs-built_in">size</span> - toIndex;
+    <span class="hljs-comment">//将toIndex后的数组放置fromIndex之后</span>
+    System.arraycopy(elementData, toIndex, elementData, fromIndex,
+                     numMoved);
+
+    <span class="hljs-comment">// clear to let GC do its work</span>
+    <span class="hljs-comment">//计算应当删除的起始下标</span>
+    <span class="hljs-keyword">int</span> newSize = <span class="hljs-built_in">size</span> - (toIndex-fromIndex);
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = newSize; i &lt; <span class="hljs-built_in">size</span>; i++) &#123;
+        elementData[i] = null;
+    &#125;
+    <span class="hljs-comment">//设置真实数组大小长度</span>
+    <span class="hljs-built_in">size</span> = newSize;
+&#125;
+<span class="hljs-comment">//与Collection取交集</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">retainAll</span><span class="hljs-params">(Collection&lt;?&gt; c)</span> </span>&#123;
+    <span class="hljs-comment">//实际调用，true表示取交集</span>
+    <span class="hljs-keyword">return</span> batchRemove(c, <span class="hljs-literal">true</span>);
+&#125;
+<span class="hljs-comment">//根据complement决定取交集还是取非交集(注意this.elementDat和elementData )</span>
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">batchRemove</span><span class="hljs-params">(Collection&lt;?&gt; c, <span class="hljs-keyword">boolean</span> complement)</span> </span>&#123;
+    <span class="hljs-comment">//定义变量</span>
+    <span class="hljs-keyword">final</span> Object[] elementData = <span class="hljs-keyword">this</span>.elementData;
+    <span class="hljs-comment">//为了方便理解可以理解为:r为this.elementData的下标，w为elementData 下标</span>
+    <span class="hljs-keyword">int</span> r = <span class="hljs-number">0</span>, w = <span class="hljs-number">0</span>;
+    <span class="hljs-comment">//定义是否修改成功</span>
+    <span class="hljs-keyword">boolean</span> modified = <span class="hljs-literal">false</span>;
+    <span class="hljs-keyword">try</span> &#123;
+        <span class="hljs-keyword">for</span> (; r &lt; <span class="hljs-built_in">size</span>; r++)
+            <span class="hljs-comment">//根据complement决定是否将此值放入elementData中</span>
+            <span class="hljs-keyword">if</span> (c.contains(elementData[r]) == complement)
+                <span class="hljs-comment">//w++是将值放入下标为w之后w再+1</span>
+                elementData[w++] = elementData[r];
+    &#125; finally &#123;
+        <span class="hljs-comment">// Preserve behavioral compatibility with AbstractCollection,</span>
+        <span class="hljs-comment">// even if c.contains() throws.</span>
+        <span class="hljs-comment">//如果c.contains()抛出异常是则r一定不等于size，则执行下方。将this.elementData下标r之后的复制到elementData下标w之后</span>
+        <span class="hljs-keyword">if</span> (r != <span class="hljs-built_in">size</span>) &#123;
+            System.arraycopy(elementData, r,
+                             elementData, w,
+                             <span class="hljs-built_in">size</span> - r);
+            w += <span class="hljs-built_in">size</span> - r;
+        &#125;
+        <span class="hljs-comment">//如果w!=size则需要将w之后的数组清楚</span>
+        <span class="hljs-keyword">if</span> (w != <span class="hljs-built_in">size</span>) &#123;
+            <span class="hljs-comment">// clear to let GC do its work</span>
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = w; i &lt; <span class="hljs-built_in">size</span>; i++)
+                elementData[i] = null;
+                modCount += <span class="hljs-built_in">size</span> - w;
+                <span class="hljs-built_in">size</span> = w;
+                <span class="hljs-comment">//只有进入此代码块才表明修改成功</span>
+                modified = <span class="hljs-literal">true</span>;
+        &#125;
+    &#125;
+    <span class="hljs-keyword">return</span> modified;
+&#125;
+<span class="hljs-comment">//返回Itr迭代器</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> Iterator&lt;E&gt; <span class="hljs-title">iterator</span><span class="hljs-params">()</span> </span>&#123;
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Itr();
+&#125;
+<span class="hljs-comment">//返回ListItr迭代器</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> ListIterator&lt;E&gt; <span class="hljs-title">listIterator</span><span class="hljs-params">()</span> </span>&#123;
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ListItr(<span class="hljs-number">0</span>);
+&#125;
+<span class="hljs-comment">//subList部分放置在ArrayList-SubList文章中</span>
+tag:在上段代码中，只有w!=<span class="hljs-built_in">size</span>的情况下才会表明修改成功。我的理解：首先，contains()发生异常只会是空指针。如果相等则可能发生以下几种情况<span class="hljs-number">1.</span>求交集但两个数组完全一样<span class="hljs-number">2.</span>求非交集两个数组完全不一样<span class="hljs-number">3.</span>从开始就出现异常</code></pre>
+<p>#总结</p>
+<pre><code class="hljs angelscript"><span class="hljs-number">1.</span>ArrayList增删实现基本靠System.<span class="hljs-built_in">array</span>copy()实现，修改是通过数组下标(只能在下标范围内修改)
+<span class="hljs-number">2.</span>通过modCount解决线程安全问题(iterator遍历时如果修改则会直接抛出异常)
+<span class="hljs-number">3.</span>手动置<span class="hljs-literal">null</span>去除强引用使gc下次工作是回收此对象
+<span class="hljs-number">4.</span>增、删都会因为数组扩容二影响效率，修改和查询不会影响效率
+<span class="hljs-number">5.</span>增、删都会修改modCount，修改和查询不会修改modCount
+<span class="hljs-number">6.</span>手动置<span class="hljs-literal">null</span>只是将内存地址取消引用，因为gc是通过计数法来进行回收，当内存地址没有被引用就会被回收</code></pre>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%BA%90%E7%A0%81/">源码</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%BA%90%E7%A0%81/jdk/">jdk</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/ArrayList/">ArrayList</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/01/25/ArrayList-Iterator%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">ArrayList-Iterator源码解析</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":200})
+    NProgress.start()
+    document.addEventListener('DOMContentLoaded', function() {
+      window.NProgress && window.NProgress.inc();
+    })
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.12.0/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

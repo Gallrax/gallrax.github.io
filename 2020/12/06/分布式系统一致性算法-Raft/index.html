@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      25
+      24
        分钟
     </span>
   
@@ -260,7 +260,6 @@
 <li>如果 commitIndex &gt; lastApplied, 则说明需要将已同步的日志应用于状态机, 然后更新 lastApplied</li>
 <li>如果 同步事件返回的 term &gt; currentTerm, 则退回为 follower(此时状态为 leader 或者 candidate)</li>
 </ol>
-<p>q: 为什么 commitIndex 和 lastApplied 不需要持久化</p>
 </blockquote>
 <h4 id="leader"><a href="#leader" class="headerlink" title="leader"></a>leader</h4><blockquote>
 <p>副本集中只会存在一个 leader. leader 负责客户端的所有更新请求. </p>

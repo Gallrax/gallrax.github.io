@@ -1,0 +1,842 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Gallrax">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="简介  Redis 是一款基于内存的数据库, 即 NoSQL. 采用单线程模型, 但是能10w 的并发. 底层使用 IO 多路复用模型(Java 中的 NIO, 即在进行 IO 是, 线程不阻塞可以处理其他事).   常用的数据结构: String, List(可用作队列), Set, ZSet(sorted set有序集合), Hash  持久化两种方式: RDB(快照) 和 AOF(日志追加)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis 知识汇总">
+<meta property="og:url" content="https://gallrax.github.io/2020/02/15/Redis%20%E7%9F%A5%E8%AF%86%E6%B1%87%E6%80%BB/index.html">
+<meta property="og:site_name" content="Gallrax&#39;s blog">
+<meta property="og:description" content="简介  Redis 是一款基于内存的数据库, 即 NoSQL. 采用单线程模型, 但是能10w 的并发. 底层使用 IO 多路复用模型(Java 中的 NIO, 即在进行 IO 是, 线程不阻塞可以处理其他事).   常用的数据结构: String, List(可用作队列), Set, ZSet(sorted set有序集合), Hash  持久化两种方式: RDB(快照) 和 AOF(日志追加)">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki49t7i77j31as0qm78o-20230318170131586.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki49394kej30hx0dngmt-20230318170131703.jpg">
+<meta property="article:published_time" content="2020-02-14T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-03-27T14:35:09.433Z">
+<meta property="article:author" content="Gallrax">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki49t7i77j31as0qm78o-20230318170131586.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Redis 知识汇总 - Gallrax&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"gallrax.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Gallrax&#39;s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Redis 知识汇总"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-02-15 00:00" pubdate>
+          2020年2月15日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          68 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Redis 知识汇总</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><blockquote>
+<p> Redis 是一款基于内存的数据库, 即 NoSQL. 采用单线程模型, 但是能10w 的并发. 底层使用 IO 多路复用模型(Java 中的 NIO, 即在进行 IO 是, 线程不阻塞可以处理其他事). </p>
+<p> 常用的数据结构: String, List(可用作队列), Set, ZSet(sorted set有序集合), Hash</p>
+<p> 持久化两种方式: RDB(快照) 和 AOF(日志追加)</p>
+<p> 过期策略: 惰性删除 &#x2F; 定时删除 &#x2F; 定期删除</p>
+<p> 内存淘汰: 八种淘汰方式</p>
+<p> 分布式锁: 单节点 setnx ex, 集群基于 Red Lock实现 (开源框架 Redisson)</p>
+<p> 集群方式: 主从, Sentinel 和 Redis Cluster</p>
+<p> Keys 和 Scan: 都用用来获取匹配的元素</p>
+</blockquote>
+<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><h3 id="基础结构"><a href="#基础结构" class="headerlink" title="基础结构"></a>基础结构</h3><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs angelscript">struct RedisObject &#123;<br>    <span class="hljs-built_in">int</span>4 type; <span class="hljs-comment">// 4bits</span><br>    <span class="hljs-built_in">int</span>4 encoding; <span class="hljs-comment">// 4bits</span><br>    <span class="hljs-built_in">int</span>24 lru; <span class="hljs-comment">// 24bits</span><br>    <span class="hljs-built_in">int32</span> <span class="hljs-built_in">ref</span>count; <span class="hljs-comment">// 4bytes</span><br>    <span class="hljs-built_in">void</span> *ptr; <span class="hljs-comment">// 8bytes，64-bit system</span><br>&#125; robj;<br></code></pre></td></tr></table></figure>
+
+
+<h3 id="String-sds"><a href="#String-sds" class="headerlink" title="String(sds)"></a>String(sds)</h3><blockquote>
+<p>String 底层结构叫做 SDS(Simple Dynamic String). 最大支持 512M 长度, 在长度小于 44 时, 采用emb形式保存(连续空间), 当大于 44 是采用raw形式(不连续), 为什么是 44, 因为分配空间是 2 ^ n 字节来分配, 当内存分配 64 字节时, 去掉RedisObject, 和尾部的\0, 总共可使用 44 长度</p>
+<p>扩容: 小于 1M 时, 采用加倍策略, 大于 1M 时, 每次扩容只会分配 1M</p>
+</blockquote>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs awk">struct SDS&lt;T&gt; &#123;<br>  T capacity; <span class="hljs-regexp">//</span> 数组容量<br>  T len; <span class="hljs-regexp">//</span> 数组长度<br>  byte flags; <span class="hljs-regexp">//</span> 特殊标识位，不理睬它<br>  byte[] content; <span class="hljs-regexp">//</span> 数组内容<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="Hash-dict"><a href="#Hash-dict" class="headerlink" title="Hash(dict)"></a>Hash(dict)</h3><blockquote>
+<p>Redis 中的 Hash 和 Java 1.7 的 Hash 结构一样, 都是数组 + 链表</p>
+<p>Set 和 ZSet 的底层也是 Hash, 只不过 value 为 null</p>
+<p>Hash的内部结构有两个 HashTable, 通常是只会有一个有值. 由于采用正常的扩容方式的时间复杂度为 O(n), 因此 Redis 的 Hash 采用渐进式扩容. 当需要扩容时会在执行命令时扩容一部分, 也会有定时任务对需要扩容的 Hash 进行扩容, 每次扩容一部分, 当扩容结束时, 就删除旧的 HashTable</p>
+<p>扩容条件: 当 hash 的个数等于第一位数组的长度是就触发扩容, 扩容的新数组为原来的 2 倍. 如果扩容时刚好赶上 bgsave, 为了减少页分离(bgsave 采用fork 线程 + copy on write), 会尽量不扩容, 如果 hash 的个数已经达到一维数组的五倍, 则会强制扩容</p>
+<p>缩容条件: 如果 hash 的个数小于一维数组的 10%, 则会触发缩容, 并且不会考虑 bgsave</p>
+</blockquote>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-comment">// 一维数组</span><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">dictht</span> &#123;<br>    dictEntry** table; <span class="hljs-comment">// 二维</span><br>    <span class="hljs-type">long</span> size; <span class="hljs-comment">// 第一维数组的长度</span><br>    <span class="hljs-type">long</span> used; <span class="hljs-comment">// hash 表中的元素个数</span><br>    ...<br>&#125;<br><span class="hljs-comment">// 链表</span><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">dictEntry</span> &#123;<br>    <span class="hljs-type">void</span>* key;<br>    <span class="hljs-type">void</span>* val;<br>    dictEntry* next; <span class="hljs-comment">// 链接下一个 entry</span><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="压缩链表-ziplist"><a href="#压缩链表-ziplist" class="headerlink" title="压缩链表(ziplist)"></a>压缩链表(ziplist)</h3><blockquote>
+<p>Redis 为了节约内存空间使用，list, zset 和 hash 容器对象在元素个数较少的时候，采用压缩列表 (ziplist) 进行存储。压缩列表是一块连续的内存空间，元素之间紧挨着存储，没有任何冗余空隙. 增加 zltail_offset 便于定位到最后一个元素实现双向遍历</p>
+<p>如果元素小于 254 字节, 则 prevlen 用 1 字节保存, 否则使用 5 字节保存. 也就是由于如果该字节修改前小于 254 字节, 修改后大于 254 字节, 就会导致连锁更新</p>
+<p>优点: 节省内存<br>缺点: 连锁更新可能会导致内存拷贝, 效率低</p>
+<p>hash-max-ziplist-entries 512 当 hash 的键值对数量小于 512 时使用压缩列表, 否则使用字典<br>hash-max-ziplist-value 64 当 hash 的键和值的长度小于 64 时使用压缩列表, 否则使用字典<br>list-max-ziplist-entries 512 当 list 的数量小于 512 时使用压缩列表, 否则使用快速列表<br>list-max-ziplist-value 64 当 list 的值小于 64 时使用压缩列表, 否则使用快速列表</p>
+</blockquote>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">struct</span> ziplist&lt;T&gt; &#123;<br>    <span class="hljs-type">int32</span> zlbytes; <span class="hljs-comment">// 整个压缩列表占用字节数</span><br>    <span class="hljs-type">int32</span> zltail_offset; <span class="hljs-comment">// 最后一个元素距离压缩列表起始位置的偏移量，用于快速定位到最后一个节点</span><br>    <span class="hljs-type">int16</span> zllength; <span class="hljs-comment">// 元素个数</span><br>    T[] entries; <span class="hljs-comment">// 元素内容列表，挨个挨个紧凑存储</span><br>    <span class="hljs-type">int8</span> zlend; <span class="hljs-comment">// 标志压缩列表的结束，值恒为 0xFF</span><br>&#125;<br><span class="hljs-keyword">struct</span> entry &#123;<br>    <span class="hljs-type">int</span>&lt;<span class="hljs-keyword">var</span>&gt; prevlen; <span class="hljs-comment">// 前一个 entry 的字节长度 只能为 1 字节或 5 字节</span><br>    <span class="hljs-type">int</span>&lt;<span class="hljs-keyword">var</span>&gt; encoding; <span class="hljs-comment">// 元素类型编码</span><br>    optional <span class="hljs-type">byte</span>[] content; <span class="hljs-comment">// 元素内容</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="快速列表-quicklist"><a href="#快速列表-quicklist" class="headerlink" title="快速列表(quicklist)"></a>快速列表(quicklist)</h3><blockquote>
+<p>快速列表为 list 的实现, 3.2 之前的版本为 linkedlist. 为什么通过 quicklist 替换掉是因为 linkedlist的 prev 和 next要占用 16 字节, 并且每个节点的内存都是单独分配，会加剧内存的碎片化, 影响内存管理效率.</p>
+<p>list-max-ziplist-size -2 每个快速列表的节点的压缩列表长度</p>
+<p>-1 每个quicklistNode节点的ziplist字节大小不能超过4kb。（建议）<br>-2 每个quicklistNode节点的ziplist字节大小不能超过8kb。（默认配置）<br>-3 每个quicklistNode节点的ziplist字节大小不能超过16kb。（一般不建议）<br>-4 每个quicklistNode节点的ziplist字节大小不能超过32kb。（不建议）<br>-5 每个quicklistNode节点的ziplist字节大小不能超过64kb。（正常工作量不建议）</p>
+</blockquote>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">ziplist</span> &#123;<br>    ...<br>&#125;<br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">ziplist_compressed</span> &#123;<br>    int32 size;<br>    <span class="hljs-type">byte</span>[] compressed_data;<br>&#125;<br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">quicklistNode</span> &#123;<br>    quicklistNode* prev;<br>    quicklistNode* next;<br>    ziplist* zl; <span class="hljs-comment">// 指向压缩列表</span><br>    int32 size; <span class="hljs-comment">// ziplist 的字节总数</span><br>    int16 count; <span class="hljs-comment">// ziplist 中的元素数量</span><br>    int2 encoding; <span class="hljs-comment">// 存储形式 2bit，原生字节数组还是 LZF 压缩存储</span><br>    ...<br>&#125;<br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">quicklist</span> &#123;<br>    quicklistNode* head;<br>    quicklistNode* tail;<br>    <span class="hljs-type">long</span> count; <span class="hljs-comment">// 元素总数</span><br>    <span class="hljs-type">int</span> nodes; <span class="hljs-comment">// ziplist 节点的个数</span><br>    <span class="hljs-type">int</span> compressDepth; <span class="hljs-comment">// LZF 算法压缩深度</span><br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="跳跃列表"><a href="#跳跃列表" class="headerlink" title="跳跃列表"></a>跳跃列表</h3><blockquote>
+<p>跳跃列表是 ZSet (Sorted Set) 的实现. Redis 的跳跃列表就是数据结构中的跳表, 在 Java 中的实现参考: ConcurrentSkipListSet 和 ConcurrentSkipListMap. 插入, 删除和修改的时间平均复杂度为O(log(N)), 最坏为 O(N). 之所以 Redis 使用跳表而不使用红黑树的原因是因为跳表实现更简单, 在插入删除是, 红黑树进行 rebalance 时需要影响整个树, 而跳表只影响局部数据</p>
+<p>索引即为 ZSet 的score, 如果 score 相同, Redis 会使用 key 进行排序</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">typedef</span> <span class="hljs-keyword">struct</span> <span class="hljs-title class_">zskiplistNode</span> &#123;<br>    <span class="hljs-comment">//节点对应成员的对象,一般是SDS</span><br>    robj *obj; <br>    <span class="hljs-comment">//分数,跳跃表的顺序按照分值进行排列</span><br>    <span class="hljs-type">double</span> score; <br>    <span class="hljs-comment">//存储后继节点的指针</span><br>    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">zskiplistNode</span> *backward; <br>    <span class="hljs-comment">// 层级</span><br>    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">zskiplistLevel</span> &#123;<br>        <span class="hljs-comment">// 存储前驱节点的指针</span><br>        <span class="hljs-keyword">struct</span> <span class="hljs-title class_">zskiplistNode</span> *forward; <br>        <span class="hljs-comment">// 跨度</span><br>        <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> span; <br>    &#125; level[];<br>&#125; zskiplistNode;<br><br><span class="hljs-keyword">typedef</span> <span class="hljs-keyword">struct</span> <span class="hljs-title class_">zskiplist</span> &#123;<br>    <span class="hljs-comment">// 跳跃表的表头节点和表尾节点</span><br>    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">zskiplistNode</span> *header, *tail;<br>    <span class="hljs-comment">// 跳跃表中节点的数量</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> length;<br>    <span class="hljs-comment">// 表中层数最大的节点层数</span><br>    <span class="hljs-type">int</span> level;<br>&#125; zskiplist;<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki49t7i77j31as0qm78o-20230318170131586.jpg" srcset="/img/loading.gif" lazyload alt="image-20201108220715910"></p>
+<h2 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h2><blockquote>
+<p>Redis 的数据全部放在内存中 如果没有一种良好的持久化日志, 则会在宕机时丢失数据.</p>
+<p>目前 Redis 通过两种方式实现持久化<br>RDB: 即时快照<br>AOF: 日志追加, 每执行一条命令, 就在日志后追加该条命令</p>
+<p>默认 Redis 读取方式: 存在 AOF 加载 AOF, 如果不存在则判断是否存在 RDB 进行加载</p>
+</blockquote>
+<h3 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h3><blockquote>
+<p>Redis 在持久化是 fork 一个子线程, 通过 COW(Copy On Write)机制实现生成 RDB 文件保证持久化. 配置: save 60 1 表示 60s 内发生发生 1 次写入命令就触发生成 RDB</p>
+<p>COW: 在多线程情况下, 拷贝一份用来自己写, 保证线程并发安全问题. 可参考 Java: CopyOnWriteArrayList<br>但是 Java 的实现是每当写的时候, 都会上锁拷贝出一份, 然后再拷贝的新的去执行写操作, 然后将拷贝的赋值给原始值. 但是在 Linux 不一样. Linux COW 在读时并不会 copy, 只有在写时, 对于写影响的页进行拷贝.</p>
+<p>流程: fork 一个子线程, 子线程和父线程共享数据. 子线程遍历数据段来生成 RDB, 父线程当发生写操作是, 拷贝一根新的数据段, 在新的数据段进行写. 父线程的数据段为最新的数据. 子线程的数据不会受到影响, 也就是说子线程拿到的是当时的数据</p>
+<p>优点: 服务宕机或重启恢复数据效率高<br>缺点: . 因为使用 COW机制, 因此如果在 fork 子线程之后, 父线程继续响应写事件, 但是此时宕机了, 就会导致数据丢失</p>
+<p>操作命令: save(阻塞) &#x2F; bgsave(非阻塞)</p>
+</blockquote>
+<h3 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h3><blockquote>
+<p>AOF 就是一个日志把所有的操作命令记录下来(去掉读), 然后再宕机或者重启时将日志的命令重新执行一遍即可, 是持久化数据最为准确的一种方式. 配置: appendonly yes. appendfsync everysec 每秒同步一次</p>
+<p>AOF 重写: 显而易见长期运行 AOF 的数据会越来越多, 如果重启则会需要非常长时间. 因此 Redis 提供 bgrewriteaof 命令优化掉update. delete等操作, 全部优化为 insert<br>原理: fork 一个子线程, 通过 COW 遍历数据, 生成对应的操作指令</p>
+<p>刷盘: 因为 AOF 是需要磁盘 IO. 那么如果写一条命令就同步, 就会导致性能极其差.<br>解决方式: 利用 mmap 方式 (mmap 是内存映射文件的一种方式, 内核开辟一块空间映射到磁盘文件. 操作该文件直接操作内存, 依赖于 OS 来刷新内核空间的数据到磁盘)来处理 . 默认 Redis 是 1s 刷新一次</p>
+<p>优点: 持久化效率最高, 并且数据不会丢失<br>缺点: 服务宕机或重启加载数据效率非常低</p>
+<p>命令: bgrewriteaof</p>
+</blockquote>
+<h3 id="RDB-AOF-混合-4-0"><a href="#RDB-AOF-混合-4-0" class="headerlink" title="RDB + AOF 混合(4.0+)"></a>RDB + AOF 混合(4.0+)</h3><blockquote>
+<p>定时生成 RDB, fork 子线程之后的操作指令会记录至 AOF 日志. 这样既能保证宕机或重启恢复效率高, 又能保证数据不丢失</p>
+</blockquote>
+<h2 id="过期策略"><a href="#过期策略" class="headerlink" title="过期策略"></a>过期策略</h2><blockquote>
+<p>对于一个 key 设置过期时间之后, Redis 会将对应的 key 放入到一个字典中</p>
+<p>定时删除: 为该 key 创建一个定时器, 到时间之后自动删除<br>优点: 对内存友好, 不存在废弃数据占用内存<br>缺点: 对 CPU 极其不友好, 如果 key 比较多, 则会非常吃 CPU</p>
+<p>定期删除: 每隔十秒对每个库进行一次随机扫描 20 个 key, 删除已过期的 key, 如果过期的比例低于 1&#x2F;4, 则重新扫描. 为了防止随机扫描时间过长, 默认不会超过 25ms<br>优点: 对 CPU 友好<br>缺点: 对内存不友好, 会导致垃圾数据没有被回收</p>
+<p>惰性删除: 当访问该 key 时, 如果该 key 已过期, 则删除<br>优点: 简单<br>缺点: 对内存不友好</p>
+<p>默认: 定期删除 + 惰性删除</p>
+</blockquote>
+<h2 id="内存淘汰机制"><a href="#内存淘汰机制" class="headerlink" title="内存淘汰机制"></a>内存淘汰机制</h2><blockquote>
+<p>当内存达到 maxmemory 配置时, 就会进行内存淘汰. Redis 提供 7 种淘汰机制</p>
+<p>volatile-lru: 根据最近最少使用算法, 淘汰带有 有效期 属性的key及其数据<br>allkeys-lru: 同样根据最近最少使用算法, 但是淘汰范围的key是所有的key<br>volatile-lfu: 根据最不经常使用算法, 淘汰带有 有效期 属性的key及其数据 4.0 版本支持<br>allkeys-lfu，与第二种的淘汰范围相同, 不过使用的算法是最不经常使用算法 4.0 版本支持<br>volatile-random: 随机淘汰带有有效期属性的key及其数据<br>allkeys-random: 所有key都随机淘汰<br>volatile-ttl: 淘汰剩余寿命最短的key及其数据, ttl是 Time To Live的缩写<br>noeviction: 不再进行写操作, 只能读 默认配置</p>
+</blockquote>
+<h2 id="分布式锁"><a href="#分布式锁" class="headerlink" title="分布式锁"></a>分布式锁</h2><blockquote>
+<p>分布式锁其实个人觉得现在并没有一个非常完美的解决方案. 原因是因为对于锁的时间和业务时间无法完美的解决. 例: 如果业务时间超过了锁的时间, 如果继续锁, 那么这个分布式锁的时间设置就没有了意义, 如果不继续锁, 就可能会同时两个线程在操作相同的业务</p>
+</blockquote>
+<h3 id="setnx-ex"><a href="#setnx-ex" class="headerlink" title="setnx ex"></a>setnx ex</h3><blockquote>
+<p>最简单的实现方式, 即没有该 key 是才去保存并且设置过期时间(2.8 之前没有该命令, 只能通过 lua实现). 而且仍然会有一个问题就是业务时间超时了如何处理. 这个时候新的线程持锁,  旧的线程执行完删除便会把新的线程的锁给删除. 所以相对安全的方式是: 设置锁时, 对 value 设置一个随机数, 这个随机数由本线程生成, 删除时校验该 value 是否为本线程的随机数. 这种方式也只是相对减少出错几率, 导致出错只会存在于超时的线程. 这种方式只能通过 Lua 脚本实现.</p>
+<p>但是这种方式仅能使用在单节点的 Redis 中. 在集群的模式中, 因为主从同步延迟问题, 会出现一个线程明明已经上锁, 但是从库查不到又重新上锁的问题</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs autoit"><span class="hljs-meta"># 上锁</span><br>tag = <span class="hljs-built_in">random</span>.nextint()  <span class="hljs-meta"># 随机数</span><br><span class="hljs-keyword">if</span> redis.set(key, tag, nx=<span class="hljs-literal">True</span>, ex=<span class="hljs-number">5</span>):<br>do_something()<br><br><span class="hljs-meta"># 锁释放 (lua 脚本)</span><br><span class="hljs-keyword">if</span> redis.<span class="hljs-built_in">call</span>(<span class="hljs-string">&quot;get&quot;</span>,KEYS[<span class="hljs-number">1</span>]) == ARGV[<span class="hljs-number">1</span>] <span class="hljs-keyword">then</span><br><span class="hljs-keyword">return</span> redis.<span class="hljs-built_in">call</span>(<span class="hljs-string">&quot;del&quot;</span>,KEYS[<span class="hljs-number">1</span>])<br><span class="hljs-keyword">else</span><br><span class="hljs-keyword">return</span> <span class="hljs-number">0</span><br>end<br></code></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="Red-Lock-算法-具体实现参考-Redisson"><a href="#Red-Lock-算法-具体实现参考-Redisson" class="headerlink" title="Red Lock (算法, 具体实现参考 Redisson)"></a>Red Lock (算法, 具体实现参考 Redisson)</h3><blockquote>
+<p>Red Lock 是目前最佳 Redis 集群实现的一种算法. 具体实现可参考 Redisson</p>
+<ol>
+<li><p>获取当前时间 (单位是毫秒)</p>
+</li>
+<li><p>轮流用相同的key和随机值在N个节点上请求锁, 在这一步里, 客户端在每个master上请求锁时, 会有一个和总的锁释放时间相比小的多的超时时间. 比如如果锁自动释放时间是10秒钟, 那每个节点锁请求的超时时间可能是5-50毫秒的范围, 这个可以防止一个客户端在某个宕掉的master节点上阻塞过长时间, 如果一个master节点不可用了, 我们应该尽快尝试下一个master节点</p>
+</li>
+<li><p>客户端计算第二步中获取锁所花的时间, 只有当客户端在大多数master节点上成功获取了锁 (在这里是3个), 而且总共消耗的时间不超过锁释放时间, 这个锁就认为是获取成功了</p>
+</li>
+<li><p>如果锁获取成功了, 那现在锁自动释放时间就是最初的锁释放时间减去之前获取锁所消耗的时间</p>
+</li>
+<li><p>如果锁获取失败了, 不管是因为获取成功的锁不超过一半 (N&#x2F;2+1)还是因为总消耗时间超过了锁释放时间, 客户端都会到每个master节点上释放锁, 即便是那些他认为没有获取成功的锁</p>
+</li>
+</ol>
+</blockquote>
+<h2 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h2><blockquote>
+<p>Redis 的集群是满足 AP 理论, 选择最终一致性. Redis 支持主从同步和从从同步(减少主节点压力). </p>
+<ol>
+<li>设置主服务器的地址和端口</li>
+<li>建立套接字连接</li>
+<li>发送PING命令</li>
+<li>身份验证</li>
+<li>发送端口信息</li>
+<li>同步</li>
+<li>命令传播</li>
+</ol>
+</blockquote>
+<h3 id="增量同步"><a href="#增量同步" class="headerlink" title="增量同步"></a>增量同步</h3><blockquote>
+<p>主节点内存中会有指令 buffer, 是一种环形结构, 如果 buffer 满了, 新的指令无论从库是否同步, 都会覆盖. 异步将 buffer 中的指令同步到从节点, 从节点反馈自己同步的偏移量. 如果从节点需要同步偏移量在 buffer 中已经不存在, 则需要执行快照同步</p>
+<p>相关属性</p>
+<ol>
+<li>复制偏移量</li>
+<li>复制缓冲区</li>
+<li>运行ID</li>
+</ol>
+</blockquote>
+<h3 id="快照同步"><a href="#快照同步" class="headerlink" title="快照同步"></a>快照同步</h3><blockquote>
+<p>快照同步是一种比较耗时的同步方式. 快照同步会执行一次 bgsave, 然后异步把 rdb 发送给从节点, 从节点再 load. 因此主节点应该配置合适的 buffer size, 尽量避免快照同步</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki49394kej30hx0dngmt-20230318170131703.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h2><h3 id="原生集群"><a href="#原生集群" class="headerlink" title="原生集群"></a>原生集群</h3><blockquote>
+<p>原生仅支持一主多从, slave of 即为该种方式. 这种方式的缺点就是主节点宕机, 只能人工手动主从切换, 而无法自动主动切换, 无法实现高可用</p>
+</blockquote>
+<h3 id="Sentinel"><a href="#Sentinel" class="headerlink" title="Sentinel"></a>Sentinel</h3><blockquote>
+<p>这种方式俗称哨兵模式. 该模式相当于是对 Redis 主从集群加了一层监控集群 监控集群如果检测到主节点不可用, 立即切换最优从节点为主节点</p>
+<p>&#x2F;&#x2F; 主节点必须至少有一个从节点在进行正常复制，否则就停止对外写服务，丧失可用性<br>min-slaves-to-write 1<br>&#x2F;&#x2F; 10s 没有收到从节点的反馈，就意味着从节点同步不正常<br>min-slaves-max-lag 10</p>
+</blockquote>
+<h2 id="分片"><a href="#分片" class="headerlink" title="分片"></a>分片</h2><blockquote>
+<p>上述的两种都是主节点保存全量数据的方式. 在应当当下大数据的情况下, 一旦网络抖动或宕机导致全量同步, 就会极其影响效率甚至陷入全量同步死循环. 因此在考虑高可用的情况下, 自然而然就少不了分片</p>
+<p>分片的作用是将全量数据分散到各个节点, 各个节点再通过集群保证高可用. 每个集群只维护各自的局部数据</p>
+</blockquote>
+<h3 id="Redis-Cluster"><a href="#Redis-Cluster" class="headerlink" title="Redis Cluster"></a>Redis Cluster</h3><blockquote>
+<p>Redis Cluster 是一个多主多从的架构. 每一个主节点对应多个从节点. 当检测到主节点宕机时, 自动切换其从节点为主节点. 并且是去中心架构</p>
+<p>Redis Cluster 采用虚拟槽分区，所有的key根据哈希函数映射到0~16383槽. 当收到一条指令后, 任何一主节点会计算该指令应保存的槽, 如果不是当前节点, 则会转发到对应的主节点进行处理</p>
+<p>FailOver (故障转移): 分为主观下线和客观下线<br>主观下线: 集群中每个节点都会定期向其他节点发送ping消息, 接收节点回复pong消息作为响应. 如果在cluster-node-timeout时间内通信一直失败, 则发送节点会认为接收节点存在故障, 把接收节点标记为主观下线(pfail)状态<br>客观下线: 当某个节点判断另一个节点主观下线后, 相应的节点状态会跟随消息在集群内传播. 通过Gossip消息传播, 集群内节点不断收集到故障节点的下线报告. 当半数以上持有槽的主节点都标记某个节点是主观下线时, 触发客观下线流程</p>
+<ol>
+<li>下线节点的集群投票选出新的主节点</li>
+<li>选出的新主节点(从节点)取消复制变为主节点</li>
+<li>执行clusterDelSlot操作撤销故障主节点负责的槽, 并执行clusterAddSlot把这些槽委派给自己</li>
+<li>向集群广播自己的pong消息, 通知集群内所有的节点当前从节点变为主节点并接管了故障主节点的槽信息</li>
+</ol>
+</blockquote>
+<h2 id="Keys-和-Scan"><a href="#Keys-和-Scan" class="headerlink" title="Keys 和 Scan"></a>Keys 和 Scan</h2><blockquote>
+<p>Keys 和 Scan 都是用来获取匹配的 key, 时间复杂度都是 O(n)</p>
+<p>Keys: 阻塞主线程, 并且不支持分页, 对大数据量效率极低又因为 Redis 是单线程会阻塞主线程. 因此线上统一禁止使用</p>
+<p>Scan: 支持分页, 但是返回的数据可能会重复. 通过游标分布进行, 不会阻塞线程 (设计很复杂). 遍历顺序非常特别, 它不是从第一维数组的第 0 位一直遍历到末尾, 而是采用了高位进位加法来遍历</p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="category-chain-item">中间件</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/Redis/" class="category-chain-item">Redis</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Redis/">#Redis</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Redis 知识汇总</div>
+      <div>https://gallrax.github.io/2020/02/15/Redis 知识汇总/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Gallrax</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年2月15日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/02/16/Kafka%20%E7%9F%A5%E8%AF%86%E6%B1%87%E6%80%BB/" title="Kafka 知识汇总">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Kafka 知识汇总</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/01/30/%E4%BB%8E%E6%A0%B9%E5%84%BF%E4%B8%8A%E7%90%86%E8%A7%A3%20MySQL%20-%20%E7%B4%A2%E5%BC%95%E6%80%BB%E7%BB%93/" title="从根儿上理解 MySQL - 索引总结">
+                        <span class="hidden-mobile">从根儿上理解 MySQL - 索引总结</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

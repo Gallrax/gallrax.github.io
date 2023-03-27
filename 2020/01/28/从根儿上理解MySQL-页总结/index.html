@@ -19,7 +19,7 @@
     <meta name="description" content="页结构 由于 MySQL 的真实数据是存储在磁盘, 因此在读写数据是会涉及磁盘 IO, 为了更高效率的读取, MySQL 设计页结构, 每次交互以页为单位读取到内存. 页的大小一般为 16KB 一个数据页可以被大致划分为7个部分 File Header，表示页的一些通用信息，占固定的38字节。Page Header，表示数据页专有的一些信息，占固定的56个字节。Infimum + Supremum">
 <meta property="og:type" content="article">
 <meta property="og:title" content="从根儿上理解 MySQL - 页总结">
-<meta property="og:url" content="https://gallrax.github.io/2020/01/28/%E4%BB%8E%E6%A0%B9%E5%84%BF%E4%B8%8A%E7%90%86%E8%A7%A3%20MySQL%20-%20%E9%A1%B5%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:url" content="https://gallrax.github.io/2020/01/28/%E4%BB%8E%E6%A0%B9%E5%84%BF%E4%B8%8A%E7%90%86%E8%A7%A3MySQL-%E9%A1%B5%E6%80%BB%E7%BB%93/index.html">
 <meta property="og:site_name" content="Gallrax&#39;s blog">
 <meta property="og:description" content="页结构 由于 MySQL 的真实数据是存储在磁盘, 因此在读写数据是会涉及磁盘 IO, 为了更高效率的读取, MySQL 设计页结构, 每次交互以页为单位读取到内存. 页的大小一般为 16KB 一个数据页可以被大致划分为7个部分 File Header，表示页的一些通用信息，占固定的38字节。Page Header，表示数据页专有的一些信息，占固定的56个字节。Infimum + Supremum">
 <meta property="og:locale" content="zh_CN">
@@ -35,7 +35,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki40a7o14j31jk0u0td1.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki40e1nh2j30u00xuag6.jpg">
 <meta property="article:published_time" content="2020-01-27T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-03-27T14:35:48.310Z">
+<meta property="article:modified_time" content="2023-03-27T14:48:49.771Z">
 <meta property="article:author" content="Gallrax">
 <meta property="article:tag" content="MySql">
 <meta name="twitter:card" content="summary_large_image">
@@ -430,7 +430,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>从根儿上理解 MySQL - 页总结</div>
-      <div>https://gallrax.github.io/2020/01/28/从根儿上理解 MySQL - 页总结/</div>
+      <div>https://gallrax.github.io/2020/01/28/从根儿上理解MySQL-页总结/</div>
     </div>
     <div class="license-meta">
       
@@ -474,7 +474,7 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/01/29/%E4%BB%8E%E6%A0%B9%E5%84%BF%E4%B8%8A%E7%90%86%E8%A7%A3%20MySQL%20-%20%E7%BC%93%E5%86%B2%E6%B1%A0%20&amp;%20log/" title="从根儿上理解 MySQL - 缓冲池 &amp; log">
+                      <a href="/2020/01/29/%E4%BB%8E%E6%A0%B9%E5%84%BF%E4%B8%8A%E7%90%86%E8%A7%A3MySQL-%E7%BC%93%E5%86%B2%E6%B1%A0&amp;log/" title="从根儿上理解 MySQL - 缓冲池 &amp; log">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile">从根儿上理解 MySQL - 缓冲池 &amp; log</span>
                         <span class="visible-mobile">上一篇</span>

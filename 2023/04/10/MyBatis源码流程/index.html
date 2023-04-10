@@ -1,0 +1,694 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Gallrax">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="自动扫描123456789101112131415161718192021222324252627282930313233343536373839404142434445MybatisAutoConfiguration(@ConfigurationProperties(prefix &#x3D; MybatisProperties.MYBATIS_PREFIX)) - MapperScannerRegist">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MyBatis源码流程">
+<meta property="og:url" content="https://gallrax.github.io/2023/04/10/MyBatis%E6%BA%90%E7%A0%81%E6%B5%81%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Gallrax&#39;s blog">
+<meta property="og:description" content="自动扫描123456789101112131415161718192021222324252627282930313233343536373839404142434445MybatisAutoConfiguration(@ConfigurationProperties(prefix &#x3D; MybatisProperties.MYBATIS_PREFIX)) - MapperScannerRegist">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-04-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-10T14:20:55.421Z">
+<meta property="article:author" content="Gallrax">
+<meta property="article:tag" content="MyBatis">
+<meta property="article:tag" content="源码">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>MyBatis源码流程 - Gallrax&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"gallrax.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Gallrax&#39;s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="MyBatis源码流程"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-04-10 00:00" pubdate>
+          2023年4月10日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          9.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          77 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">MyBatis源码流程</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="自动扫描"><a href="#自动扫描" class="headerlink" title="自动扫描"></a>自动扫描</h3><figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"><span class="hljs-constructor">MybatisAutoConfiguration(@ConfigurationProperties(<span class="hljs-params">prefix</span> = MybatisProperties.MYBATIS_PREFIX)</span>)<br><br> - MapperScannerRegistrarNotFoundConfiguration<br>  - AutoConfiguredMapperScannerRegistrar<br>   - MapperScannerConfigurer<br>        - ClassPathMapperScanner<br> # 生成 <span class="hljs-constructor">SqlSessionFactory(通过 SqlSessionFactoryBean)</span><br> - org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration#sqlSessionFactory <br>  # 配置 Configuration<br>  - org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration#applyConfiguration<br> # 生成 SqlSessionTemplate<br> - org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration#sqlSessionTemplate<br><br>@MapperScans<br> - MapperScannerRegistrar<br>  - MapperScannerConfigurer<br>   - ClassPathMapperScanner<br><br># 扫描<br>ClassPathMapperScanner<br> # 扫描<br> - doScan<br>  # spring 扫描<br>  - super.<span class="hljs-keyword">do</span><span class="hljs-constructor">Scan()</span><br> # beanDefinition 处理<br> - void process<span class="hljs-constructor">BeanDefinitions()</span><br>  # 设置 <span class="hljs-constructor">BeanClass(MapperFactoryBean.<span class="hljs-params">class</span>, 每个 Mapper 接口, 就是一个对象)</span><br>  - definition.set<span class="hljs-constructor">BeanClass(<span class="hljs-params">this</span>.<span class="hljs-params">mapperFactoryBeanClass</span>)</span>;   <br><br><br>Configuration<br> # 获取所有拦截器<br> - List&lt;Interceptor&gt; get<span class="hljs-constructor">Interceptors()</span><br> # 根据全限定名获取对应的 MappedStatement<br> - MappedStatement get<span class="hljs-constructor">MappedStatement(String <span class="hljs-params">id</span>)</span> <br> # 获取 Mapper 对象<br> -  T get<span class="hljs-constructor">Mapper(Class&lt;T&gt; <span class="hljs-params">type</span>, SqlSession <span class="hljs-params">sqlSession</span>)</span> <br> # 创建执行器(默认: <span class="hljs-keyword">new</span> <span class="hljs-constructor">CachingExecutor(SimpleExecutor)</span>)<br> - Executor <span class="hljs-keyword">new</span><span class="hljs-constructor">Executor(Transaction <span class="hljs-params">transaction</span>)</span><br> # 获取 StatementHandler<br> - StatementHandler <span class="hljs-keyword">new</span><span class="hljs-constructor">StatementHandler(Executor <span class="hljs-params">executor</span>, MappedStatement <span class="hljs-params">mappedStatement</span>, Object <span class="hljs-params">parameterObject</span>, RowBounds <span class="hljs-params">rowBounds</span>, ResultHandler <span class="hljs-params">resultHandler</span>, BoundSql <span class="hljs-params">boundSql</span>)</span><br>  # 创建默认 StatementHandler<br>  - <span class="hljs-keyword">new</span> <span class="hljs-constructor">RoutingStatementHandler(<span class="hljs-params">executor</span>, <span class="hljs-params">mappedStatement</span>, <span class="hljs-params">parameterObject</span>, <span class="hljs-params">rowBounds</span>, <span class="hljs-params">resultHandler</span>, <span class="hljs-params">boundSql</span>)</span><br>  # 绑定拦截器<br>  - interceptorChain.plugin<span class="hljs-constructor">All(<span class="hljs-params">statementHandler</span>)</span>;<br></code></pre></td></tr></table></figure>
+
+<h3 id="Mapper"><a href="#Mapper" class="headerlink" title="Mapper"></a>Mapper</h3><figure class="highlight nestedtext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs nestedtext"><span class="hljs-comment"># Mapper 实体对象</span><br>MapperFactoryBean extends SqlSessionDaoSupport implements FactoryBean&lt;T&gt;<br> <span class="hljs-comment"># 初始化后回调, 将此对象注册到 Configuration(父类实现了 InitializingBean#afterPropertiesSet)</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">checkDaoConfig</span><br> <span class="hljs-comment"># 获取对象(实现了 Spring FactoryBean)</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">T getObject()</span><br>  <span class="hljs-comment"># 从 SqlSession(SqlSessionTemplate) 中获取对应的 Mapper</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">getSqlSession().getMapper(this.mapperInterface)</span><br><br><br><span class="hljs-comment"># Mapper 容器</span><br>MapperRegistry<br> <span class="hljs-comment"># 将 Mapper 类添加到容器内</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">void addMapper(Class&lt;T&gt; type)</span><br>  <span class="hljs-comment"># 根据 Mapper 生成 MapperProxyFactory 放入容器内</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">knownMappers.put(type, new MapperProxyFactory&lt;&gt;(type))</span><br> <span class="hljs-comment"># 从容器中获取 Mapper 对象(有缓存)</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">T getMapper(Class&lt;T&gt; type, SqlSession sqlSession)</span><br>  <span class="hljs-comment"># 代理工厂生产代理</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">mapperProxyFactory.newInstance(sqlSession)</span><br><br><br><span class="hljs-comment"># Mapper 对象代理工厂</span><br>MapperProxyFactory<br> <span class="hljs-comment"># 自动生成 Mapper 对象代理(MapperProxy)</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">T newInstance(SqlSession sqlSession)</span><br><br><br><span class="hljs-comment"># Mapper 代理对象</span><br>MapperProxy<br> <span class="hljs-comment"># 执行方法</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">org.apache.ibatis.binding.MapperProxy#cachedInvoker</span><br>  <span class="hljs-comment"># PlainMethodInvoker#invoke</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">org.apache.ibatis.binding.MapperProxy.PlainMethodInvoker#invoke </span><br>   <span class="hljs-comment"># MapperMethod 执行</span><br>   <span class="hljs-bullet">-</span> <span class="hljs-string">org.apache.ibatis.binding.MapperMethod#execute</span><br><br>    <span class="hljs-comment"># SqlSession 执行对应的方法</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">sqlSession.xxx</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="SqlSession"><a href="#SqlSession" class="headerlink" title="SqlSession"></a>SqlSession</h3><figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"># 增删改查对象抽象<br>SqlSession<br> - &lt;T&gt; T select<span class="hljs-constructor">One(String <span class="hljs-params">statement</span>)</span><br> - &lt;E&gt; List&lt;E&gt; select<span class="hljs-constructor">List(String <span class="hljs-params">statement</span>)</span>;  <br> - <span class="hljs-built_in">int</span> insert(String statement);<br> - <span class="hljs-built_in">int</span> update(String statement);<br> - &lt;T&gt; T get<span class="hljs-constructor">Mapper(Class&lt;T&gt; <span class="hljs-params">type</span>)</span><br> -<span class="hljs-operator"> ...</span><br><span class="hljs-operator"></span><br><span class="hljs-operator"></span><br><span class="hljs-operator"></span># 会话工厂<br>SqlSessionFactory<br> - SqlSession <span class="hljs-keyword">open</span><span class="hljs-constructor">Session()</span> 开启会话<br> - Configuration get<span class="hljs-constructor">Configuration()</span> 获取配置<br><br># 会话工厂 Bean<br><span class="hljs-constructor">SqlSessionFactoryBean(DefaultSqlSessionFactory)</span><br> # 获取对象<br> - SqlSessionFactory get<span class="hljs-constructor">Object()</span><br>  # 执行初始化<br>  - SqlSessionFactory build<span class="hljs-constructor">SqlSessionFactory()</span><br>   # 解析 xml(会将所有的 mapper 放入 Configuration)<br>   - org.apache.ibatis.builder.xml.XMLMapperBuilder#parse<br><br>    # 将 mapper 放入 Configuration<br>    - org.apache.ibatis.builder.xml.XMLMapperBuilder#bindMapperForNamespace <br><br><br># 默认会话工厂<br>DefaultSqlSessionFactory<br> # 开启会话<br> - SqlSession <span class="hljs-keyword">open</span><span class="hljs-constructor">Session()</span><br>  - SqlSession <span class="hljs-keyword">open</span><span class="hljs-constructor">SessionFromDataSource(ExecutorType <span class="hljs-params">execType</span>, TransactionIsolationLevel <span class="hljs-params">level</span>, <span class="hljs-params">boolean</span> <span class="hljs-params">autoCommit</span>)</span><br>   # 根据事务工厂获取事务<br>   - transactionFactory.<span class="hljs-keyword">new</span><span class="hljs-constructor">Transaction(<span class="hljs-params">environment</span>.<span class="hljs-params">getDataSource</span>()</span>, level, autoCommit)<br>   # 创建执行器(默认是开启缓存的, <span class="hljs-keyword">new</span> <span class="hljs-constructor">CachingExecutor(SimpleExecutor)</span>)<br>   - Executor executor = configuration.<span class="hljs-keyword">new</span><span class="hljs-constructor">Executor(<span class="hljs-params">tx</span>, <span class="hljs-params">execType</span>)</span><br>   # 创建会话增删改查对象<br>   - <span class="hljs-keyword">new</span> <span class="hljs-constructor">DefaultSqlSession(<span class="hljs-params">configuration</span>, <span class="hljs-params">executor</span>, <span class="hljs-params">autoCommit</span>)</span>;<br><br>#增删改查对象模板<br>SqlSessionTemplate implements SqlSession<br> # 初始化配置 SqlSession 代理(SqlSessionInterceptor)<br> - sqlSessionProxy = <span class="hljs-keyword">new</span><span class="hljs-constructor">ProxyInstance(SqlSessionFactory.<span class="hljs-params">class</span>.<span class="hljs-params">getClassLoader</span>()</span>, <span class="hljs-keyword">new</span> Class<span class="hljs-literal">[]</span> &#123; <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">SqlSession</span>.</span></span><span class="hljs-keyword">class</span> &#125;, <span class="hljs-keyword">new</span> <span class="hljs-constructor">SqlSessionInterceptor()</span>)<br><br> # 父类方法实现(通过生成的代理来实现)<br> - this.sqlSessionProxy.select<span class="hljs-constructor">One()</span><br><br> # 根据类获取 Mapper 对象<br> - T get<span class="hljs-constructor">Mapper(Class&lt;T&gt; <span class="hljs-params">type</span>)</span><br>  # 从 Congifuration 中获取 Mapper 对象<br>  - get<span class="hljs-constructor">Configuration()</span>.get<span class="hljs-constructor">Mapper(<span class="hljs-params">type</span>, <span class="hljs-params">this</span>)</span>;<br><br><br># 默认的增删改查对象<br>DefaultSqlSession<br> # 查询 <span class="hljs-built_in">list</span><br> - org.apache.ibatis.session.defaults.DefaultSqlSession#selectList<br>  # 通过 Configuration 获取 MapperStatement<br>  - MappedStatement ms = configuration.get<span class="hljs-constructor">MappedStatement(<span class="hljs-params">statement</span>)</span><br>  # 执行器执行查询<br>  - executor.query(ms, wrap<span class="hljs-constructor">Collection(<span class="hljs-params">parameter</span>)</span>, rowBounds, handler)<br><br> # 更新<br> - org.apache.ibatis.session.defaults.DefaultSqlSession#selectList<br>  # 通过 Configuration 获取 MapperStatement<br>  - MappedStatement ms = configuration.get<span class="hljs-constructor">MappedStatement(<span class="hljs-params">statement</span>)</span><br>  # 执行器执行更新<br>  - executor.update(ms, wrap<span class="hljs-constructor">Collection(<span class="hljs-params">parameter</span>)</span>);<br><br><br># 增删改查对象拦截器<br>SqlSessionInterceptor implements InvocationHandler <br> # 执行<br> - public Object invoke(Object proxy, Method <span class="hljs-keyword">method</span>, Object<span class="hljs-literal">[]</span> args)<br>  # 开启会话<br>  - org.mybatis.spring.SqlSessionUtils#getSqlSession<br>  # 执行代理方法(MapperMethod#execute)<br>  - Object result = <span class="hljs-keyword">method</span>.invoke(sqlSession, args);<br>  # 提交会话(回滚)<br>  - sqlSession.commit(<span class="hljs-literal">true</span>);<br>  # 结束会话<br>  - org.mybatis.spring.SqlSessionUtils#closeSqlSession  <br></code></pre></td></tr></table></figure>
+
+<h3 id="Executor"><a href="#Executor" class="headerlink" title="Executor"></a>Executor</h3><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm"><span class="hljs-comment"># 缓存 key</span><br><span class="hljs-keyword">CacheKey</span><br><span class="hljs-keyword"></span> [msId, offset, limit, sql, param..., environmnetId]<br><br><br><span class="hljs-comment"># 执行器</span><br>Executor<br> <span class="hljs-comment"># 查询</span><br> - List&lt;E&gt; query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, <span class="hljs-keyword">CacheKey </span><span class="hljs-keyword">cacheKey, </span><span class="hljs-keyword">BoundSql </span><span class="hljs-keyword">boundSql)</span><br><span class="hljs-keyword"></span> <span class="hljs-comment"># 更新</span><br> - int update(MappedStatement ms, Object parameter)<br> <span class="hljs-comment"># 提交</span><br> - void commit(<span class="hljs-keyword">boolean </span>required)<br> <span class="hljs-comment"># 回滚</span><br> - void rollback(<span class="hljs-keyword">boolean </span>required)<br> <span class="hljs-comment"># 获取事务</span><br> - Transaction getTransaction()<br><br><span class="hljs-comment"># 基础执行器模板</span><br><span class="hljs-keyword">BaseExecutor </span>implements Executor<br> <span class="hljs-comment"># 提交</span><br> - void commit(<span class="hljs-keyword">boolean </span>required)<br>  <span class="hljs-comment"># 清除一级缓存</span><br>  - clearLocalCache();<br>  <span class="hljs-comment"># 提交事务</span><br>  - transaction.commit();<br> <span class="hljs-comment"># 回滚</span><br> - void commit(<span class="hljs-keyword">boolean </span>required)<br>  <span class="hljs-comment"># 清除一级缓存</span><br>  - clearLocalCache();<br>  <span class="hljs-comment"># 提交事务</span><br>  - transaction.commit();<br> <span class="hljs-comment"># 更新</span><br> - int update(MappedStatement ms, Object parameter)<br>  <span class="hljs-comment"># 清楚缓存</span><br>  - clearLocalCache();<br>  <span class="hljs-comment"># 回调子类实现 更新</span><br>  - doUpdate(ms, parameter);<br> <span class="hljs-comment"># 查询</span><br> - List&lt;E&gt; query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler)<br>  <span class="hljs-comment"># 根据 MappedStatement 获取 BoundSql</span><br>  - <span class="hljs-keyword">BoundSql </span><span class="hljs-keyword">boundSql </span>= ms.getBoundSql(parameter);<br>  <span class="hljs-comment"># 获取缓存 key</span><br>  - <span class="hljs-keyword">CacheKey </span>key = createCacheKey(ms, parameter, rowBounds, <span class="hljs-keyword">boundSql);</span><br><span class="hljs-keyword"></span> <span class="hljs-comment"># 底层查询</span><br> - List&lt;E&gt; query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, <span class="hljs-keyword">CacheKey </span>key, <span class="hljs-keyword">BoundSql </span><span class="hljs-keyword">boundSql)</span><br><span class="hljs-keyword"></span>  <span class="hljs-comment"># 如果一级缓存命中, 则返回数据</span><br>  - list = resultHandler == null ? (List&lt;E&gt;) localCache.getObject(key) : null;<br>  <span class="hljs-comment"># 从 db 查询数据</span><br>  - list = queryFromDatabase(ms, parameter, rowBounds, resultHandler, key, <span class="hljs-keyword">boundSql);</span><br><span class="hljs-keyword"></span>  <span class="hljs-comment"># 如果一级缓存范围是 STATEMENT 则清楚缓存</span><br>  - clearLocalCache();<br> <span class="hljs-comment"># 从 db 查询数据</span><br> - List&lt;E&gt; queryFromDatabase(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, <span class="hljs-keyword">CacheKey </span>key, <span class="hljs-keyword">BoundSql </span><span class="hljs-keyword">boundSql) </span><br>  <span class="hljs-comment"># 回调子类实现 查询</span><br>  - list = doQuery(ms, parameter, rowBounds, resultHandler, <span class="hljs-keyword">boundSql);</span><br><span class="hljs-keyword"></span>  <span class="hljs-comment"># 将结果放入一级缓存</span><br>  - localCache.putObject(key, list);<br><br><span class="hljs-comment"># 默认基础执行器</span><br>SimpleExecutor <span class="hljs-keyword">extends </span><span class="hljs-keyword">BaseExecutor</span><br><span class="hljs-keyword"></span> <span class="hljs-comment"># 预执行</span><br> - Statement prepareStatement(StatementHandler handler, Log statementLog)<br>  <span class="hljs-comment"># 打开会话连接</span><br>  - Connection connection = getConnection(statementLog);<br>  <span class="hljs-comment"># 执行 db 预编译</span><br>  - stmt = handler.prepare(connection, transaction.getTimeout());<br>  <span class="hljs-comment"># 执行参数处理(#&#123;&#125;, $&#123;&#125; 值处理)</span><br>  - handler.parameterize(stmt);<br> <span class="hljs-comment"># 更新</span><br> - doUpdate(MappedStatement ms, Object parameter)<br>  <span class="hljs-comment"># 预执行</span><br>  - stmt = prepareStatement(handler, ms.getStatementLog());<br>  <span class="hljs-comment"># 真实执行(db 级别调用)</span><br>  - handler.update(stmt);<br> <span class="hljs-comment"># 查询</span><br> - List&lt;E&gt; doQuery(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, <span class="hljs-keyword">BoundSql </span><span class="hljs-keyword">boundSql)</span><br><span class="hljs-keyword"></span>  <span class="hljs-comment"># 预执行</span><br>  - stmt = prepareStatement(handler, ms.getStatementLog());<br>  <span class="hljs-comment"># 真实执行(db 级别调用)</span><br>  - handler.update(stmt);<br><br><br><span class="hljs-comment"># 二级缓存执行器(装饰器模式)</span><br>CachingExecutor implements Executor <br> <span class="hljs-comment"># 增加了二级缓存, 以 MappedStatement 为纬度</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="Statement"><a href="#Statement" class="headerlink" title="Statement"></a>Statement</h3><figure class="highlight nestedtext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs nestedtext">StatementType<br> <span class="hljs-comment"># 直接操作 sql, 不执行预编译, 直接获取数据</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">STATEMENT $&#123;&#125;</span><br> <span class="hljs-comment"># 预编译, 执行预编译, 然后获取数据</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">PREPARED #&#123;&#125;</span><br> <span class="hljs-comment"># 存储过程</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">CALLABLE</span><br><br><br><span class="hljs-comment"># 语句处理器(和 db 进行交互)</span><br>StatementHandler<br> <span class="hljs-comment"># 预编译</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">Statement prepare(Connection connection, Integer transactionTimeout) </span><br> <span class="hljs-comment"># 参数处理($&#123;&#125;, #&#123;&#125;, TypeHandler#setParameter)</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">void parameterize(Statement statement)</span><br> <span class="hljs-comment"># 更新</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">int update(Statement statement)</span><br> <span class="hljs-comment"># 查询</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">List&lt;E&gt; query(Statement statement, ResultHandler resultHandler)</span><br> <span class="hljs-comment"># 获取 sql</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">BoundSql getBoundSql();</span><br> <span class="hljs-comment"># 获取参数处理器</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">ParameterHandler getParameterHandler();</span><br><br><br><span class="hljs-comment"># 基础抽象语句处理器</span><br>BaseStatementHandler implements StatementHandler<br> <span class="hljs-comment"># 解析 boundSql, 绑定 参数处理器, 绑定 结果处理器</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">protected BaseStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql)</span><br><br><br><span class="hljs-comment"># 预编译语句处理器</span><br>PreparedStatementHandler extends BaseStatementHandler<br> <span class="hljs-comment"># 更新</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">int update(Statement statement)</span><br>  <span class="hljs-comment"># 执行db 调用</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">ps.execute();</span><br>  <span class="hljs-comment"># 响应更新行数(int)</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">int rows = ps.getUpdateCount();</span><br>  <span class="hljs-comment"># keyGenerator 处理(自增主键)</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">keyGenerator.processAfter(executor, mappedStatement, ps, parameterObject);</span><br> <span class="hljs-comment"># 查询</span><br> <span class="hljs-bullet">-</span> <span class="hljs-string">List&lt;E&gt; query(Statement statement, ResultHandler resultHandler)</span><br>  <span class="hljs-comment"># 执行db 调用</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">ps.execute();</span><br>  <span class="hljs-comment"># 结果处理器(TypeHandler#getResult)</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">resultSetHandler.handleCursorResultSets(ps);</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="Plugin"><a href="#Plugin" class="headerlink" title="Plugin"></a>Plugin</h3><figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs coffeescript"><span class="hljs-comment"># 拦截器</span><br>Interceptor<br> <span class="hljs-comment"># 拦截处理</span><br> - <span class="hljs-built_in">Object</span> intercept(Invocation invocation)<br> <span class="hljs-comment"># 默认包装</span><br> - <span class="hljs-keyword">default</span> <span class="hljs-built_in">Object</span> plugin(<span class="hljs-built_in">Object</span> target) <span class="hljs-keyword">return</span> Plugin.wrap(target, this);<br><br><br><span class="hljs-comment"># 插件</span><br>Plugin implements InvocationHandler<br> <span class="hljs-comment"># 将拦截器和原始对象包装到一块</span><br> - <span class="hljs-built_in">Object</span> wrap(<span class="hljs-built_in">Object</span> target, Interceptor interceptor)<br> <span class="hljs-comment"># 执行</span><br> - org.apache.ibatis.plugin.Plugin<span class="hljs-comment">#invoke</span><br>  <span class="hljs-comment"># 执行拦截器</span><br>  - interceptor.intercept(<span class="hljs-keyword">new</span> Invocation(target, method, args));<br><br><br>拦截范围:<br> <span class="hljs-number">1.</span> ParameterHandler<br> <span class="hljs-number">1.</span> ResultSetHandler<br> <span class="hljs-number">1.</span> StatementHandler<br> <span class="hljs-number">1.</span> Executor<br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%BA%90%E7%A0%81/" class="category-chain-item">源码</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%BA%90%E7%A0%81/MyBatis/" class="category-chain-item">MyBatis</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/MyBatis/">#MyBatis</a>
+      
+        <a href="/tags/%E6%BA%90%E7%A0%81/">#源码</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>MyBatis源码流程</div>
+      <div>https://gallrax.github.io/2023/04/10/MyBatis源码流程/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Gallrax</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年4月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/04/10/Spring%E6%BA%90%E7%A0%81%E6%B5%81%E7%A8%8B/" title="Spring-源码相关">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Spring-源码相关</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/03/27/JVM-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3/" title="JVM-内存相关">
+                        <span class="hidden-mobile">JVM-内存相关</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

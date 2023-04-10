@@ -19,7 +19,7 @@
     <meta name="description" content="JVM 内存相关知识 内存分配   指针碰撞(CAS 来解决并发问题) 空闲列表(连续的内存区域)   逃逸分析 在方法体中创建对象，如果该对象被方法体其他变量引用到，叫方法逃逸，被外部线程访问到叫线程逃逸 优化点:  同步消除：如果一个对象被逃逸分析发现只能被一个线程所访问，那对于这个对象的操作可以不同步 栈上分配：如果确定一个对象不会逃逸出线程之外，那让这个对象在栈上分配内存将会是一个很不错的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JVM-内存相关">
-<meta property="og:url" content="https://gallrax.github.io/2023/04/27/JVM-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3/index.html">
+<meta property="og:url" content="https://gallrax.github.io/2023/03/27/JVM-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3/index.html">
 <meta property="og:site_name" content="Gallrax&#39;s blog">
 <meta property="og:description" content="JVM 内存相关知识 内存分配   指针碰撞(CAS 来解决并发问题) 空闲列表(连续的内存区域)   逃逸分析 在方法体中创建对象，如果该对象被方法体其他变量引用到，叫方法逃逸，被外部线程访问到叫线程逃逸 优化点:  同步消除：如果一个对象被逃逸分析发现只能被一个线程所访问，那对于这个对象的操作可以不同步 栈上分配：如果确定一个对象不会逃逸出线程之外，那让这个对象在栈上分配内存将会是一个很不错的">
 <meta property="og:locale" content="zh_CN">
@@ -34,8 +34,8 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/64622bdc59d740e6b0851e7a7862ac33.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/2489423-20211106205526073-217056009.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE1OTY1NjIx,size_16,color_FFFFFF,t_70.jpeg">
-<meta property="article:published_time" content="2023-04-26T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-04-08T13:17:46.095Z">
+<meta property="article:published_time" content="2023-03-26T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-10T14:19:40.804Z">
 <meta property="article:author" content="Gallrax">
 <meta property="article:tag" content="JVM">
 <meta name="twitter:card" content="summary_large_image">
@@ -222,8 +222,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-04-27 00:00" pubdate>
-          2023年4月27日 凌晨
+        <time datetime="2023-03-27 00:00" pubdate>
+          2023年3月27日 凌晨
         </time>
       </span>
     
@@ -646,7 +646,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>JVM-内存相关</div>
-      <div>https://gallrax.github.io/2023/04/27/JVM-内存相关/</div>
+      <div>https://gallrax.github.io/2023/03/27/JVM-内存相关/</div>
     </div>
     <div class="license-meta">
       
@@ -658,7 +658,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年4月27日</div>
+          <div>2023年3月27日</div>
         </div>
       
       
@@ -689,6 +689,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2023/04/10/MyBatis%E6%BA%90%E7%A0%81%E6%B5%81%E7%A8%8B/" title="MyBatis源码流程">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">MyBatis源码流程</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">

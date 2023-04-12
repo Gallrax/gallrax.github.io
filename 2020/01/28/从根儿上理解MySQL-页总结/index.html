@@ -83,7 +83,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"gallrax.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"gallrax.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":false,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -293,8 +293,8 @@
 <p>一个数据页可以被大致划分为7个部分</p>
 <p>File Header，表示页的一些通用信息，占固定的38字节。<br>Page Header，表示数据页专有的一些信息，占固定的56个字节。<br>Infimum + Supremum，两个虚拟的伪记录，分别表示页中的最小和最大记录，占固定的26个字节。<br>User Records：真实存储我们插入的记录的部分，大小不固定。<br>Free Space：页中尚未使用的部分，大小不确定。<br>Page Directory：页中的某些记录相对位置，也就是各个槽在页面中的地址偏移量，大小不固定，插入的记录越多，这个部分占用的空间越多。<br>File Trailer：用于检验页是否完整的部分，占用固定的8个字节。</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3zgsm1ej30u00yfq5z.jpg" srcset="/img/loading.gif" lazyload alt="image-20200129175558772"></p>
-<p><img src="https://image.baidu.com/search/down?url=http://tva1.sinaimg.cn/large/0081Kckwly1gki3zjjr01j30vc0jsjth.jpg" srcset="/img/loading.gif" lazyload alt="image-20200129175624645"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3zgsm1ej30u00yfq5z.jpg" alt="image-20200129175558772"></p>
+<p><img src="https://image.baidu.com/search/down?url=http://tva1.sinaimg.cn/large/0081Kckwly1gki3zjjr01j30vc0jsjth.jpg" alt="image-20200129175624645"></p>
 <blockquote>
 <p>上述的行格式即为 User Records的一部分</p>
 <p>新生成的页并没有 User Records, 当插入数据时, 会从 Free Space 申请, 如果 Free Space 的空间全部被替换掉, 则说明该页满了, 需要申请新的页</p>
@@ -302,8 +302,8 @@
 <h4 id="File-Header-文件头部"><a href="#File-Header-文件头部" class="headerlink" title="File Header (文件头部)"></a>File Header (文件头部)</h4><blockquote>
 <p>文件头部表主要关注点在于页号, 上一页的页号和下一页的页号. 构成了双向链表</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3znpswbj31au0q8acw.jpg" srcset="/img/loading.gif" lazyload alt="image-20200130141415406"></p>
-<h4 id="Page-Directory-页目录"><a href="#Page-Directory-页目录" class="headerlink" title="Page Directory (页目录)"></a>Page Directory (页目录)</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3zrh8u9j31l00u00x4.jpg" srcset="/img/loading.gif" lazyload alt="image-20200129180219930"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3znpswbj31au0q8acw.jpg" alt="image-20200130141415406"></p>
+<h4 id="Page-Directory-页目录"><a href="#Page-Directory-页目录" class="headerlink" title="Page Directory (页目录)"></a>Page Directory (页目录)</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3zrh8u9j31l00u00x4.jpg" alt="image-20200129180219930"></p>
 <blockquote>
 <p>从 select * from table wher id &#x3D; 1 讲起<br>比较笨的方式会从最小记录开始遍历往下找, 知道找到 next_record &#x3D; 0</p>
 <p>MySQL 的优化点在于新增了一个目录, 利用二分查找优化</p>
@@ -312,7 +312,7 @@
 <li>通过记录的next_record属性遍历该槽所在的组中的各个记录</li>
 </ol>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki40mdkthj31co0u0gqz.jpg" srcset="/img/loading.gif" lazyload alt="image-20200129180437808"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki40mdkthj31co0u0gqz.jpg" alt="image-20200129180437808"></p>
 <figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs routeros">因为把16条记录的全部信息都画在一张图里太占地方，让人眼花缭乱的，所以只保留了用户记录头信息中的n_owned和next_record属性，也省略了各个记录之间的箭头，我没画不等于没有啊！现在看怎么从这个页目录中查找记录。因为各个槽代表的记录的主键值都是从小到大排序的，所以我们可以使用所谓的二分法来进行快速查找。5个槽的编号分别是：0、1、2、3、4，所以初始情况下最低的槽就是<span class="hljs-attribute">low</span>=0，最高的槽就是high=4。比方说我们想找主键值为6的记录，过程是这样的：<br><br>计算中间槽的位置：(0+4)/<span class="hljs-attribute">2</span>=2，所以查看槽2对应记录的主键值为8，又因为8 &gt; 6，所以设置<span class="hljs-attribute">high</span>=2，low保持不变。<br><br>重新计算中间槽的位置：(0+2)/<span class="hljs-attribute">2</span>=1，所以查看槽1对应的主键值为4，又因为4 &lt; 6，所以设置<span class="hljs-attribute">low</span>=1，high保持不变。<br><br>因为high - low的值为1，所以确定主键值为6的记录在槽2对应的组中。此刻我们需要找到槽2中主键值最小的那条记录，然后沿着单向链表遍历槽2中的记录。但是我们前边又说过，每个槽对应的记录都是该组中主键值最大的记录，这里槽2对应的记录是主键值为8的记录，怎么定位一个组中最小的记录呢？别忘了各个槽都是挨着的，我们可以很轻易的拿到槽1对应的记录（主键值为4），该条记录的下一条记录就是槽2中主键值最小的记录，该记录的主键值为5。所以我们可以从这条主键值为5的记录出发，遍历槽2中的各条记录，直到找到主键值为6的那条记录即可。由于一个组中包含的记录条数只能是1~8条，所以遍历一个组中的记录的代价是很小的。<br><br>所以在一个数据页中查找指定主键值的记录的过程分为两步：<br><br>通过二分法确定该记录所在的槽，并找到该槽所在分组中主键值最小的那条记录。<br><br>通过记录的next_record属性遍历该槽所在的组中的各个记录。<br></code></pre></td></tr></table></figure>
 
 
@@ -320,7 +320,7 @@
 <h2 id="行格式"><a href="#行格式" class="headerlink" title="行格式"></a>行格式</h2><blockquote>
 <p>行格式主要分为四种类型Compact<code>、</code>Redundant<code>、</code>Dynamic<code>和</code>Compressed. 主要理解 Compact</p>
 </blockquote>
-<h3 id="Compact-行格式"><a href="#Compact-行格式" class="headerlink" title="Compact 行格式"></a>Compact 行格式</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3zv88vcj317g0du75j.jpg" srcset="/img/loading.gif" lazyload alt="image-20200129145838600"></p>
+<h3 id="Compact-行格式"><a href="#Compact-行格式" class="headerlink" title="Compact 行格式"></a>Compact 行格式</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3zv88vcj317g0du75j.jpg" alt="image-20200129145838600"></p>
 <blockquote>
 <p>行格式主要分为记录的额外信息, 记录的真实数据</p>
 </blockquote>
@@ -343,8 +343,8 @@
 <p>这一部分牵扯的内容较多</p>
 <p>大致可以看一下删除标识(删除是并非真正删除, 只是修改表示), 下一条记录位置(B+树特性)</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki400egxvj31t60diwfl.jpg" srcset="/img/loading.gif" lazyload alt="image-20200129152146891"></p>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki403ljuhj31440twtbe.jpg" srcset="/img/loading.gif" lazyload alt="image-20200129152534179"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki400egxvj31t60diwfl.jpg" alt="image-20200129152146891"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki403ljuhj31440twtbe.jpg" alt="image-20200129152534179"></p>
 <blockquote>
 <p>除了这些详细信息, 还会有 MySQL 自动添加的隐藏列</p>
 <p>实际上这几个列的真正名称其实是：DB_ROW_ID, DB_TRX_ID, DB_ROLL_PTR, 为了美观才写成了row_id、transaction_id和roll_pointer</p>
@@ -352,20 +352,20 @@
 <p>transaction_id: 事务 ID</p>
 <p>roll_pointer: 回滚指针</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki406d6koj30wg0cewf4.jpg" srcset="/img/loading.gif" lazyload alt="image-20200129152851500"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki406d6koj30wg0cewf4.jpg" alt="image-20200129152851500"></p>
 <h4 id="行溢出"><a href="#行溢出" class="headerlink" title="行溢出"></a>行溢出</h4><blockquote>
 <p>因为一个页占用 16KB, 16 * 1024 &#x3D; 16384 字节, 而 varchar 最多可以占用65535, 不包括隐藏列和记录头信息</p>
 <p>但是在我们使用 varchar 时, 会设置变长字段长度列表和 NULL 值列表</p>
 <p>对于 NOT NULL, 只能使用65533字节 (两个字节用来表示长度)<br>对于非 NOT NULL, 只用使用 65532 字节 (两个字节用来表示长度, 一个字节用来表示 NULL 标识)</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki40a7o14j31jk0u0td1.jpg" srcset="/img/loading.gif" lazyload alt="image-20200129154058216"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki40a7o14j31jk0u0td1.jpg" alt="image-20200129154058216"></p>
 <figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs tap">对于行溢出的情况, 真实的数据只用存储前<span class="hljs-number"> 768 </span>字节, 后面放的是溢出页地址<br></code></pre></td></tr></table></figure>
 
 <h4 id="行溢出的节点"><a href="#行溢出的节点" class="headerlink" title="行溢出的节点"></a>行溢出的节点</h4><blockquote>
 <p>综上所述, 我们知道在数据的占用字节数超过某个阈值就会发生行溢出, 那么行溢出的计算方式分析如下</p>
 <p>ps: 截图来源于MySQL 是怎样运行的：从根儿上理解 MySQL(小孩子 4919)</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki40e1nh2j30u00xuag6.jpg" srcset="/img/loading.gif" lazyload alt="image-20200129154804902"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki40e1nh2j30u00xuag6.jpg" alt="image-20200129154804902"></p>
 <h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><h4 id="delete-mask"><a href="#delete-mask" class="headerlink" title="delete_mask"></a>delete_mask</h4><blockquote>
 <p>这个属性标识该条记录是否已删除</p>
 <p>如果 MySQL 设计删除一条则执行磁盘删除, 会导致磁盘IO增加, MySQL 为了优化, 使用一个标识表示该记录已被删除, 如果有新的记录来, 会覆盖该条记录<br>原理: 删除数据时, 标识该记录已删除, 并且放入垃圾链表, 新的记录插入时, 先从垃圾链表中替换</p>
@@ -659,10 +659,6 @@
 
 
 
-
-  
-    <script  src="/js/img-lazyload.js" ></script>
-  
 
 
 

@@ -74,7 +74,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"gallrax.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"gallrax.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":false,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -328,7 +328,7 @@
 </blockquote>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">typedef</span> <span class="hljs-keyword">struct</span> <span class="hljs-title class_">zskiplistNode</span> &#123;<br>    <span class="hljs-comment">//节点对应成员的对象,一般是SDS</span><br>    robj *obj; <br>    <span class="hljs-comment">//分数,跳跃表的顺序按照分值进行排列</span><br>    <span class="hljs-type">double</span> score; <br>    <span class="hljs-comment">//存储后继节点的指针</span><br>    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">zskiplistNode</span> *backward; <br>    <span class="hljs-comment">// 层级</span><br>    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">zskiplistLevel</span> &#123;<br>        <span class="hljs-comment">// 存储前驱节点的指针</span><br>        <span class="hljs-keyword">struct</span> <span class="hljs-title class_">zskiplistNode</span> *forward; <br>        <span class="hljs-comment">// 跨度</span><br>        <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> span; <br>    &#125; level[];<br>&#125; zskiplistNode;<br><br><span class="hljs-keyword">typedef</span> <span class="hljs-keyword">struct</span> <span class="hljs-title class_">zskiplist</span> &#123;<br>    <span class="hljs-comment">// 跳跃表的表头节点和表尾节点</span><br>    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">zskiplistNode</span> *header, *tail;<br>    <span class="hljs-comment">// 跳跃表中节点的数量</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> length;<br>    <span class="hljs-comment">// 表中层数最大的节点层数</span><br>    <span class="hljs-type">int</span> level;<br>&#125; zskiplist;<br></code></pre></td></tr></table></figure>
 
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki49t7i77j31as0qm78o-20230318170131586.jpg" srcset="/img/loading.gif" lazyload alt="image-20201108220715910"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki49t7i77j31as0qm78o-20230318170131586.jpg" alt="image-20201108220715910"></p>
 <h2 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h2><blockquote>
 <p>Redis 的数据全部放在内存中 如果没有一种良好的持久化日志, 则会在宕机时丢失数据.</p>
 <p>目前 Redis 通过两种方式实现持久化<br>RDB: 即时快照<br>AOF: 日志追加, 每执行一条命令, 就在日志后追加该条命令</p>
@@ -409,7 +409,7 @@
 <h3 id="快照同步"><a href="#快照同步" class="headerlink" title="快照同步"></a>快照同步</h3><blockquote>
 <p>快照同步是一种比较耗时的同步方式. 快照同步会执行一次 bgsave, 然后异步把 rdb 发送给从节点, 从节点再 load. 因此主节点应该配置合适的 buffer size, 尽量避免快照同步</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki49394kej30hx0dngmt-20230318170131703.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki49394kej30hx0dngmt-20230318170131703.jpg" alt="img"></p>
 <h2 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h2><h3 id="原生集群"><a href="#原生集群" class="headerlink" title="原生集群"></a>原生集群</h3><blockquote>
 <p>原生仅支持一主多从, slave of 即为该种方式. 这种方式的缺点就是主节点宕机, 只能人工手动主从切换, 而无法自动主动切换, 无法实现高可用</p>
 </blockquote>
@@ -719,10 +719,6 @@
 
 
 
-
-  
-    <script  src="/js/img-lazyload.js" ></script>
-  
 
 
 

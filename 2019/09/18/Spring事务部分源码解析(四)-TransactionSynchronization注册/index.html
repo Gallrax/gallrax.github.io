@@ -86,7 +86,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"gallrax.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"gallrax.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":false,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -297,12 +297,12 @@
 <h2 id="TransactionSynchronizationManager"><a href="#TransactionSynchronizationManager" class="headerlink" title="TransactionSynchronizationManager"></a>TransactionSynchronizationManager</h2><blockquote>
 <p>我们需要看一下registerSynchronization()方法的调用方,我们通过调用就可以知道第三方厂商实现调用的地方</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3tyo81nj30s80jcwi9.jpg" srcset="/img/loading.gif" lazyload alt="image-20190926192218024"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3tyo81nj30s80jcwi9.jpg" alt="image-20190926192218024"></p>
 <blockquote>
 <p>按照调用的引用关系. 目前我们的项目中有MyBatis, RabbitMQ, MongoDB, Redis, 和Spring jdbc有实现</p>
 <p>接下来我们一步步看都是在何时注册</p>
 </blockquote>
-<h2 id="Mybatis"><a href="#Mybatis" class="headerlink" title="Mybatis"></a>Mybatis</h2><h3 id="SqlSessionUtils-registerSessionHolder"><a href="#SqlSessionUtils-registerSessionHolder" class="headerlink" title="SqlSessionUtils#registerSessionHolder()"></a>SqlSessionUtils#registerSessionHolder()</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3u1uftoj30uy0gmgp2.jpg" srcset="/img/loading.gif" lazyload alt="image-20190926192544701"></p>
+<h2 id="Mybatis"><a href="#Mybatis" class="headerlink" title="Mybatis"></a>Mybatis</h2><h3 id="SqlSessionUtils-registerSessionHolder"><a href="#SqlSessionUtils-registerSessionHolder" class="headerlink" title="SqlSessionUtils#registerSessionHolder()"></a>SqlSessionUtils#registerSessionHolder()</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3u1uftoj30uy0gmgp2.jpg" alt="image-20190926192544701"></p>
 <h3 id="SqlSessionSynchronization"><a href="#SqlSessionSynchronization" class="headerlink" title="SqlSessionSynchronization"></a>SqlSessionSynchronization</h3><blockquote>
 <p>我们看一下具体实现TransactionSynchronization相关的commit和completion代码</p>
 </blockquote>
@@ -313,11 +313,11 @@
 <p>个人觉得mybatis可能是觉得依赖于Connection的commit.因为本身在TransactionSynchronization的概念里,没有rollback只有commit和completion. 而Mybatis一定是依赖于ConnectionHolder,因此一定可以使用Connection的rollback.</p>
 <p>但是我觉得我的理解是有问题的,因为MyBatis本身自己就实现了一套commit和rollback机制,当然底层还是使用Connection的commit和rollback.只不过是增加了一些缓存相关的处理.</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3u4o4xpj30yn0bt75y.jpg" srcset="/img/loading.gif" lazyload alt="image-20190926194523630"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3u4o4xpj30yn0bt75y.jpg" alt="image-20190926194523630"></p>
 <blockquote>
 <p>通过方法名我们便可以看出,每当获取Session是,就会注册对应的TransactionSynchronization</p>
 </blockquote>
-<h2 id="RabbitMQ"><a href="#RabbitMQ" class="headerlink" title="RabbitMQ"></a>RabbitMQ</h2><h3 id="ConnectionFactoryUtils-bindResourceToTransaction"><a href="#ConnectionFactoryUtils-bindResourceToTransaction" class="headerlink" title="ConnectionFactoryUtils#bindResourceToTransaction()"></a>ConnectionFactoryUtils#bindResourceToTransaction()</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3u74wg0j30qe07qjt1.jpg" srcset="/img/loading.gif" lazyload alt="image-20190926194726213"></p>
+<h2 id="RabbitMQ"><a href="#RabbitMQ" class="headerlink" title="RabbitMQ"></a>RabbitMQ</h2><h3 id="ConnectionFactoryUtils-bindResourceToTransaction"><a href="#ConnectionFactoryUtils-bindResourceToTransaction" class="headerlink" title="ConnectionFactoryUtils#bindResourceToTransaction()"></a>ConnectionFactoryUtils#bindResourceToTransaction()</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3u74wg0j30qe07qjt1.jpg" alt="image-20190926194726213"></p>
 <h3 id="RabbitResourceSynchronization"><a href="#RabbitResourceSynchronization" class="headerlink" title="RabbitResourceSynchronization"></a>RabbitResourceSynchronization</h3><figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">public void after<span class="hljs-constructor">Completion(<span class="hljs-params">int</span> <span class="hljs-params">status</span>)</span> &#123;<br>	<span class="hljs-keyword">if</span> (status<span class="hljs-operator"> == </span>TransactionSynchronization.STATUS_COMMITTED) &#123;<br>		this.resourceHolder.commit<span class="hljs-constructor">All()</span>;<br>	&#125;<br>	<span class="hljs-keyword">else</span> &#123;<br>		this.resourceHolder.rollback<span class="hljs-constructor">All()</span>;<br>	&#125;<br><br>	<span class="hljs-keyword">if</span> (this.resourceHolder.is<span class="hljs-constructor">ReleaseAfterCompletion()</span>) &#123;<br>		this.resourceHolder.set<span class="hljs-constructor">SynchronizedWithTransaction(<span class="hljs-params">false</span>)</span>;<br>	&#125;<br>	super.after<span class="hljs-constructor">Completion(<span class="hljs-params">status</span>)</span>;<br>&#125;<br><br>protected void release<span class="hljs-constructor">Resource(RabbitResourceHolder <span class="hljs-params">resourceHolder</span>, Object <span class="hljs-params">resourceKey</span>)</span> &#123;<br>	<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">ConnectionFactoryUtils</span>.</span></span>release<span class="hljs-constructor">Resources(<span class="hljs-params">resourceHolder</span>)</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <blockquote>
@@ -328,30 +328,30 @@
 <blockquote>
 <p>从方法名上看是获取TransactionResouceHolder.有点懵,我们继续往上看调用方</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3uc7peyj30ow0dyjtb.jpg" srcset="/img/loading.gif" lazyload alt="image-20190926195649277"></p>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3ueyb10j30ud0rajvg.jpg" srcset="/img/loading.gif" lazyload alt="image-20190926195743569"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3uc7peyj30ow0dyjtb.jpg" alt="image-20190926195649277"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3ueyb10j30ud0rajvg.jpg" alt="image-20190926195743569"></p>
 <blockquote>
 <p>好了. 看到doExecute就知道是我们执行RabbitTemplate#convertAndSend()的具体实现</p>
 </blockquote>
-<h2 id="MongoDB"><a href="#MongoDB" class="headerlink" title="MongoDB"></a>MongoDB</h2><h3 id="MongoDbUtils-doGetDB"><a href="#MongoDbUtils-doGetDB" class="headerlink" title="MongoDbUtils#doGetDB()"></a>MongoDbUtils#doGetDB()</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3ujab9uj30q60f9mzd.jpg" srcset="/img/loading.gif" lazyload alt="image-20190926195934239"></p>
+<h2 id="MongoDB"><a href="#MongoDB" class="headerlink" title="MongoDB"></a>MongoDB</h2><h3 id="MongoDbUtils-doGetDB"><a href="#MongoDbUtils-doGetDB" class="headerlink" title="MongoDbUtils#doGetDB()"></a>MongoDbUtils#doGetDB()</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3ujab9uj30q60f9mzd.jpg" alt="image-20190926195934239"></p>
 <blockquote>
 <p>可以理解为建立连接的时候就就直接注册</p>
 </blockquote>
-<h3 id="MongoSynchronization"><a href="#MongoSynchronization" class="headerlink" title="MongoSynchronization"></a>MongoSynchronization</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3um4tq9j30k803bmxf-20230318171105346.jpg" srcset="/img/loading.gif" lazyload alt="image-20190926200013448"></p>
+<h3 id="MongoSynchronization"><a href="#MongoSynchronization" class="headerlink" title="MongoSynchronization"></a>MongoSynchronization</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3um4tq9j30k803bmxf-20230318171105346.jpg" alt="image-20190926200013448"></p>
 <blockquote>
 <p>没什么好说的了,继承父类的绑定解绑Resource.没有自己的实现</p>
 </blockquote>
-<h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><h3 id="RedisConnectionUtils-potentiallyRegisterTransactionSynchronisation"><a href="#RedisConnectionUtils-potentiallyRegisterTransactionSynchronisation" class="headerlink" title="RedisConnectionUtils#potentiallyRegisterTransactionSynchronisation()"></a>RedisConnectionUtils#potentiallyRegisterTransactionSynchronisation()</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3uoy06sj30qz08owfh.jpg" srcset="/img/loading.gif" lazyload alt="image-20190926200206610"></p>
+<h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><h3 id="RedisConnectionUtils-potentiallyRegisterTransactionSynchronisation"><a href="#RedisConnectionUtils-potentiallyRegisterTransactionSynchronisation" class="headerlink" title="RedisConnectionUtils#potentiallyRegisterTransactionSynchronisation()"></a>RedisConnectionUtils#potentiallyRegisterTransactionSynchronisation()</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3uoy06sj30qz08owfh.jpg" alt="image-20190926200206610"></p>
 <blockquote>
 <p>可以看到是获取连接的时候进行注册</p>
 </blockquote>
-<h3 id="RedisTransactionSynchronizer"><a href="#RedisTransactionSynchronizer" class="headerlink" title="RedisTransactionSynchronizer"></a>RedisTransactionSynchronizer</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3us4dqfj30mw0ic407.jpg" srcset="/img/loading.gif" lazyload alt="image-20190926200343949"></p>
+<h3 id="RedisTransactionSynchronizer"><a href="#RedisTransactionSynchronizer" class="headerlink" title="RedisTransactionSynchronizer"></a>RedisTransactionSynchronizer</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3us4dqfj30mw0ic407.jpg" alt="image-20190926200343949"></p>
 <blockquote>
 <p>虽然Redis的事务是基于乐观锁实现,很鸡肋,但是至少也是人家的一种态度.<br>我们看一下他的实现和Rabbit类似,都是继续status来commit或者rollback(discard表示取消事务)</p>
 </blockquote>
-<h3 id="RedisConnectionUtils-doGetConnection"><a href="#RedisConnectionUtils-doGetConnection" class="headerlink" title="RedisConnectionUtils#doGetConnection()"></a>RedisConnectionUtils#doGetConnection()</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3uyf1j8j30rp0ko0vn-20230318171059125.jpg" srcset="/img/loading.gif" lazyload alt="image-20190926200253579"></p>
-<h2 id="Spring-JDBC"><a href="#Spring-JDBC" class="headerlink" title="Spring JDBC"></a>Spring JDBC</h2><h3 id="DataSourceUtils-doGetConnection"><a href="#DataSourceUtils-doGetConnection" class="headerlink" title="DataSourceUtils#doGetConnection"></a>DataSourceUtils#doGetConnection</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3uvdnaij30ow0kwdj2.jpg" srcset="/img/loading.gif" lazyload alt="image-20190926200808146"></p>
-<h3 id="ConnectionSynchronization"><a href="#ConnectionSynchronization" class="headerlink" title="ConnectionSynchronization"></a>ConnectionSynchronization</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3v1xh50j30ju0id40y.jpg" srcset="/img/loading.gif" lazyload alt="image-20190926200835955"></p>
+<h3 id="RedisConnectionUtils-doGetConnection"><a href="#RedisConnectionUtils-doGetConnection" class="headerlink" title="RedisConnectionUtils#doGetConnection()"></a>RedisConnectionUtils#doGetConnection()</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3uyf1j8j30rp0ko0vn-20230318171059125.jpg" alt="image-20190926200253579"></p>
+<h2 id="Spring-JDBC"><a href="#Spring-JDBC" class="headerlink" title="Spring JDBC"></a>Spring JDBC</h2><h3 id="DataSourceUtils-doGetConnection"><a href="#DataSourceUtils-doGetConnection" class="headerlink" title="DataSourceUtils#doGetConnection"></a>DataSourceUtils#doGetConnection</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3uvdnaij30ow0kwdj2.jpg" alt="image-20190926200808146"></p>
+<h3 id="ConnectionSynchronization"><a href="#ConnectionSynchronization" class="headerlink" title="ConnectionSynchronization"></a>ConnectionSynchronization</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3v1xh50j30ju0id40y.jpg" alt="image-20190926200835955"></p>
 <blockquote>
 <p>这一部分发现Spring Jdbc主要是先除了解绑dataSource,还有一个作用是关闭连接</p>
 </blockquote>
@@ -646,10 +646,6 @@
 
 
 
-
-  
-    <script  src="/js/img-lazyload.js" ></script>
-  
 
 
 

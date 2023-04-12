@@ -89,7 +89,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"gallrax.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"gallrax.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":false,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -297,18 +297,18 @@
                 <blockquote>
 <p>方便谈扩展,项目引用Jdbc和RabbitMQ<br>源码版本spring 4.3.x</p>
 </blockquote>
-<h2 id="从TransactionInterceptor开始"><a href="#从TransactionInterceptor开始" class="headerlink" title="从TransactionInterceptor开始"></a>从TransactionInterceptor开始</h2><h3 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3gse4nmj30yg0cvgnq.jpg" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<h3 id="方法总览"><a href="#方法总览" class="headerlink" title="方法总览"></a>方法总览</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3gxz5yjj30u00t4abs.jpg" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h2 id="从TransactionInterceptor开始"><a href="#从TransactionInterceptor开始" class="headerlink" title="从TransactionInterceptor开始"></a>从TransactionInterceptor开始</h2><h3 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3gse4nmj30yg0cvgnq.jpg" alt="image.png"></p>
+<h3 id="方法总览"><a href="#方法总览" class="headerlink" title="方法总览"></a>方法总览</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3gxz5yjj30u00t4abs.jpg" alt="image.png"></p>
 <blockquote>
 <p>从方法可以看出,我们关注点放在invoke()即可</p>
 </blockquote>
-<h3 id="invoke方法"><a href="#invoke方法" class="headerlink" title="invoke方法"></a>invoke方法</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3h2obbzj30yg0b8wiu.jpg" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h3 id="invoke方法"><a href="#invoke方法" class="headerlink" title="invoke方法"></a>invoke方法</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3h2obbzj30yg0b8wiu.jpg" alt="image.png"></p>
 <blockquote>
 <p>图中可以看出具体实现是调用父类TransactionAspectSupport的方法</p>
 </blockquote>
-<h2 id="TransactionAspectSupport"><a href="#TransactionAspectSupport" class="headerlink" title="TransactionAspectSupport"></a>TransactionAspectSupport</h2><h3 id="继承图"><a href="#继承图" class="headerlink" title="继承图"></a>继承图</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3h5tk2ej30mo0dqmxn.jpg" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<h3 id="子类-可以发现子类不用多说了-注解开发"><a href="#子类-可以发现子类不用多说了-注解开发" class="headerlink" title="子类(可以发现子类不用多说了,注解开发)"></a>子类(可以发现子类不用多说了,注解开发)</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3hb4099j30yg02vmzv-20230318171242420.jpg" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3he7ajnj30u012nn5j-20230318171245265.jpg" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h2 id="TransactionAspectSupport"><a href="#TransactionAspectSupport" class="headerlink" title="TransactionAspectSupport"></a>TransactionAspectSupport</h2><h3 id="继承图"><a href="#继承图" class="headerlink" title="继承图"></a>继承图</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3h5tk2ej30mo0dqmxn.jpg" alt="image.png"></p>
+<h3 id="子类-可以发现子类不用多说了-注解开发"><a href="#子类-可以发现子类不用多说了-注解开发" class="headerlink" title="子类(可以发现子类不用多说了,注解开发)"></a>子类(可以发现子类不用多说了,注解开发)</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3hb4099j30yg02vmzv-20230318171242420.jpg" alt="image.png"></p>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3he7ajnj30u012nn5j-20230318171245265.jpg" alt="image.png"></p>
 <blockquote>
 <p>可以发现,该父类已经提供了很多可用的方法</p>
 </blockquote>
@@ -318,15 +318,15 @@
 <p>先不谈getter&#x2F;setter,把重点放在根据命名比较核心的方法,总结如下</p>
 <figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs scss"><span class="hljs-built_in">determineTransactionManager</span>()<br><span class="hljs-built_in">createTransactionIfNecessary</span>()<br><span class="hljs-built_in">prepareTransactionInfo</span>()<br><span class="hljs-built_in">invokeWithinTransaction</span>()  *<br><span class="hljs-built_in">commitTransactionAfterReturning</span>()<br><span class="hljs-built_in">completeTransactionAfterThrowing</span>()<br></code></pre></td></tr></table></figure>
 
-<h4 id="determineTransactionManager"><a href="#determineTransactionManager" class="headerlink" title="determineTransactionManager()"></a>determineTransactionManager()</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3hjfe30j30yg0m4k11.jpg" srcset="/img/loading.gif" lazyload alt="image.png"><br><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3j3ru4cj30yg07sdk2-20230318171253265.jpg" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h4 id="determineTransactionManager"><a href="#determineTransactionManager" class="headerlink" title="determineTransactionManager()"></a>determineTransactionManager()</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3hjfe30j30yg0m4k11.jpg" alt="image.png"><br><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3j3ru4cj30yg07sdk2-20230318171253265.jpg" alt="image.png"></p>
 <blockquote>
 <p>通过这个方法可以发现是获取事务管理器(并放入缓存)</p>
 </blockquote>
-<h4 id="createTransactionIfNecessary"><a href="#createTransactionIfNecessary" class="headerlink" title="createTransactionIfNecessary()"></a>createTransactionIfNecessary()</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3hnuwx7j30yg0jsagn.jpg" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h4 id="createTransactionIfNecessary"><a href="#createTransactionIfNecessary" class="headerlink" title="createTransactionIfNecessary()"></a>createTransactionIfNecessary()</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3hnuwx7j30yg0jsagn.jpg" alt="image.png"></p>
 <blockquote>
 <p>通过这份方法命名可以发现是如果有必要则创建一个事务.<br>实际内容是获取TransactionAttribute和TransactionStatus(开启事务,AbstractPlatformTransactionManager详解),然后预处理TransactionInfo</p>
 </blockquote>
-<h3 id="prepareTransactionInfo"><a href="#prepareTransactionInfo" class="headerlink" title="prepareTransactionInfo()"></a>prepareTransactionInfo()</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3hssydsj30yg0ln11p.jpg" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h3 id="prepareTransactionInfo"><a href="#prepareTransactionInfo" class="headerlink" title="prepareTransactionInfo()"></a>prepareTransactionInfo()</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3hssydsj30yg0ln11p.jpg" alt="image.png"></p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">bindToThread</span>()</span> &#123;<br>	<span class="hljs-comment">// Expose current TransactionStatus, preserving any existing TransactionStatus</span><br>	<span class="hljs-comment">// for restoration after this transaction is complete.</span><br>	<span class="hljs-keyword">this</span>.oldTransactionInfo = transactionInfoHolder.<span class="hljs-keyword">get</span>();<br>	transactionInfoHolder.<span class="hljs-keyword">set</span>(<span class="hljs-keyword">this</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <blockquote>
@@ -352,26 +352,26 @@
 <ol>
 <li>如果TransactionInfo包含事务则执行回滚逻辑<br>1.1 如果属于回滚异常范围,则执行回滚<br>1.1 如果不属于回滚异常范围,则正常提交</li>
 </ol>
-<h3 id="completeTransactionAfterThrowing"><a href="#completeTransactionAfterThrowing" class="headerlink" title="completeTransactionAfterThrowing()"></a>completeTransactionAfterThrowing()</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3hz0x8lj30yg0auq7b-20230318171305245.jpg" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h3 id="completeTransactionAfterThrowing"><a href="#completeTransactionAfterThrowing" class="headerlink" title="completeTransactionAfterThrowing()"></a>completeTransactionAfterThrowing()</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3hz0x8lj30yg0auq7b-20230318171305245.jpg" alt="image.png"></p>
 <blockquote>
 <p>正常提交逻辑(ps: 同一个事务,如果A方法嵌套B方法,如果B方法抛出异常A捕获是否会走正常提交逻辑,如果走正常提交逻辑,事务最终是回滚还是提交? )</p>
 </blockquote>
-<h3 id="TransactionDefinition"><a href="#TransactionDefinition" class="headerlink" title="TransactionDefinition"></a>TransactionDefinition</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3i2qq6xj30yg0o0dom.jpg" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h3 id="TransactionDefinition"><a href="#TransactionDefinition" class="headerlink" title="TransactionDefinition"></a>TransactionDefinition</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3i2qq6xj30yg0o0dom.jpg" alt="image.png"></p>
 <blockquote>
-<p>子类(关注一下)<br><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3i6wm6lj30yg098ahw.jpg" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>子类(关注一下)<br><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3i6wm6lj30yg098ahw.jpg" alt="image.png"></p>
 </blockquote>
 <blockquote>
 <p>事务传播属性</p>
 </blockquote>
-<h3 id="TransactionAttribute"><a href="#TransactionAttribute" class="headerlink" title="TransactionAttribute"></a>TransactionAttribute</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3ia4udcj30yg0qkn5v-20230318171313398.jpg" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h3 id="TransactionAttribute"><a href="#TransactionAttribute" class="headerlink" title="TransactionAttribute"></a>TransactionAttribute</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3ia4udcj30yg0qkn5v-20230318171313398.jpg" alt="image.png"></p>
 <blockquote>
 <p>TransactionDefinition子类,增加rollbackOn(),定义回滚异常范围</p>
 </blockquote>
-<h3 id="TransactionStatus"><a href="#TransactionStatus" class="headerlink" title="TransactionStatus"></a>TransactionStatus</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3ieh4a5j30gk0b8my9.jpg" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h3 id="TransactionStatus"><a href="#TransactionStatus" class="headerlink" title="TransactionStatus"></a>TransactionStatus</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3ieh4a5j30gk0b8my9.jpg" alt="image.png"></p>
 <blockquote>
 <p>传递事务状态</p>
 </blockquote>
-<h3 id="TransactionInfo"><a href="#TransactionInfo" class="headerlink" title="TransactionInfo"></a>TransactionInfo</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3ihpbwsj30w80gwju0.jpg" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h3 id="TransactionInfo"><a href="#TransactionInfo" class="headerlink" title="TransactionInfo"></a>TransactionInfo</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3ihpbwsj30w80gwju0.jpg" alt="image.png"></p>
 <ol>
 <li>通过源码其实能够发现,事务提交回滚都是通过TransactionInfo.getTransactionManager().rollback()&#x2F;commit()</li>
 <li>通过源码能够发现,判断方法发生异常是否回滚是通过TransactionInfo.transactionAttribute.rollbackOn(ex)决定</li>
@@ -670,10 +670,6 @@
 
 
 
-
-  
-    <script  src="/js/img-lazyload.js" ></script>
-  
 
 
 

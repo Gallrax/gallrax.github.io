@@ -83,7 +83,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"gallrax.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"gallrax.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":false,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -289,7 +289,7 @@
               <div class="markdown-body">
                 
                 <p>JVM 内存相关知识</p>
-<h3 id="内存分配"><a href="#内存分配" class="headerlink" title="内存分配"></a>内存分配</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/image-20230408202911552.png" srcset="/img/loading.gif" lazyload alt="image-20230408202911552"></p>
+<h3 id="内存分配"><a href="#内存分配" class="headerlink" title="内存分配"></a>内存分配</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/image-20230408202911552.png" alt="image-20230408202911552"></p>
 <blockquote>
 <ol>
 <li>指针碰撞(CAS 来解决并发问题)</li>
@@ -360,7 +360,7 @@
 <li><strong>白色(white)</strong> : 还没有遍历到的节点, 即灰色节点的子节点</li>
 </ol>
 </blockquote>
-<h4 id="漏标"><a href="#漏标" class="headerlink" title="漏标"></a>漏标</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/v2-e632bcf5769e742930211b1b33bc5f79_1440w.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h4 id="漏标"><a href="#漏标" class="headerlink" title="漏标"></a>漏标</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/v2-e632bcf5769e742930211b1b33bc5f79_1440w.jpg" alt="img"></p>
 <blockquote>
 <p>同时存在以下两种情况才会产生漏标(因为如果新增引用, 那么一定是删除了引用才会漏标, 如果没有删除, 那就是属于新分配对象, 会自动标记存活. 如果删除引用, 那么一定是新增了引用才会漏标, 如果没有新增, 那就说明确实是垃圾)</p>
 <ol>
@@ -371,7 +371,7 @@
 <h3 id="跨代引用"><a href="#跨代引用" class="headerlink" title="跨代引用"></a>跨代引用</h3><blockquote>
 <p>堆空间通常被划分为新生代和老年代. 由于新生代的垃圾收集通常很频繁, 如果老年代对象引用了新生代的对象, 那么回收新生代的话, 需要跟踪从老年代到新生代的所有引用, 所以要避免每次YGC 时扫描整个老年代, 减少开销</p>
 </blockquote>
-<h4 id="记忆集-Remembe-Set"><a href="#记忆集-Remembe-Set" class="headerlink" title="记忆集(Remembe Set)"></a>记忆集(Remembe Set)</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/20200730154253827.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h4 id="记忆集-Remembe-Set"><a href="#记忆集-Remembe-Set" class="headerlink" title="记忆集(Remembe Set)"></a>记忆集(Remembe Set)</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/20200730154253827.png" alt="img"></p>
 <blockquote>
 <p>记录新生代对老年代的引用, 避免 YGC 时扫整个老年代</p>
 <p>RSet 记录了其他 Region 中的对象引用本 Region 中对象的关系, 属于 points-into 结构(谁引用了我的对象). RSet 的价值在于使得垃圾收集器不需要扫描整个堆找到谁引用了当前分区中的对象, 只需要扫描 RSet 即可</p>
@@ -395,12 +395,12 @@
 <h3 id="安全点和安全区域"><a href="#安全点和安全区域" class="headerlink" title="安全点和安全区域"></a>安全点和安全区域</h3><h4 id="安全点"><a href="#安全点" class="headerlink" title="安全点"></a>安全点</h4><blockquote>
 <p>用户线程暂停, GC 线程要开始工作, 但是要确保用户线程暂停的这行字节码指令是不会导致引用关系的变化. 所以JVM 会在字节码指令中, 选一些指令, 作为“安全点”, 比如方法调用, 循环跳转, 异常跳转等, 一般是这些指令才会产生安全点. 为什么它叫安全点, 是这样的, GC 时要暂停业务线程, 并不是抢占式中断(立马把业务线程中断)而是主动是中断. 主动式中断是设置一个标志, 这个标志是中断标志, 各业务线程在运行过程中会不停的主动去轮询这个标志, 一旦发现中断标志为True,就会在自己最近的“安全点”上主动中断挂起</p>
 </blockquote>
-<h4 id="安全区域"><a href="#安全区域" class="headerlink" title="安全区域"></a>安全区域</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/20200730163029816.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h4 id="安全区域"><a href="#安全区域" class="headerlink" title="安全区域"></a>安全区域</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/20200730163029816.png" alt="img"></p>
 <blockquote>
 <p>业务线程都不执行(业务线程处于Sleep 或者是Blocked 状态), 那么程序就没办法进入安全点, 对于这种情况, 就必须引入安全区域. 安全区域是指能够确保在某一段代码片段之中,  引用关系不会发生变化, 因此, 在这个区域中任意地方开始垃圾收集都是安全的. 我们也可以把安全区城看作被扩展拉伸了的安全点</p>
 <p>实际在线程在进入 Sleep&#x2F;Blocked 时, 会标记自己进入安全区, 结束此状态时, 也会标识自己结束安全区, 并检查是否在 gc 状态, 如果在 gc 状态, 则会线程挂起, 使 gc 结束之后再执行业务逻辑</p>
 </blockquote>
-<h3 id="CMS"><a href="#CMS" class="headerlink" title="CMS"></a>CMS</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/image-20230407013450538.png" srcset="/img/loading.gif" lazyload alt="image-20230407013450538"></p>
+<h3 id="CMS"><a href="#CMS" class="headerlink" title="CMS"></a>CMS</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/image-20230407013450538.png" alt="image-20230407013450538"></p>
 <h4 id="card-table"><a href="#card-table" class="headerlink" title="card table"></a>card table</h4><blockquote>
 <p>底层是位图(bitmap), RememberSet 的实现. 每一位映射一块内存区域. 存在跨带引用当发生写操作时, 写屏障会将此内存区域快映射位标记为 1. YGC 时直接遍历卡表为 1 的内存区域, 判读是否有对年轻代的引用 即可. YGC 结束时, 会重置卡表复原为 0(如果有引用, 仍然为 1)</p>
 <p>代表了<strong>老年代对新生代的引用</strong>. 当 YGC 时, 无需遍历整个老年代来确定引用, 只需要便利此卡表变化的内存区域即可</p>
@@ -455,7 +455,7 @@
 <h4 id="什么时候会执行压缩空间"><a href="#什么时候会执行压缩空间" class="headerlink" title="什么时候会执行压缩空间"></a>什么时候会执行压缩空间</h4><blockquote>
 <p>只有当 full gc 时才会压缩空间 </p>
 </blockquote>
-<h4 id="是否存在漏标"><a href="#是否存在漏标" class="headerlink" title="是否存在漏标"></a>是否存在漏标</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/16588069763846.jpg" srcset="/img/loading.gif" lazyload alt="图片来自网络"></p>
+<h4 id="是否存在漏标"><a href="#是否存在漏标" class="headerlink" title="是否存在漏标"></a>是否存在漏标</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/16588069763846.jpg" alt="图片来自网络"></p>
 <blockquote>
 <p>存在, 通过写屏障解决. 会将 b 标记为 dirty</p>
 <p>例: c 未 mark, c 就会被漏标</p>
@@ -465,7 +465,7 @@
 <li>a.b &#x3D; c</li>
 </ol>
 </blockquote>
-<h4 id="是否存在多标-浮动垃圾"><a href="#是否存在多标-浮动垃圾" class="headerlink" title="是否存在多标(浮动垃圾)"></a>是否存在多标(浮动垃圾)</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/4374335.jpeg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h4 id="是否存在多标-浮动垃圾"><a href="#是否存在多标-浮动垃圾" class="headerlink" title="是否存在多标(浮动垃圾)"></a>是否存在多标(浮动垃圾)</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/4374335.jpeg" alt="img"></p>
 <blockquote>
 <p>存在. 多标的垃圾留到下一次 gc(浮动垃圾)</p>
 <p>例: a.b &#x3D; a1</p>
@@ -486,8 +486,8 @@
 <p>堆被分成大约 2000 个区域. 最小大小为 1Mb, 最大大小为 32Mb. 蓝色区域保存老年代对象, 绿色区域保存新生代对象. 还有第四种类型的对象称为 Humongous 区域. 这些区域旨在容纳大小为标准区域 50% 或更大的对象. 新生代内存由一组不连续的区域组成. 这样可以在需要时轻松调整大小</p>
 <p>G1 比起 ParallelOld 和 CMS 需要消耗更多的内存, 因为 G1 有部分内存消耗于记账(accounting)上, 如 Remembered Sets 和 Collection Sets</p>
 </blockquote>
-<h4 id="堆空间"><a href="#堆空间" class="headerlink" title="堆空间"></a>堆空间</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/slide9.png" srcset="/img/loading.gif" lazyload alt="img"></p>
-<h4 id="Region"><a href="#Region" class="headerlink" title="Region"></a>Region</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/64622bdc59d740e6b0851e7a7862ac33.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h4 id="堆空间"><a href="#堆空间" class="headerlink" title="堆空间"></a>堆空间</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/slide9.png" alt="img"></p>
+<h4 id="Region"><a href="#Region" class="headerlink" title="Region"></a>Region</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/64622bdc59d740e6b0851e7a7862ac33.png" alt="img"></p>
 <blockquote>
 <p>包含五个指针: bottom, preTAMS(pre-top-at-mark-start), nextTAMS(next-top-at-mark-start), top和end</p>
 <p>G1 的并发标记阶段使用两个 bitmap</p>
@@ -501,7 +501,7 @@
 <li>[nextTAMS, top)：这部分里的对象在第 n 轮并发标记是隐式存活的</li>
 </ol>
 </blockquote>
-<h4 id="SATB"><a href="#SATB" class="headerlink" title="SATB"></a>SATB</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/2489423-20211106205526073-217056009.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h4 id="SATB"><a href="#SATB" class="headerlink" title="SATB"></a>SATB</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/2489423-20211106205526073-217056009.png" alt="img"></p>
 <blockquote>
 <ol>
 <li>假设第n轮标记开始, 将该Region的top指针赋值给nextTAMS. 在并发标记期间, 所有分配的对象都会存在在[nextTAMS, top], SATB可以确保所有对象都是活的</li>
@@ -513,7 +513,7 @@
 <p>B阶段, 是并发标记结束阶段. 并发标记阶段生成的新对象都会放在[nextTAMS, top]之间, 这边对象被定义为“隐式对象”, 同时nextBitmap也记录了bottom到nextTAMS之间标记对象的地址；</p>
 <p>C阶段, 是垃圾清理阶段. 会交换prevBitmap和nextBitmap, 同时清理[bottom, preTAMS]之间标记后的垃圾, 对应的“隐式对象”, 在下个阶段才会被标记清理. </p>
 </blockquote>
-<h4 id="Remember-Sets"><a href="#Remember-Sets" class="headerlink" title="Remember Sets"></a>Remember Sets</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE1OTY1NjIx,size_16,color_FFFFFF,t_70.jpeg" srcset="/img/loading.gif" lazyload alt="Remember Sets"></p>
+<h4 id="Remember-Sets"><a href="#Remember-Sets" class="headerlink" title="Remember Sets"></a>Remember Sets</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE1OTY1NjIx,size_16,color_FFFFFF,t_70.jpeg" alt="Remember Sets"></p>
 <blockquote>
 <p>每个小堆区都有一个 RSet, 用于记录进入该区块的对象引用(如区块 A 中的对象引用了区块 B, 区块 B 的 Rset 需要记录这个信息) , 它用于实现收集过程的并行化以及使得区块能进行独立收集. 总体上 Remembered Sets 消耗的内存小于 5%. 底层实现为 后置写屏障(logging write-barrier)</p>
 <p>底层三种结构:</p>
@@ -690,9 +690,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/04/10/MyBatis%E6%BA%90%E7%A0%81%E6%B5%81%E7%A8%8B/" title="MyBatis源码流程">
+                      <a href="/2023/03/27/JVM-%E9%94%81%E7%9B%B8%E5%85%B3/" title="JVM-内存相关">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">MyBatis源码流程</span>
+                        <span class="hidden-mobile">JVM-内存相关</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -700,8 +700,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/03/27/JVM-%E9%94%81%E7%9B%B8%E5%85%B3/" title="JVM-内存相关">
-                        <span class="hidden-mobile">JVM-内存相关</span>
+                      <a href="/2020/12/06/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E4%B8%80%E8%87%B4%E6%80%A7%E7%AE%97%E6%B3%95-Raft/" title="分布式系统一致性算法 - Raft">
+                        <span class="hidden-mobile">分布式系统一致性算法 - Raft</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -875,10 +875,6 @@
 
 
 
-
-  
-    <script  src="/js/img-lazyload.js" ></script>
-  
 
 
 

@@ -81,7 +81,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"gallrax.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"gallrax.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":false,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -290,17 +290,17 @@
 <p>MySQL 在获取数据时, 是以页为单位. 每次读取一个页的数据放在内存中, 内存的哪里, 其实就是 Buffer Pool.<br>我们对页的所有处理都是在内存中处理, 至于刷盘时机, 在后续讲解中</p>
 <p>Buffer Pool 是 MySQL 启动是申请的一块连续内存, 默认 128M, 最小为 5M</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki44uhzdxj31jq0isdhi-20230318165214024.jpg" srcset="/img/loading.gif" lazyload alt="image-20200204182512548"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki44uhzdxj31jq0isdhi-20230318165214024.jpg" alt="image-20200204182512548"></p>
 <h3 id="free链表"><a href="#free链表" class="headerlink" title="free链表"></a>free链表</h3><blockquote>
 <p>free 链表是把所有空闲的缓存页对应的控制块作为一个节点放到一个链表中, 记录哪些页是可用的</p>
 <p>缓存页的 key 为: 表空间号 + 页号</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki44xaguyj31e10u0n0f-20230318165251315.jpg" srcset="/img/loading.gif" lazyload alt="image-20200204182629486"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki44xaguyj31e10u0n0f-20230318165251315.jpg" alt="image-20200204182629486"></p>
 <h3 id="flush链表"><a href="#flush链表" class="headerlink" title="flush链表"></a>flush链表</h3><blockquote>
 <p>如果修改了页, 此时内存中的页和磁盘的页就会不一致.</p>
 <p>如果也发生修改就刷新到磁盘, 就会导致效率特别低下, 那么最好的方式就是一个链表管理发生修改的页, 在触发某种条件时刷新到磁盘. 这个链表就是 flush 链表</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki450nnyuj31f90u0tc6-20230318165254942.jpg" srcset="/img/loading.gif" lazyload alt="image-20200204183017095"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki450nnyuj31f90u0tc6-20230318165254942.jpg" alt="image-20200204183017095"></p>
 <h3 id="淘汰机制"><a href="#淘汰机制" class="headerlink" title="淘汰机制"></a>淘汰机制</h3><blockquote>
 <p>我们 Buffer Pool 是有大小限制的. 但是每当我们读取页的时候, 就会把页加载进来. 一是很容易就撑满, 二是我们之所以设计 Buffer Pool 的原因就是更了更高效率的读取页, 充当缓存, 如果命中率很低, 那就没有太大的必要去维护 Buffer Pool. 那么 MySQL 是怎么提高命中率的和淘汰数据</p>
 <p>淘汰数据是采用 LRU 列表</p>
@@ -308,7 +308,7 @@
 <p>在对某个处在<code>old</code>区域的缓存页进行第一次访问时就在它对应的控制块中记录下来这个访问时间，如果后续的访问时间与第一次访问的时间在某个时间间隔内(默认为 1s)，那么该页面就不会被从old区域移动到young区域的头部，否则将它移动到young区域的头部.</p>
 <p>那么也就是说全表扫描拉取的也都是放在 young 区, 不会影响热数据, 因此并不会影响命中率</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki454ry9yj31ou0pitbv-20230318165314271.jpg" srcset="/img/loading.gif" lazyload alt="image-20200204185448144"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki454ry9yj31ou0pitbv-20230318165314271.jpg" alt="image-20200204185448144"></p>
 <h3 id="刷盘时机"><a href="#刷盘时机" class="headerlink" title="刷盘时机"></a>刷盘时机</h3><blockquote>
 <ol>
 <li>后台线程定时刷新</li>
@@ -322,16 +322,16 @@
 <p>对于简单的操作, 可能只需要修改一个页中的一条数据<br>对于复杂的操作, 可能发生页分裂, 页拷贝和对索引的处理</p>
 <p>mini transaction mtr: 对于复杂的操作, 以组的方式写入 redo log(一种特殊的类型, 尾部有校验)</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4581srkj31ii0e0ab2-20230318165311349.jpg" srcset="/img/loading.gif" lazyload alt="image-20200204191546073"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4581srkj31ii0e0ab2-20230318165311349.jpg" alt="image-20200204191546073"></p>
 <h3 id="redo-log-页"><a href="#redo-log-页" class="headerlink" title="redo log 页"></a>redo log 页</h3><blockquote>
 <p>redo log 页又称为 redo log block</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki45axw7qj31je0suq6e-20230318165308976.jpg" srcset="/img/loading.gif" lazyload alt="image-20200204192255899"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki45axw7qj31je0suq6e-20230318165308976.jpg" alt="image-20200204192255899"></p>
 <h3 id="redo-log-缓冲区"><a href="#redo-log-缓冲区" class="headerlink" title="redo log 缓冲区"></a>redo log 缓冲区</h3><blockquote>
 <p>InnoDB 为了解决磁盘慢引入了 Buffer Pool, 同样 redo log 也有缓冲区</p>
 <p>先写入 redo log 缓冲区, 然后根据刷盘时机写入 redo log</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki45dtbukj31j80pgacy-20230318165306332.jpg" srcset="/img/loading.gif" lazyload alt="image-20200204192440144"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki45dtbukj31j80pgacy-20230318165306332.jpg" alt="image-20200204192440144"></p>
 <h3 id="刷盘时机-1"><a href="#刷盘时机-1" class="headerlink" title="刷盘时机"></a>刷盘时机</h3><blockquote>
 <ol>
 <li><code>log buffer</code>空间不足时</li>
@@ -341,14 +341,14 @@
 <li>checkpoint</li>
 </ol>
 </blockquote>
-<h3 id="日志文件组"><a href="#日志文件组" class="headerlink" title="日志文件组"></a>日志文件组</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki45hi9l7j31hi0sm0v2-20230318165303303.jpg" srcset="/img/loading.gif" lazyload alt="image-20200204192810689"></p>
+<h3 id="日志文件组"><a href="#日志文件组" class="headerlink" title="日志文件组"></a>日志文件组</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki45hi9l7j31hi0sm0v2-20230318165303303.jpg" alt="image-20200204192810689"></p>
 <h3 id="flushed-to-disk-lsn"><a href="#flushed-to-disk-lsn" class="headerlink" title="flushed_to_disk_lsn"></a>flushed_to_disk_lsn</h3><blockquote>
 <p>lsn: Log Sequeue Number, 记录已经写入的<code>redo</code>日志量. lsn 增加是以实际写入的日质量来增加</p>
 <p>buf_free的位置为写入到 redo log buffer的偏移量(即为 lsn)</p>
 <p>buf_next_to_write 的位置为实际已经刷新到磁盘的偏移量</p>
 <p>如果两个值相同, 则说明所有的 redo log 都已经刷新到磁盘</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki45jtmlzj319g0mojt2-20230318165300701.jpg" srcset="/img/loading.gif" lazyload alt="image-20200204193527217"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki45jtmlzj319g0mojt2-20230318165300701.jpg" alt="image-20200204193527217"></p>
 <h3 id="flush链表中的LSN"><a href="#flush链表中的LSN" class="headerlink" title="flush链表中的LSN"></a>flush链表中的LSN</h3><blockquote>
 <p>我们知道一个<code>mtr</code>代表一次对底层页面的原子访问，在访问过程中可能会产生一组不可分割的<code>redo</code>日志，在<code>mtr</code>结束时，会把这一组<code>redo</code>日志写入到<code>log buffer</code>中。除此之外，在<code>mtr</code>结束时还有一件非常重要的事情要做，就是把在mtr执行过程中可能修改过的页面加入到Buffer Pool的flush链表</p>
 </blockquote>
@@ -642,10 +642,6 @@
 
 
 
-
-  
-    <script  src="/js/img-lazyload.js" ></script>
-  
 
 
 

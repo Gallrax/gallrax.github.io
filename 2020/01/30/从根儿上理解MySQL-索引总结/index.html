@@ -81,7 +81,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"gallrax.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"gallrax.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":false,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -292,26 +292,26 @@
 <p>但是这是主键查询, 索引的原理也相同</p>
 <p>ps: 基础直接跳过</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki42ifh2zj31om0iu41w.jpg" srcset="/img/loading.gif" lazyload alt="image-20200130141938214"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki42ifh2zj31om0iu41w.jpg" alt="image-20200130141938214"></p>
 <h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><blockquote>
 <p>在之前我们了解的主键查询是通过主键进行排序. 那么我们索引是利用我们的索引字段充当主键</p>
 <p>下面其实就是主键索引, 又称聚簇索引, 橙色为主键, 绿色为对应的页<br>在非叶子节点的 record_type 都为 1 (表示为目录), 叶子节点的record_type 为 0 (表示为数据节点)</p>
 <p>我们回顾一下一个页为 16KB, 假设一个页可以存放100 条记录(实际大部分场景远大于 100 条, 如果按照 100 条来算, 可以理解为每条数据 163 字节)</p>
 <p>一层节点 100 ^ 1 条数据<br>两层节点 100 ^ 2 &#x3D; 10000 条数据<br>三层节点 100 ^ 3 &#x3D; 1000000 条数据<br>四层节点 100 ^ 4 &#x3D; 100000000 条数据</p>
 </blockquote>
-<h3 id="聚簇索引"><a href="#聚簇索引" class="headerlink" title="聚簇索引"></a>聚簇索引</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki42l5bqlj31k00u00x3.jpg" srcset="/img/loading.gif" lazyload alt="image-20200130142726854"></p>
-<h3 id="非聚簇索引"><a href="#非聚簇索引" class="headerlink" title="非聚簇索引"></a>非聚簇索引</h3><h4 id="普通索引"><a href="#普通索引" class="headerlink" title="普通索引"></a>普通索引</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki42oci7bj31kz0u0n1i.jpg" srcset="/img/loading.gif" lazyload alt="image-20200130143518159"></p>
-<h4 id="联合索引"><a href="#联合索引" class="headerlink" title="联合索引"></a>联合索引</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki42r550hj31k00u0td5.jpg" srcset="/img/loading.gif" lazyload alt="image-20200130143720555"></p>
+<h3 id="聚簇索引"><a href="#聚簇索引" class="headerlink" title="聚簇索引"></a>聚簇索引</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki42l5bqlj31k00u00x3.jpg" alt="image-20200130142726854"></p>
+<h3 id="非聚簇索引"><a href="#非聚簇索引" class="headerlink" title="非聚簇索引"></a>非聚簇索引</h3><h4 id="普通索引"><a href="#普通索引" class="headerlink" title="普通索引"></a>普通索引</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki42oci7bj31kz0u0n1i.jpg" alt="image-20200130143518159"></p>
+<h4 id="联合索引"><a href="#联合索引" class="headerlink" title="联合索引"></a>联合索引</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki42r550hj31k00u0td5.jpg" alt="image-20200130143720555"></p>
 <blockquote>
 <p>聚簇索引和非聚簇索引的区别就是, 聚簇索引的叶子节点保存所有数据, 非聚簇索引保存的是索引字段和主键(回表查询全量数据)</p>
 <p>普通索引和联合索引的区别就是, 普通索引的用户数据只保存索引字段和页节点, 联合索引的用户数据为多个索引字段和页节点</p>
 <p>联合索引中的字段值依次排序</p>
 </blockquote>
-<h4 id="页分裂情况"><a href="#页分裂情况" class="headerlink" title="页分裂情况"></a>页分裂情况</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki42vetmhj30tk0v6mz5.jpg" srcset="/img/loading.gif" lazyload alt="image-20200130144035751"></p>
+<h4 id="页分裂情况"><a href="#页分裂情况" class="headerlink" title="页分裂情况"></a>页分裂情况</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki42vetmhj30tk0v6mz5.jpg" alt="image-20200130144035751"></p>
 <blockquote>
 <p>考虑在上述情况下, 如果在插入相同 1 的数据是应该放在页 4 还是页 5 ?虽然是可以推到出放在页 5, 但是为了更加优化, 我们在非叶子节点中还是放入当前数据指向页的最小主键, 这样我们能更加清晰的知道是放在页 5, 如下图</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki42ymlatj30to0uognk.jpg" srcset="/img/loading.gif" lazyload alt="image-20200130144529959"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki42ymlatj30to0uognk.jpg" alt="image-20200130144529959"></p>
 <blockquote>
 <p>另外, 我们之前已经说过, 一个页最少要放入两条数据<br>原因: 如果每个页只能可以存放两条数据, 在查询效率上, 每次能筛选掉一半的数据. 如果允许存放一条数据, 那么相当于要全部遍历</p>
 </blockquote>
@@ -358,15 +358,15 @@
 <p>利用主键或唯一索引的等值匹配, 结果只会是一个值</p>
 <p>IS NULL 并不是 const</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki432wfzcj31510u0wh1.jpg" srcset="/img/loading.gif" lazyload alt="image-20200204145937352"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki432wfzcj31510u0wh1.jpg" alt="image-20200204145937352"></p>
 <h3 id="ref"><a href="#ref" class="headerlink" title="ref"></a>ref</h3><blockquote>
 <p>利用索引的等值匹配, 结果可能为多个值 (因为一个 key 可能对应多个 value)</p>
 </blockquote>
-<p><img src="https://image.baidu.com/search/down?url=http://tva1.sinaimg.cn/large/0081Kckwly1gki43643icj311q0u0go6.jpg" srcset="/img/loading.gif" lazyload alt="image-20200204150348819"></p>
+<p><img src="https://image.baidu.com/search/down?url=http://tva1.sinaimg.cn/large/0081Kckwly1gki43643icj311q0u0go6.jpg" alt="image-20200204150348819"></p>
 <h3 id="ref-or-null"><a href="#ref-or-null" class="headerlink" title="ref_or_null"></a>ref_or_null</h3><blockquote>
 <p> 上述再加上 null 的判断</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki439d0lej31220u0tbm.jpg" srcset="/img/loading.gif" lazyload alt="image-20200204150602466"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki439d0lej31220u0tbm.jpg" alt="image-20200204150602466"></p>
 <h3 id="range"><a href="#range" class="headerlink" title="range"></a>range</h3><blockquote>
 <p>范围查询</p>
 <p>SELECT * FROM single_table WHERE key2 IN (1438, 6328) OR (key2 &gt;&#x3D; 38 AND key2 &lt;&#x3D; 79);</p>
@@ -665,10 +665,6 @@
 
 
 
-
-  
-    <script  src="/js/img-lazyload.js" ></script>
-  
 
 
 

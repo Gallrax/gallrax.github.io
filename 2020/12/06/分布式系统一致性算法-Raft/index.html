@@ -81,7 +81,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"gallrax.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"gallrax.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":false,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -295,8 +295,8 @@
 <p>一致性模块: 一致性模块算法就是用来保证写入的log的命令的一致性(核心内容)</p>
 <p>客户端发起更新请求 -&gt; leader 发起同步事件(append) -&gt; 同步完成(commit) -&gt; 应用状态机(apply) -&gt; 返回客户端<br>ps: 如果超时, 客户端将带着 requestId 重试. 同样, leader 发起同步事件也是幂等操作</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gleexhsi8uj31k90u0jxi.jpg" srcset="/img/loading.gif" lazyload alt="image-20201206203405980"></p>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gleeme6cacj30u00zgnik.jpg" srcset="/img/loading.gif" lazyload alt="image-20201206202323839"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gleexhsi8uj31k90u0jxi.jpg" alt="image-20201206203405980"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gleeme6cacj30u00zgnik.jpg" alt="image-20201206202323839"></p>
 <h3 id="节点状态"><a href="#节点状态" class="headerlink" title="节点状态"></a>节点状态</h3><blockquote>
 <p>所有节点持久化的属性:</p>
 <ol>
@@ -374,7 +374,7 @@
 </ol>
 <p>如果 term 小于 当前 follower term 则说明该候选人没有当前 follower 日志更新, 返回 false<br>如果 lastLogIndex 小于当前 follower 日志索引, 则说明已经有更新的 leader, 返回 false<br>如果 lastLogTerm 和当前 follower 日志元素不同, 则返回 false</p>
 </blockquote>
-<h2 id="选举"><a href="#选举" class="headerlink" title="选举"></a>选举</h2><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gleewu8dj8j31tq0rmdmy.jpg" srcset="/img/loading.gif" lazyload alt="image-20201206203328487"></p>
+<h2 id="选举"><a href="#选举" class="headerlink" title="选举"></a>选举</h2><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gleewu8dj8j31tq0rmdmy.jpg" alt="image-20201206203328487"></p>
 <blockquote>
 <p>选举超时事件为一个固定区间的随机值(最大限度降低竞争)<br>节点的每个 term 至允许投票一次(先到先得)<br>candidate 当接收到 leader 的 term &gt; currentTerm, 则退回 follower<br>cndidate 当接收到 leader 的 term &lt; currentTerm, 则拒绝同意, 等待超时, 重新发起选举</p>
 <ol>
@@ -387,14 +387,14 @@
 </li>
 </ol>
 </blockquote>
-<h2 id="快照-日志压缩"><a href="#快照-日志压缩" class="headerlink" title="快照(日志压缩)"></a>快照(日志压缩)</h2><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1glef4qo9y8j31e50u0wj3.jpg" srcset="/img/loading.gif" lazyload alt="image-20201206204103843"></p>
+<h2 id="快照-日志压缩"><a href="#快照-日志压缩" class="headerlink" title="快照(日志压缩)"></a>快照(日志压缩)</h2><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1glef4qo9y8j31e50u0wj3.jpg" alt="image-20201206204103843"></p>
 <blockquote>
 <p>随着时间推移, 日志一定会无比巨大, 如果有一个 follower 和 leader 日志差异较大, 则需要leader 一直回退 nextIndex 重试, 效率低下. 并且由于状态机不关注过程, 只在乎最终态, 因此可以定期将状态机的数据生成快照, 来提升启动效率和节省磁盘空间(可参考 Redis 持久化方式 rdb 和 aof 思想)</p>
 <p>快照可由 follower 自己生成(降低由 leader 发送至 follower 的网络占用), 也可有 leader 发送至 follower(当 follower 落后过多时)</p>
 <p>如果 leader 发送的 follower 的最后一条日志在 follower 中存在, 则 follower 可放弃该快照</p>
 <p>由于生成 snapshot 涉及 IO 操作, 为了提高效率采用 COW(CopyOnWrite)来保证生成快照期间的日志同步同样不会丢失</p>
 </blockquote>
-<h4 id="leader-发送快照"><a href="#leader-发送快照" class="headerlink" title="leader 发送快照"></a>leader 发送快照</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1glefdjb0ouj30u0148wlv.jpg" srcset="/img/loading.gif" lazyload alt="image-20201206204930367"></p>
+<h4 id="leader-发送快照"><a href="#leader-发送快照" class="headerlink" title="leader 发送快照"></a>leader 发送快照</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1glefdjb0ouj30u0148wlv.jpg" alt="image-20201206204930367"></p>
 <blockquote>
 <p>leader 发送同步快照事件</p>
 <p>参数:</p>
@@ -413,11 +413,11 @@
 </ol>
 <p>如果term &lt;currentTerm，请立即回复<br>如果第一个块（偏移量为0），则创建新的快照文件<br>以给定的偏移量将数据写入快照文件<br>如果done为false，则回复并等待更多数据块<br>保存快照文件，丢弃索引较小的任何现有或部分快照<br>如果现有日志条目的索引和术语与快照的最后一个包含的条目相同，请保留其后的日志条目并回复<br>丢弃整个日志<br>使用快照内容重置状态机（并加载快照的集群配置）</p>
 </blockquote>
-<h2 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h2><h3 id="简单同步"><a href="#简单同步" class="headerlink" title="简单同步"></a>简单同步</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1glefnfx5nwj314n0u0dm9.jpg" srcset="/img/loading.gif" lazyload alt="image-20201206205900735"></p>
+<h2 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h2><h3 id="简单同步"><a href="#简单同步" class="headerlink" title="简单同步"></a>简单同步</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1glefnfx5nwj314n0u0dm9.jpg" alt="image-20201206205900735"></p>
 <blockquote>
 <p>假设 leader 一直未变动(实际发生三次选举, 只不过每次同步数据过程没有数据同步冲突). 各个节点的同步情况可能如上图情况. 此时第 2, 4, 5 节点可能因为网络原因导致未跟上 leader 的同步. 假设此时 leader 发起同步, leader 的第二个节点logIndex[1].index &#x3D; 8 , 那么他会发起同步事件给第二个节点, 第二个节点会返回 false, 此时 leader 将第二个节点logIndex[1].index - 1 &#x3D; 7, 再次发起同步事件, 还会 false, 直到 index &#x3D; 5, 此时第二个节点才会执行同步, 返回 true</p>
 </blockquote>
-<h3 id="复杂同步"><a href="#复杂同步" class="headerlink" title="复杂同步"></a>复杂同步</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1glefo3f5doj31ad0u0dm4.jpg" srcset="/img/loading.gif" lazyload alt="image-20201206205939520"></p>
+<h3 id="复杂同步"><a href="#复杂同步" class="headerlink" title="复杂同步"></a>复杂同步</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1glefo3f5doj31ad0u0dm4.jpg" alt="image-20201206205939520"></p>
 <blockquote>
 <p>最复杂的情况为上图. 图中可得总过发生过 7 次选举. 观察 f 可发现, 可得出 term &#x3D; 2 时, 追加了 222, 然后再次发生选举, term &#x3D; 3, 追加33333 日志, 但是两次皆未同步至其他节点(也可能是没有过半节点同步, 导致新的选举节点将数据同步覆盖)便宕机, 此时选举结果为 term &#x3D; 4, 并且a, b, c, d, e皆同步数据. 此时又发生选举 term &#x3D; 5 -&gt; 6, 当 leader 变为 7 时(仍然数据未同步过半)宕机, 发生选举重新回到 leader(最上方, 即将为 term &#x3D; 8). 此时 leader 发起数据同步, 会将其他节点数据同步为leader 数据. 至于 d, f 节点的数据将会重置并覆盖</p>
 </blockquote>
@@ -525,7 +525,7 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/03/27/JVM-%E9%94%81%E7%9B%B8%E5%85%B3/" title="JVM-内存相关">
+                      <a href="/2023/03/27/JVM-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3/" title="JVM-内存相关">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile">JVM-内存相关</span>
                         <span class="visible-mobile">上一篇</span>
@@ -710,10 +710,6 @@
 
 
 
-
-  
-    <script  src="/js/img-lazyload.js" ></script>
-  
 
 
 

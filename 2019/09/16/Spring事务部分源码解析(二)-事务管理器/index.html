@@ -90,7 +90,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"gallrax.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"gallrax.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":false,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -302,56 +302,56 @@
 <p> 按照上篇对于几个实体类的描述,可以发现注解@Transactional的属性的字段和TransactionDefinition大致比较相似,但又不完全一致.</p>
 </blockquote>
 <p>从@Transactional开始讲起</p>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3m4fm1bj30f00ekdgq.jpg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3m4fm1bj30f00ekdgq.jpg"></p>
 <p>这个显然很常见,就是我们平时需要事务时用到的注解.可是spring如何去解析?我们看一下使用到这个注解的地方,排除掉在test和comment下的使用.</p>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3m2gwpij30iv07jdgi.jpg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3m2gwpij30iv07jdgi.jpg"></p>
 <p>进入方法</p>
-<p><img src="https://image.baidu.com/search/down?url=http://tva1.sinaimg.cn/large/0081Kckwly1gki3m0liy5j30v70nxwje.jpg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://image.baidu.com/search/down?url=http://tva1.sinaimg.cn/large/0081Kckwly1gki3m0liy5j30v70nxwje.jpg"></p>
 <p>TransactionAttribute正是上篇文章中TransactionDefinition的子类</p>
 <p>返回的RuleBasedTransactionAttribute我们看一下他的继承图</p>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3lypwk2j30k009cjry.jpg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3lypwk2j30k009cjry.jpg"></p>
 <p>我们打开源码看一下RuleBasedTransactionAttribute和父类DefaultTransactionAttribute晚上寻找发现,事务常规的设置是继承DefaultTransactionDefinition来注入,rollback相关则实现TransactionAttribute.这就是我们上篇提到TransactionAttribute和TransactionDefinition责任的划分</p>
 <p>我们网上追溯,调用方</p>
 <blockquote>
 <p>AnnotationTransactionAttributeSource.findTransactionAttribute()</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3lx84rnj30lf0gsmzx.jpg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3lx84rnj30lf0gsmzx.jpg"></p>
 <blockquote>
 <p> AbstractFallbackTransactionAttributeSource.computeTransactionAttribute</p>
 </blockquote>
-<p><img src="https://image.baidu.com/search/down?url=http://tva1.sinaimg.cn/large/0081Kckwly1gki3lwqa9rj30ml0m7n0n.jpg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://image.baidu.com/search/down?url=http://tva1.sinaimg.cn/large/0081Kckwly1gki3lwqa9rj30ml0m7n0n.jpg"></p>
 <blockquote>
 <p>AnnotationTransactionAttributeSource.getTransactionAttribute()</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3lt4fiyj30qk0kyjum.jpg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3lt4fiyj30qk0kyjum.jpg"></p>
 <blockquote>
 <p>TransactionAspectSupport.invokeWithinTransaction</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3lrq55zj30qj0fptb8.jpg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3lrq55zj30qj0fptb8.jpg"></p>
 <blockquote>
 <p>获取Transaction配置流程:根据方法和类确定唯一key,从缓存中获取.如果获取不到则通过TransactionAnnotationParser解析方法来获取事务属性.并放置缓存中</p>
 </blockquote>
 <h3 id="获取事务管理器-PlatformTransactionManager"><a href="#获取事务管理器-PlatformTransactionManager" class="headerlink" title="获取事务管理器(PlatformTransactionManager)"></a>获取事务管理器(PlatformTransactionManager)</h3><blockquote>
 <p>接口定义方法(可以发现极其精简干净)</p>
 </blockquote>
-<p><img src="https://image.baidu.com/search/down?url=http://tva1.sinaimg.cn/large/0081Kckwly1gki3lpdfbpj30f00ekdg9.jpg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://image.baidu.com/search/down?url=http://tva1.sinaimg.cn/large/0081Kckwly1gki3lpdfbpj30f00ekdg9.jpg"></p>
 <blockquote>
 <p>抽象子类AbstractPlatformTransactionManager, 可以发现多了很多方法.但并没有实现,用于子类继承处理</p>
 </blockquote>
-<p><img src="https://image.baidu.com/search/down?url=http://tva1.sinaimg.cn/large/0081Kckwly1gki3lnhva1j30mq0sun3d.jpg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://image.baidu.com/search/down?url=http://tva1.sinaimg.cn/large/0081Kckwly1gki3lnhva1j30mq0sun3d.jpg"></p>
 <blockquote>
 <p>子类</p>
 </blockquote>
-<p><img src="https://image.baidu.com/search/down?url=http://tva1.sinaimg.cn/large/0081Kckwly1gki3llm0hfj312j04ign8.jpg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://image.baidu.com/search/down?url=http://tva1.sinaimg.cn/large/0081Kckwly1gki3llm0hfj312j04ign8.jpg"></p>
 <blockquote>
 <p>我们可以关注一下DataSourceTransactionManager和RabbitTransactionManager,是抽象类的一个实现.DataSourceTransactionManager的具体实现是通过Java提供的接口实现.而RabbitTransactionManager则是自己实现(毕竟已经属于定制了)</p>
 </blockquote>
 <figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">此处可以回顾TransactionAspectSupport<span class="hljs-selector-class">.invokeWithinTransaction</span>(), 开启事务后上下文通过TransactionInfo传递信息. 每当设计事务提交或回滚等相关,都是txInfo<span class="hljs-selector-class">.getTransactionManager</span>()<span class="hljs-selector-class">.commit</span>()/<span class="hljs-built_in">rollback</span>()<br></code></pre></td></tr></table></figure>
 
-<h4 id="AbstractPlatformTransactionManager-rollback"><a href="#AbstractPlatformTransactionManager-rollback" class="headerlink" title="AbstractPlatformTransactionManager.rollback()"></a>AbstractPlatformTransactionManager.rollback()</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3ljlt87j30qd04w3z5.jpg" srcset="/img/loading.gif" lazyload></p>
-<p><img src="https://image.baidu.com/search/down?url=http://tva1.sinaimg.cn/large/0081Kckwly1gki3lhhoc5j30s90p4tcj.jpg" srcset="/img/loading.gif" lazyload></p>
-<p><img src="https://image.baidu.com/search/down?url=http://tva1.sinaimg.cn/large/0081Kckwly1gki3lfigu6j30i00480ta.jpg" srcset="/img/loading.gif" lazyload></p>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3le0s5cj30pc05fwf6.jpg" srcset="/img/loading.gif" lazyload></p>
+<h4 id="AbstractPlatformTransactionManager-rollback"><a href="#AbstractPlatformTransactionManager-rollback" class="headerlink" title="AbstractPlatformTransactionManager.rollback()"></a>AbstractPlatformTransactionManager.rollback()</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3ljlt87j30qd04w3z5.jpg"></p>
+<p><img src="https://image.baidu.com/search/down?url=http://tva1.sinaimg.cn/large/0081Kckwly1gki3lhhoc5j30s90p4tcj.jpg"></p>
+<p><img src="https://image.baidu.com/search/down?url=http://tva1.sinaimg.cn/large/0081Kckwly1gki3lfigu6j30i00480ta.jpg"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3le0s5cj30pc05fwf6.jpg"></p>
 <blockquote>
 <p>大致说一下回滚流程.</p>
 <ol>
@@ -363,7 +363,7 @@
 </blockquote>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ruby"><span class="hljs-symbol">ps:</span> 如果一个方法需要执行多个事务如何处理<span class="hljs-string">?(</span>剧透一下<span class="hljs-symbol">:TransactionSynchronization</span>)<br></code></pre></td></tr></table></figure>
 
-<h4 id="AbstractPlatformTransactionManager-commit"><a href="#AbstractPlatformTransactionManager-commit" class="headerlink" title="AbstractPlatformTransactionManager.commit()"></a>AbstractPlatformTransactionManager.commit()</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3lc5x3zj30qh0fzaco.jpg" srcset="/img/loading.gif" lazyload></p>
+<h4 id="AbstractPlatformTransactionManager-commit"><a href="#AbstractPlatformTransactionManager-commit" class="headerlink" title="AbstractPlatformTransactionManager.commit()"></a>AbstractPlatformTransactionManager.commit()</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3lc5x3zj30qh0fzaco.jpg"></p>
 <blockquote>
 <p>从图中看出在某种情况会执行回滚操作.最开始看到这里的时候也迷过.后来在一次事务测试时,同一个事务,方法嵌套时,内部方法抛异常,但是外部方法捕获正常处理.一部分觉得内部回滚外部不回滚.实际结果是内外都会回滚和是否捕获并没有关系. 可以回顾一下processRollback()中的status.isLocalRollbackOnly() || isGlobalRollbackOnParticipationFailure()判断</p>
 <figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs angelscript"><span class="hljs-keyword">private</span> <span class="hljs-built_in">bool</span>ean globalRollbackOnParticipationFailure = <span class="hljs-literal">true</span>;<br></code></pre></td></tr></table></figure>
@@ -388,7 +388,7 @@
 </blockquote>
 <figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gcode">个人理解的第一步是预留分布式事务接口. 而后续的触发时间则是扩展处理<span class="hljs-comment">(后续讲TransactionSynchronization会聊到)</span>,不过这个扩展处理划分的也太细了<br></code></pre></td></tr></table></figure>
 
-<h4 id="AbstractPlatformTransactionManager-cleanupAfterCompletion"><a href="#AbstractPlatformTransactionManager-cleanupAfterCompletion" class="headerlink" title="AbstractPlatformTransactionManager.cleanupAfterCompletion()"></a>AbstractPlatformTransactionManager.cleanupAfterCompletion()</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3l8ef3xj30mh089gmu.jpg" srcset="/img/loading.gif" lazyload></p>
+<h4 id="AbstractPlatformTransactionManager-cleanupAfterCompletion"><a href="#AbstractPlatformTransactionManager-cleanupAfterCompletion" class="headerlink" title="AbstractPlatformTransactionManager.cleanupAfterCompletion()"></a>AbstractPlatformTransactionManager.cleanupAfterCompletion()</h4><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki3l8ef3xj30mh089gmu.jpg"></p>
 <blockquote>
 <p>其实这里也没什聊的,打开方法的源码基本能发现都是清除上下文状态.也代表事务的结束</p>
 </blockquote>
@@ -683,10 +683,6 @@
 
 
 
-
-  
-    <script  src="/js/img-lazyload.js" ></script>
-  
 
 
 

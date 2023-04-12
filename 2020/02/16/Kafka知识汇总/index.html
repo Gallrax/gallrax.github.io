@@ -89,7 +89,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"gallrax.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"gallrax.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":false,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -299,7 +299,7 @@
 <p>Kafka 依赖于日志顺序写,  因此支持消息回溯和支撑高性能读写</p>
 <p>依赖 Zookeeper</p>
 </blockquote>
-<h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4bbra5jj314f0u0ae0.jpg" srcset="/img/loading.gif" lazyload alt="image-20200216165335332"></p>
+<h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4bbra5jj314f0u0ae0.jpg" alt="image-20200216165335332"></p>
 <h2 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h2><h3 id="Broker"><a href="#Broker" class="headerlink" title="Broker"></a>Broker</h3><blockquote>
 <p>Server. 包含多个 Topic , Partition, 和 Replica. 负责协调 Producer 和 Consumer</p>
 <p>主从结构为: 主节点为 Controller, 从节点为从节点<br>Kafka 启动是会往 Zookeeper 中注册当前 Broker 信息. 谁先注册谁就是 Controller. 读取注册上来的从节点的数据(通过监听机制), 生成集群的元数据信息, 之后把这些信息都分发给其他的服务器, 让其他服务器能感知到集群中其它成员的存在</p>
@@ -307,14 +307,14 @@
 <h3 id="Topic"><a href="#Topic" class="headerlink" title="Topic"></a>Topic</h3><blockquote>
 <p>标准 MQ 中的 Queue. Kafka 中一个 Topic 的消息会保存在不同的 Partition (不同的 Broker)来保证高可用</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4bfghsmj310u0tq40m-20230318165952150.jpg" srcset="/img/loading.gif" lazyload alt="image-20200216164921324"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4bfghsmj310u0tq40m-20230318165952150.jpg" alt="image-20200216164921324"></p>
 <h3 id="Partition-分区"><a href="#Partition-分区" class="headerlink" title="Partition (分区)"></a>Partition (分区)</h3><blockquote>
 <p>可以理解为将标准 MQ 的 Queue 的消息进行拆分, 来实现高可用</p>
 <p>Producer 发送的 Message, 根据 key 和 partition 数进行 hash, 然后进行投递</p>
 <p>一个分区只能被同一个 Consumer Group 中的一个 Consumer 消费. 分区内消费有序</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4bj79a8j30go0853yz.jpg" srcset="/img/loading.gif" lazyload alt="kafka 顺序写磁盘"></p>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4bm3tb0j31190u0jtw.jpg" srcset="/img/loading.gif" lazyload alt="image-20200216165004222"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4bj79a8j30go0853yz.jpg" alt="kafka 顺序写磁盘"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4bm3tb0j31190u0jtw.jpg" alt="image-20200216165004222"></p>
 <h3 id="Replica-备份"><a href="#Replica-备份" class="headerlink" title="Replica (备份)"></a>Replica (备份)</h3><blockquote>
 <p>每一个 Partition 的备份. Replica 的小于等于 Broker 的数量</p>
 <p>Leader: Replica领导节点, 每一个 Partition 都有对应的 Leader 节点(Broker). Producer 写数据时, 只会往 Leader 中写. Consumer 读数据也是从 Leader 中读<br>Follower: Replica跟随节点, 用于复制领导节点的数据. 复制 Leader 消息采用 pull (拉)模式</p>
@@ -332,9 +332,9 @@
 <p>HW (high watermark): 从名字可以知道, 该值叫高水印值, HW 一定不会大于 LEO 值, 小于 HW 值的消息被认为是”已提交”或”已备份”的消息, 并对消费者可见</p>
 <p>备份机制对于各种复杂情况参考: <a target="_blank" rel="noopener" href="https://image.baidu.com/search/down?url=http://mp.weixin.qq.com/s/WSdebVgIpvJ_c4DpFYqO4w">图解：Kafka 水印备份机制</a></p>
 </blockquote>
-<p><img src="https://image.baidu.com/search/down?url=http://tva1.sinaimg.cn/large/0081Kckwly1gki4bqedwpj31o00dedh7.jpg" srcset="/img/loading.gif" lazyload alt="image-20200216180322930"></p>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4buedqaj31nq0i00v9.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4bxak7cj30xy0u0mzo.jpg" srcset="/img/loading.gif" lazyload alt="image-20200216180352412"></p>
+<p><img src="https://image.baidu.com/search/down?url=http://tva1.sinaimg.cn/large/0081Kckwly1gki4bqedwpj31o00dedh7.jpg" alt="image-20200216180322930"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4buedqaj31nq0i00v9.jpg" alt="img"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4bxak7cj30xy0u0mzo.jpg" alt="image-20200216180352412"></p>
 <h3 id="Message"><a href="#Message" class="headerlink" title="Message"></a>Message</h3><blockquote>
 <p>标准 MQ 的 Queue 中的 Message. 即一条消息</p>
 </blockquote>
@@ -389,8 +389,8 @@
 </ol>
 <p>各个场景参考: <a target="_blank" rel="noopener" href="https://image.baidu.com/search/down?url=http://www.cnblogs.com/yoke/p/11405397.html">Kafka Rebalance机制分析</a></p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4c2hquxj31ca0j0wh7-20230318165925057.jpg" srcset="/img/loading.gif" lazyload alt="image-20200216183957973"></p>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4c5rfz9j31d40l0gp4.jpg" srcset="/img/loading.gif" lazyload alt="image-20200216184024119"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4c2hquxj31ca0j0wh7-20230318165925057.jpg" alt="image-20200216183957973"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4c5rfz9j31d40l0gp4.jpg" alt="image-20200216184024119"></p>
 <h3 id="如何避免-Rebalance"><a href="#如何避免-Rebalance" class="headerlink" title="如何避免 Rebalance"></a>如何避免 Rebalance</h3><blockquote>
 <p>对于触发条件的 2 和 3, 我们可以人为避免. 1 中的 1 和 3 人为也可以尽量避免, 主要核心为 3</p>
 <figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs crmsh"><span class="hljs-comment"># 心跳相关</span><br>session.timeout.<span class="hljs-keyword">ms</span> <span class="hljs-title">= 6s</span><br>heartbeat.interval.<span class="hljs-keyword">ms</span> <span class="hljs-title">= 2s</span><br><br><span class="hljs-comment"># 消费时间</span><br>max.poll.interval.ms<br></code></pre></td></tr></table></figure>
@@ -406,15 +406,15 @@
 <li>通过定位到该文件的消息行(3, 497), 然后在往后一行一行匹配揭露(368773 830)</li>
 </ol>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4c9xnbjj307u05udg8-20230318165920446.jpg" srcset="/img/loading.gif" lazyload alt="image"></p>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4ccryuej30fc096my8-20230318165918338.jpg" srcset="/img/loading.gif" lazyload alt="image"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4c9xnbjj307u05udg8-20230318165920446.jpg" alt="image"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4ccryuej30fc096my8-20230318165918338.jpg" alt="image"></p>
 <h2 id="高性能-高吞吐"><a href="#高性能-高吞吐" class="headerlink" title="高性能, 高吞吐"></a>高性能, 高吞吐</h2><h3 id="分区的原因"><a href="#分区的原因" class="headerlink" title="分区的原因"></a>分区的原因</h3><blockquote>
 <p>如果我们假设像标准 MQ 的 Queue, 为了保证一个消息只会被一个消费者消费, 那么我们第一想到的就是加锁. 对于发送者, 在多线程并且非顺序写环境下, 保证数据一致性, 我们同样也要加锁. 一旦考虑到加锁, 就会极大的影响性能. 我们再来看Kafka 的 Partition, Kafka 的消费模式和发送模式都是以 Partition 为分界. 也就是说对于一个 Topic 的并发量限制在于有多少个 Partition, 就能支撑多少的并发. 可以参考 Java 1.7 的 ConcurrentHashMap 的桶设计, 原理一样, 有多少桶, 支持多少的并发</p>
 </blockquote>
 <h3 id="顺序写"><a href="#顺序写" class="headerlink" title="顺序写"></a>顺序写</h3><blockquote>
 <p>从图中可以看出来, 磁盘的顺序写的性能要比内存随机写的还要强. 磁盘顺序写和随机写的差距也是天壤之别</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4cl3xswj30wi0hkjud.jpg" srcset="/img/loading.gif" lazyload alt="image-20200216190305830"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4cl3xswj30wi0hkjud.jpg" alt="image-20200216190305830"></p>
 <h3 id="批发送"><a href="#批发送" class="headerlink" title="批发送"></a>批发送</h3><blockquote>
 <p>批处理是一种常用的用于提高I&#x2F;O性能的方式. 对Kafka而言, 批处理既减少了网络传输的Overhead, 又提高了写磁盘的效率. Kafka 0.82 之后是将多个消息合并之后再发送, 而并不是send一条就立马发送(之前支持)</p>
 <figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs crmsh"><span class="hljs-comment"># 批量发送的基本单位, 默认是16384Bytes, 即16kB</span><br>batch.size<br><br><span class="hljs-comment"># 延迟时间</span><br>linger.<span class="hljs-keyword">ms</span><br><br><span class="hljs-title"># 两者满足其一便发送</span><br></code></pre></td></tr></table></figure>
@@ -447,8 +447,8 @@
 <p>读取: 用户态切换到内核态, 在内核空间将文件读取到缓冲区, 再从内核区拷贝到用户缓冲区, 最后切换回用户态<br>写入: 用户态切换到内核态, 将数据从用户缓冲区拷贝到内核缓冲区, 再由DMA发送到硬件缓冲区, 最后切换回用户态</p>
 <p>我们发现, 其实用户空间和内核空间的切换一共四次, 文件拷贝四次. 如果有一种方式文件</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4cpc2r3j30pm0oggmv-20230318165912617.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4csjdwgj30f409z759.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4cpc2r3j30pm0oggmv-20230318165912617.jpg" alt="img"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4csjdwgj30f409z759.jpg" alt="img"></p>
 <p>mmap 的写流程</p>
 <blockquote>
 <ol>
@@ -458,8 +458,8 @@
 </ol>
 <p>通过零拷贝, 我们减少了两次用户空间和内核空间的拷贝和一次内核空间和 Socket 缓冲区的拷贝, 总共节省三次拷贝, 并且没有用户态和内核态的转换</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4cwgimrj30ni0l4ab2.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4czqzqrj30n50co0u0.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4cwgimrj30ni0l4ab2.jpg" alt="img"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4czqzqrj30n50co0u0.jpg" alt="img"></p>
 <h4 id="Kafka-的运用"><a href="#Kafka-的运用" class="headerlink" title="Kafka 的运用"></a>Kafka 的运用</h4><blockquote>
 <p>Kafka 写数据的时候, 会直接写到 Page Cache 中, 消费者拉数据时也会经过 Page Cache. 如果 Kafka 的写速率和消费速率差不多, 那么整个生产和消费过程是不会经过磁盘 IO. 全部都是内存操作. 对于 Page Cache 没有刷盘导致的数据丢失, 如果发送方配置消息至少有一个副本接受, 那么也只会有已一次同步刷盘</p>
 <p>Kafka为什么不自己管理缓存, 而非要用page cache?</p>
@@ -472,7 +472,7 @@
 </li>
 </ol>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4d3t3p7j30wu0imt9k.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki4d3t3p7j30wu0imt9k.jpg" alt="img"></p>
 <h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p><a target="_blank" rel="noopener" href="https://image.baidu.com/search/down?url=http://mp.weixin.qq.com/s/WSdebVgIpvJ_c4DpFYqO4w">图解：Kafka 水印备份机制</a></p>
 <p><a target="_blank" rel="noopener" href="http://www.jasongj.com/tags/Kafka/">技术实践: Kafka</a></p>
 <p><a target="_blank" rel="noopener" href="https://image.baidu.com/search/down?url=http://www.cnblogs.com/yoke/p/11405397.html">Kafka Rebalance机制分析</a><a target="_blank" rel="noopener" href="https://image.baidu.com/search/down?url=http://www.cnblogs.com/yoke/p/11405397.html">https://image.baidu.com/search/down?url=http://www.cnblogs.com/yoke/p/11405397.html</a>)</p>
@@ -758,10 +758,6 @@
 
 
 
-
-  
-    <script  src="/js/img-lazyload.js" ></script>
-  
 
 
 

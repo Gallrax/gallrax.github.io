@@ -25,8 +25,14 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki49t7i77j31as0qm78o-20230318170131586.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1gki49394kej30hx0dngmt-20230318170131703.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/image-20230413223022232.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/image-20230413230057053.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/hash_%E5%89%AF%E6%9C%AC.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/image-20230413225056120.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/image-20230413230432376.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/image-20230413225330704.png">
 <meta property="article:published_time" content="2020-02-14T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-03-27T14:35:09.433Z">
+<meta property="article:modified_time" content="2023-04-13T15:04:39.185Z">
 <meta property="article:author" content="Gallrax">
 <meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary_large_image">
@@ -225,7 +231,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          8.1k 字
+          12k 字
         
       </span>
     
@@ -236,7 +242,7 @@
         
         
         
-          68 分钟
+          100 分钟
         
       </span>
     
@@ -289,14 +295,14 @@
 <p> 集群方式: 主从, Sentinel 和 Redis Cluster</p>
 <p> Keys 和 Scan: 都用用来获取匹配的元素</p>
 </blockquote>
-<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><h3 id="基础结构"><a href="#基础结构" class="headerlink" title="基础结构"></a>基础结构</h3><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs angelscript">struct RedisObject &#123;<br>    <span class="hljs-built_in">int</span>4 type; <span class="hljs-comment">// 4bits</span><br>    <span class="hljs-built_in">int</span>4 encoding; <span class="hljs-comment">// 4bits</span><br>    <span class="hljs-built_in">int</span>24 lru; <span class="hljs-comment">// 24bits</span><br>    <span class="hljs-built_in">int32</span> <span class="hljs-built_in">ref</span>count; <span class="hljs-comment">// 4bytes</span><br>    <span class="hljs-built_in">void</span> *ptr; <span class="hljs-comment">// 8bytes，64-bit system</span><br>&#125; robj;<br></code></pre></td></tr></table></figure>
+<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><h3 id="基础结构"><a href="#基础结构" class="headerlink" title="基础结构"></a>基础结构</h3><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs angelscript">struct RedisObject &#123;<br>    <span class="hljs-built_in">int</span>4 type; <span class="hljs-comment">// 4bits</span><br>    <span class="hljs-built_in">int</span>4 encoding; <span class="hljs-comment">// 4bits</span><br>    <span class="hljs-built_in">int</span>24 lru; <span class="hljs-comment">// 24bits</span><br>    <span class="hljs-built_in">int32</span> <span class="hljs-built_in">ref</span>count; <span class="hljs-comment">// 4bytes</span><br>    <span class="hljs-built_in">void</span> *ptr; <span class="hljs-comment">// 8bytes, 64-bit system</span><br>&#125; robj;<br></code></pre></td></tr></table></figure>
 
 
 <h3 id="String-sds"><a href="#String-sds" class="headerlink" title="String(sds)"></a>String(sds)</h3><blockquote>
 <p>String 底层结构叫做 SDS(Simple Dynamic String). 最大支持 512M 长度, 在长度小于 44 时, 采用emb形式保存(连续空间), 当大于 44 是采用raw形式(不连续), 为什么是 44, 因为分配空间是 2 ^ n 字节来分配, 当内存分配 64 字节时, 去掉RedisObject, 和尾部的\0, 总共可使用 44 长度</p>
 <p>扩容: 小于 1M 时, 采用加倍策略, 大于 1M 时, 每次扩容只会分配 1M</p>
 </blockquote>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs awk">struct SDS&lt;T&gt; &#123;<br>  T capacity; <span class="hljs-regexp">//</span> 数组容量<br>  T len; <span class="hljs-regexp">//</span> 数组长度<br>  byte flags; <span class="hljs-regexp">//</span> 特殊标识位，不理睬它<br>  byte[] content; <span class="hljs-regexp">//</span> 数组内容<br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs awk">struct SDS&lt;T&gt; &#123;<br>  T capacity; <span class="hljs-regexp">//</span> 数组容量<br>  T len; <span class="hljs-regexp">//</span> 数组长度<br>  byte flags; <span class="hljs-regexp">//</span> 特殊标识位, 不理睬它<br>  byte[] content; <span class="hljs-regexp">//</span> 数组内容<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <h3 id="Hash-dict"><a href="#Hash-dict" class="headerlink" title="Hash(dict)"></a>Hash(dict)</h3><blockquote>
 <p>Redis 中的 Hash 和 Java 1.7 的 Hash 结构一样, 都是数组 + 链表</p>
@@ -308,19 +314,19 @@
 <figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-comment">// 一维数组</span><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">dictht</span> &#123;<br>    dictEntry** table; <span class="hljs-comment">// 二维</span><br>    <span class="hljs-type">long</span> size; <span class="hljs-comment">// 第一维数组的长度</span><br>    <span class="hljs-type">long</span> used; <span class="hljs-comment">// hash 表中的元素个数</span><br>    ...<br>&#125;<br><span class="hljs-comment">// 链表</span><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">dictEntry</span> &#123;<br>    <span class="hljs-type">void</span>* key;<br>    <span class="hljs-type">void</span>* val;<br>    dictEntry* next; <span class="hljs-comment">// 链接下一个 entry</span><br>&#125;<br><br></code></pre></td></tr></table></figure>
 
 <h3 id="压缩链表-ziplist"><a href="#压缩链表-ziplist" class="headerlink" title="压缩链表(ziplist)"></a>压缩链表(ziplist)</h3><blockquote>
-<p>Redis 为了节约内存空间使用，list, zset 和 hash 容器对象在元素个数较少的时候，采用压缩列表 (ziplist) 进行存储。压缩列表是一块连续的内存空间，元素之间紧挨着存储，没有任何冗余空隙. 增加 zltail_offset 便于定位到最后一个元素实现双向遍历</p>
+<p>Redis 为了节约内存空间使用, list, zset 和 hash 容器对象在元素个数较少的时候, 采用压缩列表 (ziplist) 进行存储. 压缩列表是一块连续的内存空间, 元素之间紧挨着存储, 没有任何冗余空隙. 增加 zltail_offset 便于定位到最后一个元素实现双向遍历</p>
 <p>如果元素小于 254 字节, 则 prevlen 用 1 字节保存, 否则使用 5 字节保存. 也就是由于如果该字节修改前小于 254 字节, 修改后大于 254 字节, 就会导致连锁更新</p>
 <p>优点: 节省内存<br>缺点: 连锁更新可能会导致内存拷贝, 效率低</p>
 <p>hash-max-ziplist-entries 512 当 hash 的键值对数量小于 512 时使用压缩列表, 否则使用字典<br>hash-max-ziplist-value 64 当 hash 的键和值的长度小于 64 时使用压缩列表, 否则使用字典<br>list-max-ziplist-entries 512 当 list 的数量小于 512 时使用压缩列表, 否则使用快速列表<br>list-max-ziplist-value 64 当 list 的值小于 64 时使用压缩列表, 否则使用快速列表</p>
 </blockquote>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">struct</span> ziplist&lt;T&gt; &#123;<br>    <span class="hljs-type">int32</span> zlbytes; <span class="hljs-comment">// 整个压缩列表占用字节数</span><br>    <span class="hljs-type">int32</span> zltail_offset; <span class="hljs-comment">// 最后一个元素距离压缩列表起始位置的偏移量，用于快速定位到最后一个节点</span><br>    <span class="hljs-type">int16</span> zllength; <span class="hljs-comment">// 元素个数</span><br>    T[] entries; <span class="hljs-comment">// 元素内容列表，挨个挨个紧凑存储</span><br>    <span class="hljs-type">int8</span> zlend; <span class="hljs-comment">// 标志压缩列表的结束，值恒为 0xFF</span><br>&#125;<br><span class="hljs-keyword">struct</span> entry &#123;<br>    <span class="hljs-type">int</span>&lt;<span class="hljs-keyword">var</span>&gt; prevlen; <span class="hljs-comment">// 前一个 entry 的字节长度 只能为 1 字节或 5 字节</span><br>    <span class="hljs-type">int</span>&lt;<span class="hljs-keyword">var</span>&gt; encoding; <span class="hljs-comment">// 元素类型编码</span><br>    optional <span class="hljs-type">byte</span>[] content; <span class="hljs-comment">// 元素内容</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">struct</span> ziplist&lt;T&gt; &#123;<br>    <span class="hljs-type">int32</span> zlbytes; <span class="hljs-comment">// 整个压缩列表占用字节数</span><br>    <span class="hljs-type">int32</span> zltail_offset; <span class="hljs-comment">// 最后一个元素距离压缩列表起始位置的偏移量, 用于快速定位到最后一个节点</span><br>    <span class="hljs-type">int16</span> zllength; <span class="hljs-comment">// 元素个数</span><br>    T[] entries; <span class="hljs-comment">// 元素内容列表, 挨个挨个紧凑存储</span><br>    <span class="hljs-type">int8</span> zlend; <span class="hljs-comment">// 标志压缩列表的结束, 值恒为 0xFF</span><br>&#125;<br><span class="hljs-keyword">struct</span> entry &#123;<br>    <span class="hljs-type">int</span>&lt;<span class="hljs-keyword">var</span>&gt; prevlen; <span class="hljs-comment">// 前一个 entry 的字节长度 只能为 1 字节或 5 字节</span><br>    <span class="hljs-type">int</span>&lt;<span class="hljs-keyword">var</span>&gt; encoding; <span class="hljs-comment">// 元素类型编码</span><br>    optional <span class="hljs-type">byte</span>[] content; <span class="hljs-comment">// 元素内容</span><br>&#125;<br></code></pre></td></tr></table></figure>
 
 <h3 id="快速列表-quicklist"><a href="#快速列表-quicklist" class="headerlink" title="快速列表(quicklist)"></a>快速列表(quicklist)</h3><blockquote>
-<p>快速列表为 list 的实现, 3.2 之前的版本为 linkedlist. 为什么通过 quicklist 替换掉是因为 linkedlist的 prev 和 next要占用 16 字节, 并且每个节点的内存都是单独分配，会加剧内存的碎片化, 影响内存管理效率.</p>
+<p>快速列表为 list 的实现, 3.2 之前的版本为 linkedlist. 为什么通过 quicklist 替换掉是因为 linkedlist的 prev 和 next要占用 16 字节, 并且每个节点的内存都是单独分配, 会加剧内存的碎片化, 影响内存管理效率.</p>
 <p>list-max-ziplist-size -2 每个快速列表的节点的压缩列表长度</p>
-<p>-1 每个quicklistNode节点的ziplist字节大小不能超过4kb。（建议）<br>-2 每个quicklistNode节点的ziplist字节大小不能超过8kb。（默认配置）<br>-3 每个quicklistNode节点的ziplist字节大小不能超过16kb。（一般不建议）<br>-4 每个quicklistNode节点的ziplist字节大小不能超过32kb。（不建议）<br>-5 每个quicklistNode节点的ziplist字节大小不能超过64kb。（正常工作量不建议）</p>
+<p>-1 每个quicklistNode节点的ziplist字节大小不能超过4kb. (建议)<br>-2 每个quicklistNode节点的ziplist字节大小不能超过8kb. (默认配置)<br>-3 每个quicklistNode节点的ziplist字节大小不能超过16kb. (一般不建议)<br>-4 每个quicklistNode节点的ziplist字节大小不能超过32kb. (不建议)<br>-5 每个quicklistNode节点的ziplist字节大小不能超过64kb. (正常工作量不建议)</p>
 </blockquote>
-<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">ziplist</span> &#123;<br>    ...<br>&#125;<br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">ziplist_compressed</span> &#123;<br>    int32 size;<br>    <span class="hljs-type">byte</span>[] compressed_data;<br>&#125;<br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">quicklistNode</span> &#123;<br>    quicklistNode* prev;<br>    quicklistNode* next;<br>    ziplist* zl; <span class="hljs-comment">// 指向压缩列表</span><br>    int32 size; <span class="hljs-comment">// ziplist 的字节总数</span><br>    int16 count; <span class="hljs-comment">// ziplist 中的元素数量</span><br>    int2 encoding; <span class="hljs-comment">// 存储形式 2bit，原生字节数组还是 LZF 压缩存储</span><br>    ...<br>&#125;<br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">quicklist</span> &#123;<br>    quicklistNode* head;<br>    quicklistNode* tail;<br>    <span class="hljs-type">long</span> count; <span class="hljs-comment">// 元素总数</span><br>    <span class="hljs-type">int</span> nodes; <span class="hljs-comment">// ziplist 节点的个数</span><br>    <span class="hljs-type">int</span> compressDepth; <span class="hljs-comment">// LZF 算法压缩深度</span><br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">ziplist</span> &#123;<br>    ...<br>&#125;<br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">ziplist_compressed</span> &#123;<br>    int32 size;<br>    <span class="hljs-type">byte</span>[] compressed_data;<br>&#125;<br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">quicklistNode</span> &#123;<br>    quicklistNode* prev;<br>    quicklistNode* next;<br>    ziplist* zl; <span class="hljs-comment">// 指向压缩列表</span><br>    int32 size; <span class="hljs-comment">// ziplist 的字节总数</span><br>    int16 count; <span class="hljs-comment">// ziplist 中的元素数量</span><br>    int2 encoding; <span class="hljs-comment">// 存储形式 2bit, 原生字节数组还是 LZF 压缩存储</span><br>    ...<br>&#125;<br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">quicklist</span> &#123;<br>    quicklistNode* head;<br>    quicklistNode* tail;<br>    <span class="hljs-type">long</span> count; <span class="hljs-comment">// 元素总数</span><br>    <span class="hljs-type">int</span> nodes; <span class="hljs-comment">// ziplist 节点的个数</span><br>    <span class="hljs-type">int</span> compressDepth; <span class="hljs-comment">// LZF 算法压缩深度</span><br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <h3 id="跳跃列表"><a href="#跳跃列表" class="headerlink" title="跳跃列表"></a>跳跃列表</h3><blockquote>
 <p>跳跃列表是 ZSet (Sorted Set) 的实现. Redis 的跳跃列表就是数据结构中的跳表, 在 Java 中的实现参考: ConcurrentSkipListSet 和 ConcurrentSkipListMap. 插入, 删除和修改的时间平均复杂度为O(log(N)), 最坏为 O(N). 之所以 Redis 使用跳表而不使用红黑树的原因是因为跳表实现更简单, 在插入删除是, 红黑树进行 rebalance 时需要影响整个树, 而跳表只影响局部数据</p>
@@ -360,7 +366,7 @@
 </blockquote>
 <h2 id="内存淘汰机制"><a href="#内存淘汰机制" class="headerlink" title="内存淘汰机制"></a>内存淘汰机制</h2><blockquote>
 <p>当内存达到 maxmemory 配置时, 就会进行内存淘汰. Redis 提供 7 种淘汰机制</p>
-<p>volatile-lru: 根据最近最少使用算法, 淘汰带有 有效期 属性的key及其数据<br>allkeys-lru: 同样根据最近最少使用算法, 但是淘汰范围的key是所有的key<br>volatile-lfu: 根据最不经常使用算法, 淘汰带有 有效期 属性的key及其数据 4.0 版本支持<br>allkeys-lfu，与第二种的淘汰范围相同, 不过使用的算法是最不经常使用算法 4.0 版本支持<br>volatile-random: 随机淘汰带有有效期属性的key及其数据<br>allkeys-random: 所有key都随机淘汰<br>volatile-ttl: 淘汰剩余寿命最短的key及其数据, ttl是 Time To Live的缩写<br>noeviction: 不再进行写操作, 只能读 默认配置</p>
+<p>volatile-lru: 根据最近最少使用算法, 淘汰带有 有效期 属性的key及其数据<br>allkeys-lru: 同样根据最近最少使用算法, 但是淘汰范围的key是所有的key<br>volatile-lfu: 根据最不经常使用算法, 淘汰带有 有效期 属性的key及其数据 4.0 版本支持<br>allkeys-lfu, 与第二种的淘汰范围相同, 不过使用的算法是最不经常使用算法 4.0 版本支持<br>volatile-random: 随机淘汰带有有效期属性的key及其数据<br>allkeys-random: 所有key都随机淘汰<br>volatile-ttl: 淘汰剩余寿命最短的key及其数据, ttl是 Time To Live的缩写<br>noeviction: 不再进行写操作, 只能读 默认配置</p>
 </blockquote>
 <h2 id="分布式锁"><a href="#分布式锁" class="headerlink" title="分布式锁"></a>分布式锁</h2><blockquote>
 <p>分布式锁其实个人觉得现在并没有一个非常完美的解决方案. 原因是因为对于锁的时间和业务时间无法完美的解决. 例: 如果业务时间超过了锁的时间, 如果继续锁, 那么这个分布式锁的时间设置就没有了意义, 如果不继续锁, 就可能会同时两个线程在操作相同的业务</p>
@@ -396,6 +402,14 @@
 <li>同步</li>
 <li>命令传播</li>
 </ol>
+<p>epl-timeout :从节点超时时间(复制) 默认 60s<br>超时了, 从节点会直接重新同步一份主节点的完整数据. 没有超时, 则根据其他参数还可能同步增量数据<br>repl-ping-slave-period: 心跳间隔, 默认 10s<br>cluster-node-timeout: 集群中的节点最大不可用时长(如果超过则进行主从切换) 默认 15000ms</p>
+<p>主从同步(命令传播): master 节点维护长连接, 写命令会同时发送给 slave 节点, 同时也会放到 backlog 缓冲池. 如果断链则执行全量同步或增量同步</p>
+<p>redis master 节点接收到 写命令执行操作: </p>
+<ol>
+<li>将命令写入 AOF 缓冲池</li>
+<li>将命令发送给slave 节点</li>
+<li>将命令写入backlog(复制积压缓冲池)</li>
+</ol>
 </blockquote>
 <h3 id="增量同步"><a href="#增量同步" class="headerlink" title="增量同步"></a>增量同步</h3><blockquote>
 <p>主节点内存中会有指令 buffer, 是一种环形结构, 如果 buffer 满了, 新的指令无论从库是否同步, 都会覆盖. 异步将 buffer 中的指令同步到从节点, 从节点反馈自己同步的偏移量. 如果从节点需要同步偏移量在 buffer 中已经不存在, 则需要执行快照同步</p>
@@ -415,15 +429,78 @@
 </blockquote>
 <h3 id="Sentinel"><a href="#Sentinel" class="headerlink" title="Sentinel"></a>Sentinel</h3><blockquote>
 <p>这种方式俗称哨兵模式. 该模式相当于是对 Redis 主从集群加了一层监控集群 监控集群如果检测到主节点不可用, 立即切换最优从节点为主节点</p>
-<p>&#x2F;&#x2F; 主节点必须至少有一个从节点在进行正常复制，否则就停止对外写服务，丧失可用性<br>min-slaves-to-write 1<br>&#x2F;&#x2F; 10s 没有收到从节点的反馈，就意味着从节点同步不正常<br>min-slaves-max-lag 10</p>
+<p>Sentinel 的主要功能包括 主节点存活检测、主从运行情况检测、自动故障转移 (failover)、主从切换. Redis 的 Sentinel 最小配置是 一主一从</p>
+<p>&#x2F;&#x2F; 主节点必须至少有一个从节点在进行正常复制, 否则就停止对外写服务, 丧失可用性<br>min-slaves-to-write 1<br>&#x2F;&#x2F; 10s 没有收到从节点的反馈, 就意味着从节点同步不正常<br>min-slaves-max-lag 10</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/image-20230413223022232.png" alt="image-20230413223022232"></p>
+<h4 id="监控"><a href="#监控" class="headerlink" title="监控"></a>监控</h4><blockquote>
+<p>Sentinel 会不断的检查 主服务器 和 从服务器 是否正常运行</p>
+</blockquote>
+<h4 id="自动故障转移"><a href="#自动故障转移" class="headerlink" title="自动故障转移"></a>自动故障转移</h4><blockquote>
+<p>当 主节点 不能正常工作时, Sentinel 会开始一次 自动的 故障转移操作, 它会将与 失效主节点 是 主从关系 的其中一个 从节点 升级为新的 主节点, 并且将其他的 从节点 指向 新的主节点</p>
+<p>默认情况下, 每个 Sentinel 节点会以 每秒一次 的频率对 Redis 节点和 其它 的 Sentinel 节点发送 PING 命令, 并通过节点的 回复 来判断节点是否在线</p>
+</blockquote>
+<h4 id="主观下线"><a href="#主观下线" class="headerlink" title="主观下线"></a><strong>主观下线</strong></h4><blockquote>
+<p>主观下线 适用于所有 主节点 和 从节点. 如果在 down-after-milliseconds 毫秒内, Sentinel 没有收到 目标节点 的有效回复, 则会判定 该节点 为 主观下线</p>
+</blockquote>
+<h4 id="客观下线"><a href="#客观下线" class="headerlink" title="客观下线"></a>客观下线</h4><blockquote>
+<p>客观下线 只适用于 主节点. 如果 主节点 出现故障, Sentinel 节点会通过 sentinel is-master-down-by-addr 命令, 向其它 Sentinel 节点询问对该节点的 状态判断. 如果超过 quorum 个数的节点判定 主节点 不可达, 则该 Sentinel 节点会判断 主节点 为 客观下线</p>
+</blockquote>
+<h4 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h4><blockquote>
+<ol>
+<li>每个 Sentinel 以 每秒钟 一次的频率, 向它所知的 主服务器、从服务器 以及其他 Sentinel 实例 发送一个 PING 命令</li>
+<li>如果一个 实例(instance)距离 最后一次 有效回复 PING 命令的时间超过 down-after-milliseconds 所指定的值, 那么这个实例会被 Sentinel 标记为 主观下线</li>
+<li>如果一个 主服务器 被标记为 主观下线, 那么正在 监视 这个 主服务器 的所有 Sentinel 节点, 要以 每秒一次 的频率确认 主服务器 的确进入了 主观下线 状态</li>
+<li>如果一个 主服务器 被标记为 主观下线, 并且有 足够数量 的 Sentinel(至少要达到 配置文件 指定的数量)在指定的 时间范围 内同意这一判断, 那么这个 主服务器 被标记为 客观下线</li>
+<li>在一般情况下,  每个 Sentinel 会以每 10 秒一次的频率, 向它已知的所有 主服务器 和 从服务器 发送 INFO 命令. 当一个 主服务器 被 Sentinel 标记为 客观下线 时, Sentinel 向 下线主服务器 的所有 从服务器 发送 INFO 命令的频率, 会从 10 秒一次改为 每秒一次</li>
+<li>Sentinel 和其他 Sentinel 协商 主节点 的状态, 如果 主节点 处于 SDOWN 状态, 则投票自动选出新的 主节点. 将剩余的 从节点 指向 新的主节点 进行 数据复制</li>
+<li>当没有足够数量的 Sentinel 同意 主服务器 下线时,  主服务器 的 客观下线状态 就会被移除. 当 主服务器 重新向 Sentinel 的 PING 命令返回 有效回复 时, 主服务器 的 主观下线状态 就会被移除</li>
+</ol>
 </blockquote>
 <h2 id="分片"><a href="#分片" class="headerlink" title="分片"></a>分片</h2><blockquote>
 <p>上述的两种都是主节点保存全量数据的方式. 在应当当下大数据的情况下, 一旦网络抖动或宕机导致全量同步, 就会极其影响效率甚至陷入全量同步死循环. 因此在考虑高可用的情况下, 自然而然就少不了分片</p>
 <p>分片的作用是将全量数据分散到各个节点, 各个节点再通过集群保证高可用. 每个集群只维护各自的局部数据</p>
 </blockquote>
+<h3 id="客户端分区方案"><a href="#客户端分区方案" class="headerlink" title="客户端分区方案"></a>客户端分区方案</h3><blockquote>
+<p>客户端 就已经决定数据会被 存储 到哪个 redis 节点或者从哪个 redis 节点 读取数据。其主要思想是采用 哈希算法 将 Redis 数据的 key 进行散列，通过 hash 函数，特定的 key会 映射 到特定的 Redis 节点上</p>
+<p>优点: 不使用 第三方中间件，分区逻辑 可控，配置 简单，节点之间无关联，容易 线性扩展，灵活性强<br>缺点: 客户端 无法 动态增删 服务节点，客户端需要自行维护 分发逻辑，客户端之间 无连接共享，会造成 连接浪费</p>
+</blockquote>
+<h3 id="代理分区方案"><a href="#代理分区方案" class="headerlink" title="代理分区方案"></a>代理分区方案</h3><blockquote>
+<p>客户端 发送请求到一个 代理组件，代理 解析 客户端 的数据，并将请求转发至正确的节点，最后将结果回复给客户端. 相当于客户端分片由代理层来处理</p>
+<p>优点: 简化 客户端 的分布式逻辑，客户端 透明接入，切换成本低，代理的 转发 和 存储 分离<br>缺点: 多了一层 代理层，加重了 架构部署复杂度 和 性能损耗</p>
+</blockquote>
+<h3 id="查询路由方案"><a href="#查询路由方案" class="headerlink" title="查询路由方案"></a>查询路由方案</h3><blockquote>
+<p>客户端随机地 请求任意一个 Redis 实例，然后由 Redis 将请求 转发 给 正确 的 Redis 节点。Redis Cluster 实现了一种 混合形式 的 查询路由，但并不是 直接 将请求从一个 Redis 节点 转发 到另一个 Redis 节点，而是在 客户端 的帮助下直接 重定向（ redirected）到正确的 Redis 节点</p>
+<p>优点: 无中心节点，数据按照 槽 存储分布在多个 Redis 实例上，可以平滑的进行节点 扩容&#x2F;缩容，支持 高可用 和 自动故障转移，运维成本低<br>缺点: 缺乏 监控管理，需要维护连接，缓存路由表，MultiOp 和 Pipeline 支持。Failover 节点的 检测过慢，不如 中心节点 ZooKeeper 及时。无法根据统计区分 冷热数据</p>
+</blockquote>
+<h3 id="数据分布"><a href="#数据分布" class="headerlink" title="数据分布"></a>数据分布</h3><h4 id="哈希分区"><a href="#哈希分区" class="headerlink" title="哈希分区"></a>哈希分区</h4><blockquote>
+<p>离散程度好，数据分布与业务无关，无法顺序访问. Redis Cluster 使用此种方式</p>
+</blockquote>
+<ol>
+<li>节点取余分区: 使用特定的数据，如 Redis 的 键 或 用户 ID，再根据 节点数量 N 使用公式：hash（key）% N 计算出 哈希值，用来决定数据 映射 到哪一个节点上<ol>
+<li>优点: 简单, 常用于 数据库 的 分库分表规则。一般采用 预分区 的方式，提前根据 数据量 规划好 分区数，比如划分为 512 或 1024 张表，保证可支撑未来一段时间的 数据容量，再根据 负载情况 将 表 迁移到其他 数据库 中。扩容时通常采用 翻倍扩容，避免 数据映射 全部被 打乱，导致 全量迁移 的情况</li>
+<li>缺点: 当 节点数量 变化时，如 扩容 或 收缩 节点，数据节点 映射关系 需要重新计算，会导致数据的 重新迁移</li>
+</ol>
+</li>
+<li>一致性哈希分区: 一致性哈希 可以很好的解决 稳定性问题，可以将所有的 存储节点 排列在 收尾相接 的 Hash 环上，每个 key 在计算 Hash 后会 顺时针 找到 临接 的 存储节点 存放。而当有节点 加入 或 退出 时，仅影响该节点在 Hash 环上 顺时针相邻 的 后续节点<ol>
+<li>优点: 一致性哈希 可以很好的解决 稳定性问题，可以将所有的 存储节点 排列在 收尾相接 的 Hash 环上，每个 key 在计算 Hash 后会 顺时针 找到 临接 的 存储节点 存放。而当有节点 加入 或 退出 时，仅影响该节点在 Hash 环上 顺时针相邻 的 后续节点</li>
+<li>缺点: 加减节点 会造成 哈希环 中部分数据 无法命中。当使用 少量节点 时，节点变化 将大范围影响 哈希环 中 数据映射，不适合 少量数据节点 的分布式方案。普通 的 一致性哈希分区 在增减节点时需要 增加一倍 或 减去一半 节点才能保证 数据 和 负载的均衡</li>
+</ol>
+</li>
+<li>虚拟槽分区: 虚拟槽分区 巧妙地使用了 哈希空间，使用 分散度良好 的 哈希函数 把所有数据 映射 到一个 固定范围 的 整数集合 中，整数定义为 槽（slot）。这个范围一般 远远大于 节点数，比如 Redis Cluster 槽范围是 0 ~ 16383。槽 是集群内 数据管理 和 迁移 的 基本单位。采用 大范围槽 的主要目的是为了方便 数据拆分 和 集群扩展。每个节点会负责 一定数量的槽<ol>
+<li>由于从一个节点将 哈希槽 移动到另一个节点并不会 停止服务，所以无论 添加删除 或者 改变 某个节点的 哈希槽的数量 都不会造成 集群不可用 的状态</li>
+</ol>
+</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/image-20230413230057053.png" alt="image-20230413230057053"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/hash_%E5%89%AF%E6%9C%AC.jpg" alt="hash"></p>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/image-20230413225056120.png" alt="image-20230413225056120"></p>
+<h4 id="顺序分区"><a href="#顺序分区" class="headerlink" title="顺序分区"></a>顺序分区</h4><blockquote>
+<p>离散程度易倾斜，数据分布与业务相关，可以顺序访问. BigTable，HBase，Hypertable 大数据一般使用此种方式</p>
+</blockquote>
 <h3 id="Redis-Cluster"><a href="#Redis-Cluster" class="headerlink" title="Redis Cluster"></a>Redis Cluster</h3><blockquote>
 <p>Redis Cluster 是一个多主多从的架构. 每一个主节点对应多个从节点. 当检测到主节点宕机时, 自动切换其从节点为主节点. 并且是去中心架构</p>
-<p>Redis Cluster 采用虚拟槽分区，所有的key根据哈希函数映射到0~16383槽. 当收到一条指令后, 任何一主节点会计算该指令应保存的槽, 如果不是当前节点, 则会转发到对应的主节点进行处理</p>
+<p>Redis Cluster 采用虚拟槽分区, 所有的key根据哈希函数映射到0~16383槽. 当收到一条指令后, 任何一主节点会计算该指令应保存的槽, 如果不是当前节点, 则会转发到对应的主节点进行处理</p>
 <p>FailOver (故障转移): 分为主观下线和客观下线<br>主观下线: 集群中每个节点都会定期向其他节点发送ping消息, 接收节点回复pong消息作为响应. 如果在cluster-node-timeout时间内通信一直失败, 则发送节点会认为接收节点存在故障, 把接收节点标记为主观下线(pfail)状态<br>客观下线: 当某个节点判断另一个节点主观下线后, 相应的节点状态会跟随消息在集群内传播. 通过Gossip消息传播, 集群内节点不断收集到故障节点的下线报告. 当半数以上持有槽的主节点都标记某个节点是主观下线时, 触发客观下线流程</p>
 <ol>
 <li>下线节点的集群投票选出新的主节点</li>
@@ -432,11 +509,73 @@
 <li>向集群广播自己的pong消息, 通知集群内所有的节点当前从节点变为主节点并接管了故障主节点的槽信息</li>
 </ol>
 </blockquote>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/image-20230413230432376.png" alt="image-20230413230432376"></p>
+<h4 id="数据分区"><a href="#数据分区" class="headerlink" title="数据分区"></a>数据分区</h4><blockquote>
+<p>Redis Cluster 采用 虚拟槽分区，所有的 键 根据 哈希函数 映射到 0~16383 整数槽内，计算公式：slot &#x3D; CRC16（key）&amp; 16383。每个节点负责维护一部分槽以及槽所映射的 键值数据</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/image-20230413225330704.png" alt="image-20230413225330704"></p>
+<h4 id="虚拟槽分区的特点"><a href="#虚拟槽分区的特点" class="headerlink" title="虚拟槽分区的特点"></a>虚拟槽分区的特点</h4><blockquote>
+<ol>
+<li>解耦 数据 和 节点 之间的关系，简化了节点 扩容 和 收缩 难度</li>
+<li>节点自身 维护槽的 映射关系，不需要 客户端 或者 代理服务 维护 槽分区元数据</li>
+<li>支持 节点、槽、键 之间的 映射查询，用于 数据路由、在线伸缩 等场景</li>
+</ol>
+</blockquote>
+<h4 id="功能限制"><a href="#功能限制" class="headerlink" title="功能限制"></a>功能限制</h4><blockquote>
+<p>以下操作需要客户端处理</p>
+<ol>
+<li>key 批量操作 支持有限: 类似 mset、mget 操作，目前只支持对具有相同 slot 值的 key 执行 批量操作。对于 映射为不同 slot 值的 key 由于执行 mget、mget 等操作可能存在于多个节点上，因此不被支持</li>
+<li>key 事务操作 支持有限: 只支持 多 key 在 同一节点上 的 事务操作，当多个 key 分布在 不同 的节点上时 无法 使用事务功能</li>
+<li>key 作为 数据分区 的最小粒度: 不能将一个 大的键值 对象如 hash、list 等映射到 不同的节点</li>
+<li>不支持 多数据库空间: 单机 下的 Redis 可以支持 16 个数据库（db0 ~ db15），集群模式 下只能使用 一个 数据库空间，即 db0</li>
+<li>复制结构 只支持一层: 从节点 只能复制 主节点，不支持 嵌套树状复制 结构</li>
+</ol>
+</blockquote>
 <h2 id="Keys-和-Scan"><a href="#Keys-和-Scan" class="headerlink" title="Keys 和 Scan"></a>Keys 和 Scan</h2><blockquote>
 <p>Keys 和 Scan 都是用来获取匹配的 key, 时间复杂度都是 O(n)</p>
 <p>Keys: 阻塞主线程, 并且不支持分页, 对大数据量效率极低又因为 Redis 是单线程会阻塞主线程. 因此线上统一禁止使用</p>
 <p>Scan: 支持分页, 但是返回的数据可能会重复. 通过游标分布进行, 不会阻塞线程 (设计很复杂). 遍历顺序非常特别, 它不是从第一维数组的第 0 位一直遍历到末尾, 而是采用了高位进位加法来遍历</p>
 </blockquote>
+<h2 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h2><h3 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h3><blockquote>
+<p>缓存雪崩是指多缓存在同一时间失效, 此时高并发请求打到 db</p>
+<p>解决方式: 缓存失效时间随机分布</p>
+</blockquote>
+<h3 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h3><blockquote>
+<p>缓存击穿是指热点数据缓存失效, 此时高并发请求达到 db</p>
+<p>解决方式:</p>
+<ol>
+<li>热点数据永不国过期</li>
+<li>互斥锁</li>
+</ol>
+</blockquote>
+<h3 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h3><blockquote>
+<p>缓存穿透是指缓存和数据库中都没有的数据, 而用户不断发起请求</p>
+<p>解决方式: </p>
+<ol>
+<li>布隆过滤器</li>
+<li>没有的数据也缓存, value 为 null</li>
+</ol>
+</blockquote>
+<h3 id="数据库缓存一致性"><a href="#数据库缓存一致性" class="headerlink" title="数据库缓存一致性"></a>数据库缓存一致性</h3><blockquote>
+<p>没有最佳的方式, 都会有各种各样的问题, 但是一般先更新 db, 再删除缓存</p>
+<ol>
+<li>为什么不是更新缓存的原因<ol>
+<li>缓存可能需要其他业务数据, 避免复杂业务逻辑影响主流程</li>
+<li>事物提交失败, 但是缓存已更新</li>
+</ol>
+</li>
+<li>删除缓存有什么问题<ol>
+<li>删除缓存后, 更新事务未提交, 另外一个线程从 db 中获取了旧数据放入缓存</li>
+</ol>
+</li>
+<li>异步队列<ol>
+<li>有延迟, 导致会有异步执行之前读取的是旧数据</li>
+</ol>
+</li>
+</ol>
+</blockquote>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903663362637832#heading-4">Redis哨兵模式与高可用集群</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903670572646413">Redis集群模式搭建与原理详解</a></p>
 
                 
               </div>

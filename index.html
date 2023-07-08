@@ -507,15 +507,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2023/03/27/JVM-%E9%94%81%E7%9B%B8%E5%85%B3/" target="_self">
+        <a href="/2023/03/27/JVM-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3/" target="_self">
           JVM-内存相关
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/27/JVM-%E9%94%81%E7%9B%B8%E5%85%B3/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/27/JVM-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3/" target="_self">
         <div>
-          偏向锁 如果不存在线程竞争的一个线程获得了锁，那么锁就进入偏向状态，此时Mark Word的结构变为偏向锁结构，锁对象的锁标志位（lock）被改为01，偏向标志位（biased_lock）被改为1，然后线程的ID记录在锁对象的Mark Word中（使用CAS操作完成）。以后该线程获取锁时判断一下线程ID和标志位，就可以直接进入同步块，连CAS操作都不需要，这样就省去了大量有关锁申请的操作，从而也就
+          JVM 内存相关知识 内存分配   指针碰撞(CAS 来解决并发问题) 空闲列表(连续的内存区域)   逃逸分析 在方法体中创建对象，如果该对象被方法体其他变量引用到，叫方法逃逸，被外部线程访问到叫线程逃逸 优化点:  同步消除：如果一个对象被逃逸分析发现只能被一个线程所访问，那对于这个对象的操作可以不同步 栈上分配：如果确定一个对象不会逃逸出线程之外，那让这个对象在栈上分配内存将会是一个很不错的
         </div>
       </a>
 
@@ -575,15 +575,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2023/03/27/JVM-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3/" target="_self">
+        <a href="/2023/03/27/JVM-%E9%94%81%E7%9B%B8%E5%85%B3/" target="_self">
           JVM-内存相关
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/27/JVM-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/03/27/JVM-%E9%94%81%E7%9B%B8%E5%85%B3/" target="_self">
         <div>
-          JVM 内存相关知识 内存分配   指针碰撞(CAS 来解决并发问题) 空闲列表(连续的内存区域)   逃逸分析 在方法体中创建对象，如果该对象被方法体其他变量引用到，叫方法逃逸，被外部线程访问到叫线程逃逸 优化点:  同步消除：如果一个对象被逃逸分析发现只能被一个线程所访问，那对于这个对象的操作可以不同步 栈上分配：如果确定一个对象不会逃逸出线程之外，那让这个对象在栈上分配内存将会是一个很不错的
+          偏向锁 如果不存在线程竞争的一个线程获得了锁，那么锁就进入偏向状态，此时Mark Word的结构变为偏向锁结构，锁对象的锁标志位（lock）被改为01，偏向标志位（biased_lock）被改为1，然后线程的ID记录在锁对象的Mark Word中（使用CAS操作完成）。以后该线程获取锁时判断一下线程ID和标志位，就可以直接进入同步块，连CAS操作都不需要，这样就省去了大量有关锁申请的操作，从而也就
         </div>
       </a>
 

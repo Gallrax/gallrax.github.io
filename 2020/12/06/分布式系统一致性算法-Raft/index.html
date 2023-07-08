@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1glefnfx5nwj314n0u0dm9.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/Gallrax/blog-image/master/uPic/0081Kckwly1glefo3f5doj31ad0u0dm4.jpg">
 <meta property="article:published_time" content="2020-12-05T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-03-27T14:26:09.319Z">
+<meta property="article:modified_time" content="2023-07-08T09:25:48.155Z">
 <meta property="article:author" content="Gallrax">
 <meta property="article:tag" content="Raft">
 <meta property="article:tag" content="一致性">
@@ -421,8 +421,9 @@
 <blockquote>
 <p>最复杂的情况为上图. 图中可得总过发生过 7 次选举. 观察 f 可发现, 可得出 term &#x3D; 2 时, 追加了 222, 然后再次发生选举, term &#x3D; 3, 追加33333 日志, 但是两次皆未同步至其他节点(也可能是没有过半节点同步, 导致新的选举节点将数据同步覆盖)便宕机, 此时选举结果为 term &#x3D; 4, 并且a, b, c, d, e皆同步数据. 此时又发生选举 term &#x3D; 5 -&gt; 6, 当 leader 变为 7 时(仍然数据未同步过半)宕机, 发生选举重新回到 leader(最上方, 即将为 term &#x3D; 8). 此时 leader 发起数据同步, 会将其他节点数据同步为leader 数据. 至于 d, f 节点的数据将会重置并覆盖</p>
 </blockquote>
-<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><p><a target="_blank" rel="noopener" href="https://image.baidu.com/search/down?url=http://www.jianshu.com/p/0e695b4be92f">简书-Raft系列</a></p>
-<p><a target="_blank" rel="noopener" href="https://image.baidu.com/search/down?url=http://juejin.cn/post/6844903657540943880">掘金-Raft算法分析与实现</a></p>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><p><a target="_blank" rel="noopener" href="http://www.jianshu.com/p/0e695b4be92f">简书-Raft系列</a></p>
+<p><a target="_blank" rel="noopener" href="http://juejin.cn/post/6844903657540943880">掘金-Raft算法分析与实现</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/linbingdong/p/6442673.html">分布式一致性算法：Raft 算法（论文翻译)</a></p>
 <p><a target="_blank" rel="noopener" href="https://raft.github.io/raft.pdf">官方论文-Raft Paper</a></p>
 
                 
@@ -525,7 +526,7 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/03/27/JVM-%E9%94%81%E7%9B%B8%E5%85%B3/" title="JVM-内存相关">
+                      <a href="/2023/03/27/JVM-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3/" title="JVM-内存相关">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile">JVM-内存相关</span>
                         <span class="visible-mobile">上一篇</span>
